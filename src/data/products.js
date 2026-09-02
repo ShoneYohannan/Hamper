@@ -123,25 +123,73 @@ export const testimonials = [
     id: 1,
     rating: '5 / 5',
     stars: 5,
-    quote: '“The Baby Girl hamper we ordered was so gorgeous and soft. The new parents were in tears!”',
+    quote: '“The Baby Girl hamper we ordered was so gorgeous and soft. The new parents were in tears! The hand-stitched booties and delicate blanket felt truly heirloom quality.”',
     author: 'Pooja K.',
-    location: 'Mumbai'
+    location: 'Mumbai',
+    occasion: 'baby',
+    occasionLabel: 'Baby Arrival',
+    hamper: 'Sweet Princess Baby Girl Hamper',
+    date: 'February 2026'
   },
   {
     id: 2,
     rating: '5 / 5',
     stars: 5,
-    quote: '“The Royal Reserve Premium hamper exceeded all expectations for our VIP clients. Absolute perfection.”',
+    quote: '“The Royal Reserve Premium hamper exceeded all expectations for our VIP clients. The matte dark trunk and vintage champagne made a colossal impression.”',
     author: 'Vikram S.',
-    location: 'Bengaluru'
+    location: 'Bengaluru',
+    occasion: 'reserve',
+    occasionLabel: 'Executive Milestone',
+    hamper: 'The Royal Reserve Luxury Hamper',
+    date: 'January 2026'
   },
   {
     id: 3,
     rating: '5 / 5',
     stars: 5,
-    quote: '“The Baby Boy gift basket looked straight out of a luxury magazine. Packaging was top notch!”',
+    quote: '“The Baby Boy gift basket looked straight out of a luxury magazine. Packaging was top notch and arrived impeccably fresh with crisp satin bows.”',
     author: 'Ananya R.',
-    location: 'Delhi'
+    location: 'Delhi',
+    occasion: 'baby',
+    occasionLabel: 'Newborn Gift',
+    hamper: 'Little Prince Baby Boy Hamper',
+    date: 'January 2026'
+  },
+  {
+    id: 4,
+    rating: '5 / 5',
+    stars: 5,
+    quote: '“Ordered 25 corporate elegance trunks for our annual partner retreat. The embossed brass pens and leather journals were universally praised.”',
+    author: 'Rajiv M.',
+    location: 'Hyderabad',
+    occasion: 'corporate',
+    occasionLabel: 'Corporate Gifting',
+    hamper: 'Executive Corporate Elegance',
+    date: 'December 2025'
+  },
+  {
+    id: 5,
+    rating: '5 / 5',
+    stars: 5,
+    quote: '“The Festive Celebrations hamper was the highlight of our family Diwali reunion. The gourmet spiced treats and sparkling sip were divine.”',
+    author: 'Meera & Dev',
+    location: 'Chennai',
+    occasion: 'festive',
+    occasionLabel: 'Festive & Celebration',
+    hamper: 'Festive Celebrations Hamper',
+    date: 'November 2025'
+  },
+  {
+    id: 6,
+    rating: '5 / 5',
+    stars: 5,
+    quote: '“Customized a bespoke wicker basket with organic honey, Earl Grey tea, and botanical candle. The recipient called it the most tasteful gift she had ever received.”',
+    author: 'Sunita P.',
+    location: 'Kolkata',
+    occasion: 'reserve',
+    occasionLabel: 'Bespoke Curation',
+    hamper: 'Bespoke Atelier Studio',
+    date: 'February 2026'
   }
 ];
 

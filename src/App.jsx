@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import ProductGrid from './components/ProductGrid';
+import CollectionsPage from './pages/CollectionsPage';
+import ReservePage from './pages/ReservePage';
 import Features from './components/Features';
-import Testimonials from './components/Testimonials';
+import ReviewsPage from './pages/ReviewsPage';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import SearchModal from './components/SearchModal';
 import HamperBuilderModal from './components/HamperBuilderModal';
 import QuickViewModal from './components/QuickViewModal';
 import Toast from './components/Toast';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function App() {
+  const [activeSection, setActiveSection] = useState('home');
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -20,7 +22,75 @@ export default function App() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [toast, setToast] = useState(null);
   const [checkoutComplete, setCheckoutComplete] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('all');
+
+  // Scroll Spy: Tracks which section is currently in view and underlines it in the header
+  useEffect(() => {
+    const sections = ['home', 'collections', 'reserve', 'reviews'];
+    let isTicking = false;
+
+    const onScroll = () => {
+      if (!isTicking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          
+          if (scrollY < 100) {
+            setActiveSection('home');
+            isTicking = false;
+            return;
+          }
+
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const sectionId = sections[i];
+            const el = document.getElementById(sectionId);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              // Trigger when section top enters upper portion of viewport (320px)
+              if (rect.top <= 320) {
+                setActiveSection(sectionId);
+                break;
+              }
+            }
+          }
+          isTicking = false;
+        });
+        isTicking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Smooth scroll navigation handler
+  const handleNavigate = (sectionId) => {
+    setActiveSection(sectionId);
+    if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.history.replaceState(null, null, ' ');
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        window.history.replaceState(null, null, `#${sectionId}`);
+      }
+    }
+  };
+
+  // Handle direct hash navigation on initial load (e.g. #collections, #reserve, #reviews)
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '').toLowerCase();
+    if (hash && ['collections', 'reserve', 'reviews'].includes(hash)) {
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          setActiveSection(hash);
+        }
+      }, 250);
+    }
+  }, []);
 
   const showToast = (title, message, type = 'cart') => {
     setToast({ title, message, type });
@@ -37,7 +107,7 @@ export default function App() {
       }
       return [...prevItems, { ...product, quantity: 1 }];
     });
-    showToast('Added to Cart', `${product.name} added to your basket.`, 'cart');
+    showToast('Added to Basket', `${product.name} has been added.`, 'cart');
   };
 
   const handleUpdateQuantity = (id, newQty) => {
@@ -65,35 +135,48 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#141615] flex flex-col font-sans selection:bg-[#141615] selection:text-white">
       
-      {/* Navigation Header */}
+      {/* Navigation Header with Active Scroll Indicator */}
       <Header 
         cartCount={totalCartCount}
+        currentPage={activeSection}
+        onNavigate={handleNavigate}
         onOpenCart={() => setCartOpen(true)}
         onOpenSearch={() => setSearchOpen(true)}
         onOpenBuilder={() => setBuilderOpen(true)}
       />
 
-      {/* Main Content Sections */}
+      {/* Main Continuous Boutique Experience with Scroll Spy Sections */}
       <main className="flex-grow">
+        {/* Section 1: Home / Hero */}
         <Hero 
           onOpenBuilder={() => setBuilderOpen(true)} 
         />
 
-        <ProductGrid 
+        {/* Section 2: Collections Catalog with Pill Filters, Search & Sort */}
+        <CollectionsPage 
           onAddToCart={handleAddToCart}
           onQuickView={(prod) => setQuickViewProduct(prod)}
         />
 
+        {/* Section 3: The Reserve Vault & VIP Concierge Inquiry */}
+        <ReservePage 
+          onAddToCart={handleAddToCart}
+          onQuickView={(prod) => setQuickViewProduct(prod)}
+        />
+
+        {/* The Atelier 3-Step Process */}
         <Features 
           onOpenBuilder={() => setBuilderOpen(true)}
         />
 
-        <Testimonials />
+        {/* Section 4: Reviews, Verified Patron Stories & Submission Modal */}
+        <ReviewsPage />
       </main>
 
-      {/* Footer */}
+      {/* Footer with onNavigate */}
       <Footer 
-        onSubscribe={(email) => showToast('Subscribed!', `10% discount code sent to ${email}`, 'newsletter')}
+        onNavigate={handleNavigate}
+        onSubscribe={(email) => showToast('Subscribed', `Privilege code dispatched to ${email}`, 'newsletter')}
       />
 
       {/* Modals & Overlays */}
@@ -139,19 +222,22 @@ export default function App() {
         <div className="fixed inset-0 z-50 overflow-y-auto p-4 flex items-center justify-center">
           <div 
             onClick={() => setCheckoutComplete(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm" 
           />
-          <div className="relative bg-[#FFFDF8] rounded-3xl p-8 max-w-md w-full text-center space-y-4 border-2 border-[#153D32]/15 shadow-2xl z-10 animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-2xl bg-[#0F2E25] text-[#F3E5AB] border border-[#D4AF37]/40 flex items-center justify-center mx-auto shadow-md">
-              <CheckCircle2 className="w-8 h-8" />
+          <div className="relative bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-4 border border-neutral-200/80 shadow-2xl z-10 animate-fade-in">
+            <div className="w-14 h-14 rounded-full bg-neutral-900 text-white flex items-center justify-center mx-auto shadow-sm">
+              <CheckCircle2 className="w-7 h-7" />
             </div>
-            <h3 className="font-serif text-3xl font-bold text-[#0B251E]">Order Placed!</h3>
-            <p className="text-sm sm:text-base text-[#2E4237] font-medium leading-relaxed">
-              Thank you for choosing The Hamper Co. Your luxury gift hampers are being prepared with care.
+            <h3 className="font-serif text-3xl font-normal text-neutral-900">Order Placed</h3>
+            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-normal">
+              Thank you for gifting with The Hamper Co. Your luxury bespoke allocation is being assembled with care.
             </p>
             <button
-              onClick={() => setCheckoutComplete(false)}
-              className="w-full bg-[#0F2E25] hover:bg-[#18483B] text-[#FFFDF8] py-3.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-[#D4AF37]/30 shadow-md"
+              onClick={() => {
+                setCheckoutComplete(false);
+                handleNavigate('collections');
+              }}
+              className="w-full bg-[#171717] hover:bg-neutral-800 text-white py-3 rounded-full text-xs font-medium uppercase tracking-wider transition-all shadow-sm"
             >
               Continue Browsing
             </button>
