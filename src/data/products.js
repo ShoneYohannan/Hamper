@@ -1,66 +1,120 @@
+export const categories = [
+  { id: 'all', label: 'All Hampers', icon: '✨' },
+  { id: 'premium', label: 'Premium Luxury', icon: '👑' },
+  { id: 'baby-girl', label: 'Baby Girl', icon: '🎀' },
+  { id: 'baby-boy', label: 'Baby Boy', icon: '🧸' },
+  { id: 'festive', label: 'Festive & Celebration', icon: '🥂' },
+  { id: 'corporate', label: 'Corporate Gifting', icon: '💼' }
+];
+
 export const products = [
   {
+    id: 'premium-royal-reserve',
+    name: 'The Royal Reserve Luxury Hamper',
+    badge: 'PREMIUM LUXURY',
+    badgeType: 'gold',
+    price: 4500,
+    formattedPrice: 'From ₹4,500',
+    description: 'Vintage Dom Pérignon champagne, gold-leaf truffles, raw organic honeycomb, and a botanical candle in a handcrafted dark emerald trunk.',
+    longDescription: 'Our hallmark luxury hamper crafted for unmatched sophistication. Encased in a handcrafted matte forest green trunk with gold hardware, featuring vintage Dom Pérignon champagne, artisanal gold-dusted chocolate truffles, organic honeycomb with wooden dipper, slow-roasted gourmet nuts, and an aromatic bergamot oak candle.',
+    rating: 5.0,
+    reviewCount: 84,
+    image: '/images/premium_luxury_hamper.jpg',
+    category: 'premium',
+    items: ['Vintage Champagne 750ml', 'Artisanal Gold Chocolate Truffles Box', 'Organic Raw Honeycomb 350g', 'Gourmet Roasted Salted Nuts Jar', 'Botanical Bergamot & Oak Candle', 'Gold Foil Keepsake Box with Satin Bow']
+  },
+  {
+    id: 'baby-girl-welcome',
+    name: 'Sweet Princess Baby Girl Hamper',
+    badge: 'BABY GIRL',
+    badgeType: 'rose',
+    price: 3200,
+    formattedPrice: 'From ₹3,200',
+    description: 'Soft pastel pink plush bunny, organic floral swaddle, knit baby booties, and natural soothing organic baby balm.',
+    longDescription: 'A tender, heartwarming welcome for a newborn baby girl. Beautifully presented in a natural handwoven keepsake basket with dusty rose satin ribbon. Includes an ultra-soft plush pink bunny companion, 100% organic cotton floral swaddle blanket, handmade cozy knit booties, and hypoallergenic botanical baby balm.',
+    rating: 5.0,
+    reviewCount: 52,
+    image: '/images/baby_girl_hamper.jpg',
+    category: 'baby-girl',
+    items: ['Pastel Pink Plush Bunny Toy', '100% Organic Floral Cotton Swaddle', 'Handmade Soft Knit Pink Booties', 'Botanical Organic Baby Balm 50ml', 'Natural Woven Willow Basket', 'Embossed Welcome Baby Girl Card']
+  },
+  {
+    id: 'baby-boy-welcome',
+    name: 'Little Prince Baby Boy Hamper',
+    badge: 'BABY BOY',
+    badgeType: 'sky',
+    price: 3200,
+    formattedPrice: 'From ₹3,200',
+    description: 'Pastel sky-blue plush teddy bear, pure cotton cable knit blanket, soft booties, and gentle organic baby lotion.',
+    longDescription: 'Celebrate the sweetest new arrival with our charming Little Prince Hamper. Nestled inside a custom-lined willow gift basket with powder blue silk bow, featuring a cuddly sky-blue plush bear, luxurious pure cotton cable knit blanket, delicate knit booties, and pure organic chamomile baby lotion.',
+    rating: 4.9,
+    reviewCount: 47,
+    image: '/images/baby_boy_hamper.jpg',
+    category: 'baby-boy',
+    items: ['Sky Blue Plush Teddy Bear', 'Pure Cotton Cable Knit Baby Blanket', 'Handcrafted Powder Blue Booties', 'Gentle Organic Chamomile Baby Lotion 100ml', 'Handwoven Willow Basket with Fabric Liner', 'Gold Letterpress Baby Boy Card']
+  },
+  {
     id: 'festive-celebrations',
-    name: 'Festive Celebrations',
+    name: 'Festive Celebrations Hamper',
     badge: 'BESTSELLER',
     badgeType: 'gold',
     price: 2500,
     formattedPrice: 'From ₹2,500',
-    description: 'A joyful keepsake of sparkling sips and celebratory treats.',
-    longDescription: 'Curated for grand milestones and sparkling moments. Features a bottle of premium sparkling wine, gold-wrapped artisanal truffles, spiced gingerbread biscuits, and hand-rolled festive cinnamon treats.',
+    description: 'A joyful keepsake of sparkling sips, spiced gingerbread, and celebratory artisanal treats.',
+    longDescription: 'Curated for grand milestones and sparkling moments. Features a bottle of premium sparkling beverage, gold-wrapped artisanal truffles, spiced gingerbread biscuits, and hand-rolled festive cinnamon treats.',
     rating: 5.0,
     reviewCount: 48,
     image: '/images/festive_celebrations.jpg',
-    category: 'Festive',
-    items: ['Laurent-Perrier Champagne 375ml', 'Gold Truffles Box', 'Festive Shortbread Tin', 'Gourmet Panettone', 'Cinnamon Sticks Jar']
+    category: 'festive',
+    items: ['Premium Sparkling Celebration Sip 375ml', 'Gold Truffles Luxury Box', 'Festive Shortbread Tin', 'Gourmet Spiced Panettone', 'Cinnamon Sticks Jar']
   },
   {
     id: 'artisanal-delights',
-    name: 'Artisanal Delights',
-    badge: 'NEW ARRIVAL',
+    name: 'Artisanal Gourmet Delights',
+    badge: 'GOURMET',
     badgeType: 'sage',
     price: 1850,
     formattedPrice: 'From ₹1,850',
-    description: 'Small-batch pleasures and beautiful pantry treasures, wrapped to impress.',
+    description: 'Small-batch pleasures and pantry treasures, wrapped to impress.',
     longDescription: 'Gathered from independent master crafters. Packed with small-batch raw wildflower honey, handmade raspberry rose preserve, organic earl grey leaf tea, oat & cranberry biscuits, and rosemary sea salt almonds.',
     rating: 4.9,
     reviewCount: 36,
     image: '/images/artisanal_delights.jpg',
-    category: 'Gourmet',
-    items: ['Small-Batch Raw Honey 250g', 'Raspberry & Rose Preserve 220g', 'Organic Earl Grey Tea 125g', 'Handmade Oat Cookies', 'Roasted Sea Salt Almonds']
+    category: 'premium',
+    items: ['Small-Batch Raw Wildflower Honey 250g', 'Raspberry & Rose Preserve 220g', 'Organic Earl Grey Tea 125g', 'Handmade Oat Cookies', 'Roasted Sea Salt Almonds']
   },
   {
     id: 'corporate-elegance',
-    name: 'Corporate Elegance',
-    badge: 'FOR TEAMS',
+    name: 'Executive Corporate Elegance',
+    badge: 'FOR TEAMS & CLIENTS',
     badgeType: 'green',
     price: 3200,
     formattedPrice: 'From ₹3,200',
-    description: 'Premium gifting made effortless for clients, colleagues, and milestones.',
+    description: 'Premium gifting made effortless for clients, colleagues, and executive milestones.',
     longDescription: 'Designed to leave an unforgettable professional impression. Features a handcrafted forest green leather journal, weighted brass executive pen, single-origin Peru 75% dark chocolate, matte green insulated flask, and hammered copper mug.',
     rating: 5.0,
     reviewCount: 62,
     image: '/images/corporate_elegance.jpg',
-    category: 'Corporate',
-    items: ['Green Leather Journal', 'Solid Brass Pen', 'Single-Origin 75% Cacao Chocolate', 'Matte Insulated Tumbler', 'Hammered Copper Mug']
+    category: 'corporate',
+    items: ['Green Vegan Leather Executive Journal', 'Solid Weighted Brass Pen', 'Single-Origin 75% Cacao Chocolate', 'Matte Insulated Tumbler', 'Hammered Copper Mug']
   }
 ];
 
 export const steps = [
   {
     number: '01',
-    title: 'Choose Your Basket',
-    description: 'Select a ready-to-send favourite or begin with your perfect base.'
+    title: 'Choose Your Hamper Style',
+    description: 'Pick from our curated Premium, Baby, Festive, or Corporate collections.'
   },
   {
     number: '02',
     title: 'Personalize Treats & Ribbons',
-    description: 'Add the delicious details, a handwritten note, and a finishing ribbon.'
+    description: 'Add artisan touches, select signature ribbons, and pen a handwritten message.'
   },
   {
     number: '03',
-    title: 'Delivered to Their Doorstep',
-    description: 'We pack it with care and deliver a memorable moment, right on time.'
+    title: 'Delivered in Mint Condition',
+    description: 'Carefully wrapped and hand-packed for immediate nationwide courier dispatch.'
   }
 ];
 
@@ -69,35 +123,38 @@ export const testimonials = [
     id: 1,
     rating: '5 / 5',
     stars: 5,
-    quote: '“Everything felt incredibly special—from the wrapping to the last little treat.”',
-    author: 'Ananya R.',
+    quote: '“The Baby Girl hamper we ordered was so gorgeous and soft. The new parents were in tears!”',
+    author: 'Pooja K.',
     location: 'Mumbai'
   },
   {
     id: 2,
     rating: '5 / 5',
     stars: 5,
-    quote: '“Our client gifts looked impeccable. The whole experience was remarkably easy.”',
-    author: 'Karan M.',
+    quote: '“The Royal Reserve Premium hamper exceeded all expectations for our VIP clients. Absolute perfection.”',
+    author: 'Vikram S.',
     location: 'Bengaluru'
   },
   {
     id: 3,
     rating: '5 / 5',
     stars: 5,
-    quote: '“I could feel the care in every detail. It was the perfect thank-you gift.”',
-    author: 'Meera S.',
+    quote: '“The Baby Boy gift basket looked straight out of a luxury magazine. Packaging was top notch!”',
+    author: 'Ananya R.',
     location: 'Delhi'
   }
 ];
 
 export const buildableItems = [
-  { id: 'item-1', name: 'Artisanal Dark Truffles', price: 450, category: 'Treats' },
-  { id: 'item-2', name: 'Raw Wildflower Honey Jar', price: 380, category: 'Treats' },
-  { id: 'item-3', name: 'Spiced Botanical Candle', price: 650, category: 'Lifestyle' },
-  { id: 'item-4', name: 'Handcrafted Brass Mug', price: 550, category: 'Lifestyle' },
-  { id: 'item-5', name: 'Organic Chamomile Tea', price: 320, category: 'Sips' },
-  { id: 'item-6', name: 'Sparkling Rose Cider 375ml', price: 750, category: 'Sips' }
+  { id: 'item-1', name: 'Artisanal Gold Chocolate Truffles', price: 450, category: 'Gourmet Treats' },
+  { id: 'item-2', name: 'Raw Wildflower Honey Jar & Dipper', price: 380, category: 'Gourmet Treats' },
+  { id: 'item-3', name: 'Plush Baby Keepsake Toy (Pink / Blue)', price: 650, category: 'Baby Essentials' },
+  { id: 'item-4', name: 'Organic Cotton Baby Swaddle Blanket', price: 550, category: 'Baby Essentials' },
+  { id: 'item-5', name: 'Spiced Botanical Soy Candle', price: 650, category: 'Luxury Living' },
+  { id: 'item-6', name: 'Handcrafted Hammered Brass Mug', price: 550, category: 'Luxury Living' },
+  { id: 'item-7', name: 'Organic Earl Grey Leaf Tea 125g', price: 320, category: 'Sips' },
+  { id: 'item-8', name: 'Sparkling Vintage Rose Cider 375ml', price: 750, category: 'Sips' }
 ];
 
-export const ribbonOptions = ['Classic Forest Green', 'Warm Gold Silk', 'Burgundy Velvet', 'Ivory Satin'];
+export const ribbonOptions = ['Forest Green Velvet', 'Warm Gold Silk', 'Dusty Rose Satin', 'Powder Blue Silk', 'Classic Ivory Satin'];
+

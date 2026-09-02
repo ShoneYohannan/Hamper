@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, X, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Search, X, ShoppingBag } from 'lucide-react';
 import { products } from '../data/products';
 
 export default function SearchModal({ isOpen, onClose, onAddToCart, onQuickView }) {
@@ -18,69 +18,71 @@ export default function SearchModal({ isOpen, onClose, onAddToCart, onQuickView 
       {/* Backdrop */}
       <div 
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
       />
 
-      <div className="relative max-w-2xl mx-auto bg-[#FFFDF8] rounded-3xl border border-[#153D32]/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="relative max-w-2xl mx-auto bg-white rounded-3xl border border-neutral-200/80 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         
         {/* Search input header */}
-        <div className="p-6 border-b border-[#153D32]/10 flex items-center gap-3 bg-[#F9F6F0]">
-          <Search className="w-5 h-5 text-[#B78A45]" />
+        <div className="p-6 border-b border-neutral-100 flex items-center gap-3">
+          <Search className="w-4 h-4 text-neutral-400" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search hampers, occasions, or artisanal treats..."
-            className="w-full bg-transparent text-[#153D32] placeholder:text-[#6E756B] text-base focus:outline-none"
+            placeholder="Search hampers, baby keepsakes, or festive treats..."
+            className="w-full bg-transparent text-neutral-900 placeholder:text-neutral-400 text-sm font-normal focus:outline-none"
           />
           <button
             onClick={onClose}
-            className="p-1.5 text-[#153D32]/60 hover:text-[#153D32] rounded-full hover:bg-[#153D32]/5 transition-colors"
+            className="p-1.5 text-neutral-400 hover:text-neutral-800 rounded-full hover:bg-neutral-100 transition-colors"
+            aria-label="Close search"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Results */}
-        <div className="p-6 max-h-96 overflow-y-auto space-y-4">
+        <div className="p-6 max-h-96 overflow-y-auto space-y-3">
           {filtered.length === 0 ? (
-            <div className="text-center py-8 text-[#6E756B]">
-              <p className="text-sm font-medium">No gift hampers found matching "{query}"</p>
-              <p className="text-xs mt-1">Try searching "Festive", "Artisanal", or "Corporate".</p>
+            <div className="text-center py-8 text-neutral-500">
+              <p className="text-sm font-medium text-neutral-700">No hampers found matching "{query}"</p>
+              <p className="text-xs mt-1 text-neutral-400">Try searching "Reserve", "Baby", or "Festive".</p>
             </div>
           ) : (
             filtered.map((product) => (
               <div
                 key={product.id}
                 onClick={() => { onClose(); onQuickView(product); }}
-                className="flex items-center justify-between p-3.5 rounded-2xl bg-[#F9F6F0] hover:bg-[#153D32]/5 border border-[#153D32]/5 transition-all cursor-pointer group"
+                className="flex items-center justify-between p-3 rounded-xl bg-neutral-50/70 hover:bg-neutral-100 border border-neutral-200/60 transition-all cursor-pointer group"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3.5">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-14 h-14 rounded-xl object-cover"
+                    className="w-12 h-12 rounded-lg object-cover bg-neutral-100"
                   />
                   <div>
-                    <h4 className="font-serif text-lg font-semibold text-[#153D32] group-hover:text-[#B78A45] transition-colors">
+                    <h4 className="font-serif text-base font-normal text-neutral-900 group-hover:text-neutral-600 transition-colors">
                       {product.name}
                     </h4>
-                    <p className="text-xs text-[#6E756B] line-clamp-1">{product.description}</p>
+                    <p className="text-xs text-neutral-500 line-clamp-1">{product.description}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold text-[#B78A45]">{product.formattedPrice}</span>
+                  <span className="text-xs font-medium text-neutral-900">{product.formattedPrice}</span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onAddToCart(product);
                     }}
-                    className="p-2 bg-[#153D32] hover:bg-[#1E5042] text-[#FFFDF8] rounded-full transition-all"
+                    className="p-2 bg-[#171717] hover:bg-neutral-800 text-white rounded-full transition-all"
                     title="Add to Cart"
+                    aria-label={`Add ${product.name} to cart`}
                   >
-                    <ShoppingBag className="w-4 h-4 text-[#D4AF37]" />
+                    <ShoppingBag className="w-3.5 h-3.5 text-white" />
                   </button>
                 </div>
               </div>

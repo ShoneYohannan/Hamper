@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Gift, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import { X, Check, Gift, ArrowRight, ArrowLeft } from 'lucide-react';
 import { buildableItems, ribbonOptions } from '../data/products';
 
 export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper }) {
@@ -29,7 +29,7 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
       formattedPrice: `₹${totalPrice.toLocaleString()}`,
       description: `Custom hamper with ${selectedItems.length} curated treats, tied with ${selectedRibbon}.`,
       image: '/images/hero_hamper.jpg',
-      badge: 'CUSTOM',
+      badge: 'BESPOKE',
       badgeType: 'gold',
       quantity: 1
     };
@@ -39,8 +39,8 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
 
   const baskets = [
     { name: 'Signature Handwoven Wicker', price: 850, desc: 'Classic woven willow hamper with brass clasp' },
-    { name: 'Matte Emerald Executive Box', price: 700, desc: 'Sleek dark green box with magnetic closure' },
-    { name: 'Luxury Burgundy Velvet Trunk', price: 1100, desc: 'Sumptuous lined trunk for heirloom keepsakes' }
+    { name: 'Matte Charcoal Executive Trunk', price: 950, desc: 'Sleek luxury dark trunk with brushed hardware' },
+    { name: 'Pastel Keepsake Nursery Basket', price: 750, desc: 'Soft-lined keepsake basket for baby arrivals' }
   ];
 
   return (
@@ -48,35 +48,33 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
       {/* Backdrop */}
       <div 
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
       />
 
-      <div className="relative max-w-3xl mx-auto bg-[#FFFDF8] rounded-3xl border border-[#153D32]/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+      <div className="relative max-w-3xl mx-auto bg-white rounded-3xl border border-neutral-200/80 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
         
         {/* Header */}
-        <div className="p-6 bg-[#153D32] text-[#FFFDF8] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#D4AF37]" />
-            <div>
-              <h2 className="font-serif text-2xl font-semibold">Build Your Custom Hamper</h2>
-              <p className="text-xs text-[#FFFDF8]/70">Step {step} of 3</p>
-            </div>
+        <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+          <div>
+            <h2 className="font-serif text-2xl font-normal text-neutral-900">Bespoke Hamper Studio</h2>
+            <p className="text-xs text-neutral-400 font-normal">Step {step} of 3</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-[#FFFDF8]/70 hover:text-[#FFFDF8] hover:bg-[#1E5042] rounded-full transition-colors"
+            className="p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-full transition-colors"
+            aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Wizard Step Indicator */}
-        <div className="bg-[#F9F6F0] px-6 py-3 border-b border-[#153D32]/10 flex items-center justify-between text-xs font-semibold text-[#153D32]">
-          <span className={step >= 1 ? 'text-[#B78A45]' : 'opacity-40'}>1. Choose Basket Base</span>
+        <div className="bg-neutral-50 px-6 py-3 border-b border-neutral-100 flex items-center justify-between text-xs font-medium text-neutral-400">
+          <span className={step >= 1 ? 'text-neutral-900' : ''}>1. Basket Base</span>
           <span>→</span>
-          <span className={step >= 2 ? 'text-[#B78A45]' : 'opacity-40'}>2. Select Artisan Treats</span>
+          <span className={step >= 2 ? 'text-neutral-900' : ''}>2. Curated Inclusions</span>
           <span>→</span>
-          <span className={step >= 3 ? 'text-[#B78A45]' : 'opacity-40'}>3. Ribbon & Note</span>
+          <span className={step >= 3 ? 'text-neutral-900' : ''}>3. Ribbon & Card</span>
         </div>
 
         {/* Content Body */}
@@ -84,7 +82,7 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
           
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="font-serif text-xl font-semibold text-[#153D32]">Select your preferred hamper basket</h3>
+              <h3 className="font-serif text-xl font-normal text-neutral-900">Choose your foundation</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {baskets.map((b) => (
                   <div
@@ -92,16 +90,16 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
                     onClick={() => setSelectedBasket(b)}
                     className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                       selectedBasket.name === b.name
-                        ? 'bg-[#153D32] text-[#FFFDF8] border-[#B78A45] shadow-lg'
-                        : 'bg-[#F9F6F0] text-[#153D32] border-[#153D32]/10 hover:border-[#B78A45]'
+                        ? 'bg-[#171717] text-white border-[#171717] shadow-sm'
+                        : 'bg-neutral-50/70 text-neutral-900 border-neutral-200 hover:border-neutral-400'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <Gift className={`w-5 h-5 ${selectedBasket.name === b.name ? 'text-[#D4AF37]' : 'text-[#B78A45]'}`} />
-                      <span className="text-xs font-bold font-mono">₹{b.price}</span>
+                    <div className="flex items-center justify-between mb-3">
+                      <Gift className={`w-4 h-4 ${selectedBasket.name === b.name ? 'text-white' : 'text-neutral-500'}`} />
+                      <span className="text-xs font-medium">₹{b.price}</span>
                     </div>
-                    <h4 className="font-serif text-lg font-semibold leading-tight">{b.name}</h4>
-                    <p className={`text-xs mt-2 ${selectedBasket.name === b.name ? 'text-[#FFFDF8]/70' : 'text-[#6E756B]'}`}>
+                    <h4 className="font-serif text-base font-normal leading-snug">{b.name}</h4>
+                    <p className={`text-xs mt-2 leading-relaxed ${selectedBasket.name === b.name ? 'text-neutral-300' : 'text-neutral-500'}`}>
                       {b.desc}
                     </p>
                   </div>
@@ -112,7 +110,7 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
 
           {step === 2 && (
             <div className="space-y-4">
-              <h3 className="font-serif text-xl font-semibold text-[#153D32]">Pick gourmet artisan items to fill your hamper</h3>
+              <h3 className="font-serif text-xl font-normal text-neutral-900">Select artisan treats & keepsakes</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {buildableItems.map((item) => {
                   const isSelected = selectedItems.some(i => i.id === item.id);
@@ -122,20 +120,20 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
                       onClick={() => toggleItem(item)}
                       className={`p-4 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-[#153D32]/5 border-[#153D32] text-[#153D32]'
-                          : 'bg-[#F9F6F0] border-[#153D32]/5 hover:border-[#B78A45]'
+                          ? 'bg-neutral-100 border-[#171717] text-neutral-900'
+                          : 'bg-neutral-50/60 border-neutral-200 hover:border-neutral-300'
                       }`}
                     >
                       <div>
-                        <span className="text-[10px] font-bold tracking-wider text-[#B78A45] uppercase">{item.category}</span>
-                        <h4 className="font-serif text-base font-semibold">{item.name}</h4>
+                        <span className="text-[10px] font-medium tracking-wider text-neutral-400 uppercase">{item.category}</span>
+                        <h4 className="font-serif text-sm font-normal text-neutral-900">{item.name}</h4>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold">₹{item.price}</span>
-                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          isSelected ? 'bg-[#153D32] border-[#153D32] text-white' : 'border-[#153D32]/30'
+                        <span className="text-xs font-medium text-neutral-700">₹{item.price}</span>
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                          isSelected ? 'bg-[#171717] border-[#171717] text-white' : 'border-neutral-300'
                         }`}>
-                          {isSelected && <Check className="w-3.5 h-3.5" />}
+                          {isSelected && <Check className="w-3 h-3 text-white" />}
                         </div>
                       </div>
                     </div>
@@ -148,16 +146,16 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <h3 className="font-serif text-xl font-semibold text-[#153D32] mb-3">Choose finishing ribbon</h3>
-                <div className="flex flex-wrap gap-3">
+                <h3 className="font-serif text-xl font-normal text-neutral-900 mb-3">Finishing silk ribbon</h3>
+                <div className="flex flex-wrap gap-2.5">
                   {ribbonOptions.map((r) => (
                     <button
                       key={r}
                       onClick={() => setSelectedRibbon(r)}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all ${
+                      className={`px-4 py-2 rounded-full text-xs font-medium tracking-wide border transition-all ${
                         selectedRibbon === r
-                          ? 'bg-[#153D32] text-[#FFFDF8] border-[#B78A45]'
-                          : 'bg-[#F9F6F0] text-[#153D32] border-[#153D32]/10'
+                          ? 'bg-[#171717] text-white border-[#171717]'
+                          : 'bg-white text-neutral-700 border-neutral-200 hover:border-neutral-400'
                       }`}
                     >
                       {r}
@@ -167,13 +165,13 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
               </div>
 
               <div>
-                <h3 className="font-serif text-xl font-semibold text-[#153D32] mb-2">Handwritten Gift Note (Optional)</h3>
+                <h3 className="font-serif text-xl font-normal text-neutral-900 mb-2">Handwritten Gift Note (Optional)</h3>
                 <textarea
                   value={giftNote}
                   onChange={(e) => setGiftNote(e.target.value)}
-                  placeholder="Write your personal message here. We will print it on a gold-embossed card..."
+                  placeholder="Write your personal message. We will transcribe it onto letterpress stationery..."
                   rows={3}
-                  className="w-full bg-[#F9F6F0] border border-[#153D32]/10 rounded-2xl p-4 text-sm text-[#153D32] placeholder:text-[#6E756B] focus:outline-none focus:border-[#B78A45]"
+                  className="w-full bg-neutral-50/70 border border-neutral-200 rounded-xl p-4 text-xs font-normal text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900"
                 />
               </div>
             </div>
@@ -182,17 +180,17 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
         </div>
 
         {/* Footer controls & price total */}
-        <div className="p-6 bg-[#F9F6F0] border-t border-[#153D32]/10 flex items-center justify-between">
+        <div className="p-6 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between">
           <div>
-            <span className="text-xs text-[#6E756B]">Calculated Total</span>
-            <div className="font-serif text-2xl font-bold text-[#153D32]">₹{totalPrice.toLocaleString()}</div>
+            <span className="text-[11px] font-medium text-neutral-400 uppercase tracking-wider">Calculated Total</span>
+            <div className="font-serif text-2xl font-normal text-neutral-900">₹{totalPrice.toLocaleString()}</div>
           </div>
 
           <div className="flex items-center gap-3">
             {step > 1 && (
               <button
                 onClick={() => setStep(step - 1)}
-                className="px-4 py-2.5 rounded-full border border-[#153D32]/20 text-xs font-semibold text-[#153D32] hover:bg-[#153D32]/5"
+                className="px-5 py-2.5 rounded-full border border-neutral-300 text-xs font-medium text-neutral-700 hover:bg-neutral-100 transition-colors"
               >
                 Back
               </button>
@@ -201,18 +199,18 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
             {step < 3 ? (
               <button
                 onClick={() => setStep(step + 1)}
-                className="bg-[#153D32] hover:bg-[#1E5042] text-[#FFFDF8] px-6 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2"
+                className="bg-[#171717] hover:bg-neutral-800 text-white px-6 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all flex items-center gap-2"
               >
-                <span>Next Step</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             ) : (
               <button
                 onClick={handleFinish}
-                className="bg-[#B78A45] hover:bg-[#D4AF37] text-[#153D32] font-bold px-6 py-2.5 rounded-full text-xs transition-all shadow-md active:scale-95 flex items-center gap-2"
+                className="bg-[#171717] hover:bg-neutral-800 text-white px-7 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm active:scale-95"
               >
-                <span>Add Custom Hamper to Cart</span>
-                <Check className="w-4 h-4" />
+                <span>Add Bespoke Hamper to Basket</span>
+                <Check className="w-3.5 h-3.5" />
               </button>
             )}
           </div>

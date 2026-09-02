@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Star, Eye, ShoppingBag, Check } from 'lucide-react';
-import { products } from '../data/products';
+import { Eye, ShoppingBag, Check, CheckCircle2 } from 'lucide-react';
+import { products, categories } from '../data/products';
 
 export default function ProductGrid({ onAddToCart, onQuickView }) {
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [addedIds, setAddedIds] = useState({});
 
   const handleAdd = (product, e) => {
@@ -14,114 +15,221 @@ export default function ProductGrid({ onAddToCart, onQuickView }) {
     }, 1500);
   };
 
+  const filteredProducts = selectedCategory === 'all'
+    ? products
+    : products.filter(p => p.category === selectedCategory);
+
+  const flagshipProduct = products.find(p => p.id === 'premium-royal-reserve');
+
   return (
-    <section id="collections" className="py-16 md:py-24 bg-[#FFFDF8] border-t border-b border-[#153D32]/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="collections" className="py-20 lg:py-28 bg-[#FAF8F5]">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-16">
         
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-3 mb-12 md:mb-16">
-          <span className="text-xs md:text-sm font-semibold tracking-widest text-[#B78A45] uppercase">
-            A CONSIDERED GESTURE
+        {/* Section Header with Refined Typography */}
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <span className="text-[11px] font-medium tracking-[0.22em] text-neutral-400 uppercase">
+            Curated Gifting
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-[#153D32] tracking-tight">
-            Gifts for every kind of gathering
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#171717] tracking-tight">
+            Handcrafted Keepsakes & Grand Reserves
           </h2>
+          <p className="text-sm sm:text-base text-neutral-500 font-normal leading-relaxed">
+            Thoughtfully assembled gift hampers celebrating life’s purest joys and finest celebrations.
+          </p>
         </div>
 
-        {/* 3 Product Cards Grid matching Framer layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-          {products.map((product) => {
-            const isJustAdded = addedIds[product.id];
-
+        {/* Pill-Style Category Filter Bar matching Reference Design */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat.id;
             return (
-              <div
-                key={product.id}
-                onClick={() => onQuickView(product)}
-                className="group relative bg-[#F9F6F0] rounded-3xl p-4 sm:p-5 border border-[#153D32]/10 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between cursor-pointer"
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                  isActive
+                    ? 'bg-[#171717] text-white shadow-sm border border-[#171717]'
+                    : 'bg-white text-neutral-600 border border-neutral-200/90 hover:border-neutral-400 hover:text-neutral-900'
+                }`}
               >
-                <div>
-                  {/* Image Container with Badge */}
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-stone-200 mb-5">
-                    {/* Badge Overlay */}
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className={`text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full backdrop-blur-md shadow-sm ${
-                        product.badgeType === 'gold' 
-                          ? 'bg-[#B78A45] text-[#FFFDF8]' 
-                          : product.badgeType === 'sage'
-                          ? 'bg-[#6E756B] text-[#FFFDF8]'
-                          : 'bg-[#153D32] text-[#FFFDF8]'
-                      }`}>
-                        {product.badge}
-                      </span>
-                    </div>
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
 
-                    {/* Image */}
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+        {/* Flagship Editorial Feature (The Royal Reserve) */}
+        {(selectedCategory === 'all' || selectedCategory === 'premium') && flagshipProduct && (
+          <div id="featured-luxury" className="bg-white rounded-3xl p-8 sm:p-10 lg:p-12 border border-neutral-200/70 shadow-[0_2px_12px_rgba(0,0,0,0.02)] transition-all duration-300">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+              
+              {/* Image Showcase */}
+              <div 
+                onClick={() => onQuickView(flagshipProduct)}
+                className="lg:col-span-6 cursor-pointer group relative aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100"
+              >
+                <img
+                  src={flagshipProduct.image}
+                  alt={flagshipProduct.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className="text-[10px] tracking-widest uppercase font-medium px-3 py-1.5 rounded-full bg-white/95 text-neutral-700 shadow-sm">
+                    {flagshipProduct.badge}
+                  </span>
+                </div>
+              </div>
 
-                    {/* Quick View overlay button */}
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
-                        className="bg-[#FFFDF8] text-[#153D32] text-xs font-semibold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-all"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        Quick View
-                      </button>
-                    </div>
-                  </div>
+              {/* Editorial Narrative */}
+              <div className="lg:col-span-6 space-y-6">
+                <div className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-400">
+                    Flagship Presentation
+                  </span>
+                  <h3 className="font-serif text-3xl sm:text-4xl text-[#171717] font-normal leading-tight">
+                    {flagshipProduct.name}
+                  </h3>
+                  <p className="text-xl font-normal text-neutral-900 pt-1">
+                    {flagshipProduct.formattedPrice}
+                  </p>
+                </div>
 
-                  {/* Title & Description */}
-                  <div className="space-y-2 px-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-serif text-2xl font-semibold text-[#153D32] group-hover:text-[#B78A45] transition-colors">
-                        {product.name}
-                      </h3>
-                      <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <span>{product.rating}</span>
+                <p className="text-sm sm:text-base text-neutral-500 leading-relaxed font-normal">
+                  {flagshipProduct.longDescription}
+                </p>
+
+                {/* Inclusions List */}
+                <div className="space-y-2.5 pt-2 border-t border-neutral-100">
+                  <span className="text-[11px] font-medium uppercase tracking-wider text-neutral-400">
+                    Hand-Selected Inclusions:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {flagshipProduct.items.slice(0, 4).map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-neutral-600">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <span>{item}</span>
                       </div>
-                    </div>
-
-                    <p className="text-sm text-[#6E756B] line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
+                    ))}
                   </div>
                 </div>
 
-                {/* Footer Price & Add to Cart button */}
-                <div className="pt-6 px-1 flex items-center justify-between mt-4 border-t border-[#153D32]/5">
-                  <span className="text-sm font-semibold text-[#B78A45]">
-                    {product.formattedPrice}
-                  </span>
-
+                {/* Actions */}
+                <div className="pt-2 flex flex-wrap items-center gap-3">
                   <button
-                    onClick={(e) => handleAdd(product, e)}
-                    className={`px-5 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                      isJustAdded
-                        ? 'bg-emerald-700 text-white'
-                        : 'bg-[#153D32] hover:bg-[#1E5042] text-[#FFFDF8] active:scale-95'
+                    onClick={(e) => handleAdd(flagshipProduct, e)}
+                    className={`px-7 py-3 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2 shadow-sm active:scale-95 ${
+                      addedIds[flagshipProduct.id]
+                        ? 'bg-emerald-800 text-white'
+                        : 'bg-[#171717] hover:bg-neutral-800 text-white'
                     }`}
                   >
-                    {isJustAdded ? (
+                    {addedIds[flagshipProduct.id] ? (
                       <>
-                        <Check className="w-3.5 h-3.5" />
-                        Added
+                        <Check className="w-4 h-4" />
+                        <span>Added to Bag</span>
                       </>
                     ) : (
                       <>
-                        <ShoppingBag className="w-3.5 h-3.5 text-[#D4AF37]" />
-                        Add to Cart
+                        <ShoppingBag className="w-4 h-4" />
+                        <span>Add to Bag</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => onQuickView(flagshipProduct)}
+                    className="px-6 py-3 rounded-full border border-neutral-200 hover:border-neutral-400 text-xs font-medium tracking-wider uppercase text-neutral-800 bg-white hover:bg-neutral-50 transition-all"
+                  >
+                    View Details
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* Spacious Multi-Column Responsive Product Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+          {filteredProducts.map((product) => (
+            <div
+              key={product.id}
+              onClick={() => onQuickView(product)}
+              className="bg-white rounded-2xl p-6 sm:p-7 border border-neutral-200/70 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-neutral-300 transition-all duration-300 cursor-pointer flex flex-col justify-between group"
+            >
+              <div>
+                {/* Product Image */}
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-5 bg-neutral-100">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                  />
+                  <div className="absolute top-3.5 left-3.5">
+                    <span className="text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded-full bg-white/95 text-neutral-600 shadow-sm">
+                      {product.badge}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Title & Info */}
+                <div className="space-y-2">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h4 className="font-serif text-xl sm:text-2xl font-normal text-[#171717] group-hover:text-neutral-700 transition-colors">
+                      {product.name}
+                    </h4>
+                  </div>
+                  
+                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed line-clamp-2">
+                    {product.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Price & Action Row */}
+              <div className="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+                <span className="text-base font-normal text-neutral-900">
+                  {product.formattedPrice}
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onQuickView(product);
+                    }}
+                    className="p-2.5 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+                    title="Quick View"
+                    aria-label={`Quick view ${product.name}`}
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    onClick={(e) => handleAdd(product, e)}
+                    className={`px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all flex items-center gap-1.5 shadow-sm ${
+                      addedIds[product.id]
+                        ? 'bg-emerald-800 text-white'
+                        : 'bg-[#171717] hover:bg-neutral-800 text-white active:scale-95'
+                    }`}
+                  >
+                    {addedIds[product.id] ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Added</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                        <span>Add</span>
                       </>
                     )}
                   </button>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
       </div>

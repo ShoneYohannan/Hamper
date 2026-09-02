@@ -20,6 +20,7 @@ export default function App() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [toast, setToast] = useState(null);
   const [checkoutComplete, setCheckoutComplete] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('all');
 
   const showToast = (title, message, type = 'cart') => {
     setToast({ title, message, type });
@@ -62,7 +63,7 @@ export default function App() {
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] text-[#153D32] flex flex-col font-sans selection:bg-[#B78A45] selection:text-[#FFFDF8]">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#141615] flex flex-col font-sans selection:bg-[#141615] selection:text-white">
       
       {/* Navigation Header */}
       <Header 
@@ -140,17 +141,17 @@ export default function App() {
             onClick={() => setCheckoutComplete(false)}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
           />
-          <div className="relative bg-[#FFFDF8] rounded-3xl p-8 max-w-md w-full text-center space-y-4 border border-[#153D32]/10 shadow-2xl z-10 animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-full bg-[#153D32] text-[#D4AF37] flex items-center justify-center mx-auto">
+          <div className="relative bg-[#FFFDF8] rounded-3xl p-8 max-w-md w-full text-center space-y-4 border-2 border-[#153D32]/15 shadow-2xl z-10 animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 rounded-2xl bg-[#0F2E25] text-[#F3E5AB] border border-[#D4AF37]/40 flex items-center justify-center mx-auto shadow-md">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="font-serif text-3xl font-semibold text-[#153D32]">Order Placed!</h3>
-            <p className="text-sm text-[#6E756B]">
+            <h3 className="font-serif text-3xl font-bold text-[#0B251E]">Order Placed!</h3>
+            <p className="text-sm sm:text-base text-[#2E4237] font-medium leading-relaxed">
               Thank you for choosing The Hamper Co. Your luxury gift hampers are being prepared with care.
             </p>
             <button
               onClick={() => setCheckoutComplete(false)}
-              className="w-full bg-[#153D32] hover:bg-[#1E5042] text-[#FFFDF8] py-3 rounded-full text-sm font-semibold transition-all"
+              className="w-full bg-[#0F2E25] hover:bg-[#18483B] text-[#FFFDF8] py-3.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-[#D4AF37]/30 shadow-md"
             >
               Continue Browsing
             </button>
