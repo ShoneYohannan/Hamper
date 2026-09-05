@@ -12,8 +12,10 @@ import HamperBuilderModal from './components/HamperBuilderModal';
 import QuickViewModal from './components/QuickViewModal';
 import Toast from './components/Toast';
 import { CheckCircle2 } from 'lucide-react';
+import { useTheme } from './context/ThemeContext';
 
 export default function App() {
+  const { isGlass } = useTheme();
   const [activeSection, setActiveSection] = useState('home');
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -133,9 +135,27 @@ export default function App() {
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#141615] flex flex-col font-sans selection:bg-[#141615] selection:text-white">
+    <div className={`min-h-screen flex flex-col font-sans relative transition-colors duration-500 ${
+      isGlass 
+        ? 'bg-[#0A0D0C] text-neutral-100 selection:bg-[#D4AF37] selection:text-black' 
+        : 'bg-[#FAF8F5] text-[#141615] selection:bg-[#141615] selection:text-white'
+    }`}>
       
-      {/* Navigation Header with Active Scroll Indicator */}
+      {/* Animated Ambient Gradient Mesh for Luxe Glass Mode */}
+      {isGlass && (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+          {/* Deep Emerald Glow Orb */}
+          <div className="absolute -top-32 -left-32 w-[550px] h-[550px] rounded-full bg-emerald-950/45 blur-[120px] animate-mesh-1" />
+          {/* Luminous Gold & Champagne Amber Glow Orb */}
+          <div className="absolute top-[25%] -right-40 w-[600px] h-[600px] rounded-full bg-[#B78A45]/20 blur-[140px] animate-mesh-2" />
+          {/* Deep Forest Teal Glow Orb */}
+          <div className="absolute top-[60%] -left-32 w-[650px] h-[650px] rounded-full bg-teal-950/35 blur-[130px] animate-mesh-3" />
+          {/* Warm Champagne Velvet Bottom Orb */}
+          <div className="absolute bottom-0 right-[15%] w-[500px] h-[500px] rounded-full bg-[#D4AF37]/15 blur-[150px] animate-mesh-1" />
+        </div>
+      )}
+
+      {/* Navigation Header with Active Scroll Indicator and Dual-Style Toggle */}
       <Header 
         cartCount={totalCartCount}
         currentPage={activeSection}
@@ -146,7 +166,7 @@ export default function App() {
       />
 
       {/* Main Continuous Boutique Experience with Scroll Spy Sections */}
-      <main className="flex-grow">
+      <main className="flex-grow relative z-10">
         {/* Section 1: Home / Hero */}
         <Hero 
           onOpenBuilder={() => setBuilderOpen(true)} 
@@ -222,14 +242,20 @@ export default function App() {
         <div className="fixed inset-0 z-50 overflow-y-auto p-4 flex items-center justify-center">
           <div 
             onClick={() => setCheckoutComplete(false)}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm" 
+            className="fixed inset-0 bg-black/60 backdrop-blur-md" 
           />
-          <div className="relative bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-4 border border-neutral-200/80 shadow-2xl z-10 animate-fade-in">
-            <div className="w-14 h-14 rounded-full bg-neutral-900 text-white flex items-center justify-center mx-auto shadow-sm">
+          <div className={`relative rounded-3xl p-8 max-w-md w-full text-center space-y-4 border shadow-2xl z-10 animate-fade-in ${
+            isGlass ? 'glass-panel border-white/20 text-white' : 'bg-white border-neutral-200/80'
+          }`}>
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto shadow-sm ${
+              isGlass ? 'bg-[#D4AF37] text-black' : 'bg-neutral-900 text-white'
+            }`}>
               <CheckCircle2 className="w-7 h-7" />
             </div>
-            <h3 className="font-serif text-3xl font-normal text-neutral-900">Order Placed</h3>
-            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-normal">
+            <h3 className="font-serif text-3xl font-normal">Order Placed</h3>
+            <p className={`text-xs sm:text-sm leading-relaxed font-normal ${
+              isGlass ? 'text-neutral-300' : 'text-neutral-500'
+            }`}>
               Thank you for gifting with The Hamper Co. Your luxury bespoke allocation is being assembled with care.
             </p>
             <button
@@ -237,7 +263,11 @@ export default function App() {
                 setCheckoutComplete(false);
                 handleNavigate('collections');
               }}
-              className="w-full bg-[#171717] hover:bg-neutral-800 text-white py-3 rounded-full text-xs font-medium uppercase tracking-wider transition-all shadow-sm"
+              className={`w-full py-3 rounded-full text-xs font-medium uppercase tracking-wider transition-all shadow-sm ${
+                isGlass 
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] text-[#0A0D0C] font-semibold' 
+                  : 'bg-[#171717] hover:bg-neutral-800 text-white'
+              }`}
             >
               Continue Browsing
             </button>

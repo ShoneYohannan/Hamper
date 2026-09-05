@@ -24,15 +24,21 @@
   text-rendering: optimizeLegibility;
 }
 
+html.theme-glass {
+  background-color: #0A0D0C;
+  color: #F3F4F6;
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   padding: 0;
-  background-color: #FAF8F5;
-  color: #141615;
+  background-color: transparent;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  transition: background-color 400ms ease, color 400ms ease;
 }
 
 h1, h2, h3, .font-serif-custom {
@@ -49,18 +55,23 @@ h1, h2, h3, .font-serif-custom {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F9F6F0;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #153D32;
+  background: #171717;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #B78A45;
+html.theme-glass ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
 }
 
+html.theme-glass ::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* Keyframes */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -88,6 +99,64 @@ h1, h2, h3, .font-serif-custom {
   }
 }
 
+/* Animated Ambient Gradient Mesh for Glass Theme */
+@keyframes meshDrift1 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(60px, -50px) scale(1.15); }
+  66% { transform: translate(-40px, 40px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes meshDrift2 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-70px, 60px) scale(0.95); }
+  66% { transform: translate(50px, -30px) scale(1.12); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes meshDrift3 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(40px, 50px) scale(1.1); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+/* Element Animation Keyframes */
+@keyframes floatSubtle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pulseGoldGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.25); }
+  50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.55); }
+}
+
+@keyframes shimmerSweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.8; }
+}
+
+.animate-mesh-1 {
+  animation: meshDrift1 18s ease-in-out infinite;
+}
+
+.animate-mesh-2 {
+  animation: meshDrift2 22s ease-in-out infinite;
+}
+
+.animate-mesh-3 {
+  animation: meshDrift3 26s ease-in-out infinite;
+}
+
+.animate-float-subtle {
+  animation: floatSubtle 4s ease-in-out infinite;
+}
+
 .animate-fade-in {
   animation: fadeIn 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -102,4 +171,126 @@ h1, h2, h3, .font-serif-custom {
 
 .transition-smooth {
   transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================
+   GLASSMORPHISM DESIGN UTILITIES (.theme-glass)
+   ========================================================== */
+
+/* Translucent Frosted Glass Card */
+.glass-panel {
+  background: rgba(18, 24, 22, 0.62);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
+  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(24, 32, 29, 0.75);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.48), 0 0 24px -2px rgba(212, 175, 55, 0.22), inset 0 1px 2px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-3px);
+}
+
+/* Floating Frosted Navigation Bar */
+.glass-header {
+  background: rgba(10, 13, 12, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Glass Pill Button */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-pill:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.12);
+}
+
+.glass-pill-active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(183, 138, 69, 0.9));
+  color: #0A0D0C !important;
+  font-weight: 600 !important;
+  border-color: rgba(255, 215, 0, 0.5) !important;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Glowing Gold Gradient Text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #FFFDF8 20%, #E6CA65 60%, #B78A45 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ==========================================================
+   PREMIUM ELEMENT INTERACTION UTILITIES (.anim-premium)
+   ========================================================== */
+
+/* Shimmer Light Reflection on Interactive Buttons */
+.interactive-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.interactive-btn:active {
+  transform: scale(0.95);
+}
+
+.anim-premium .interactive-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.22),
+    transparent
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+.anim-premium .interactive-btn:hover::after {
+  animation: shimmerSweep 0.85s ease-in-out;
+}
+
+/* Hover Scale & Lift for Image Containers */
+.anim-premium .image-zoom-container img {
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.anim-premium .image-zoom-container:hover img {
+  transform: scale(1.06);
+}
+
+/* Star Twinkle on Review Hover */
+.anim-premium .review-card-interactive:hover .star-icon {
+  animation: starTwinkle 0.6s ease-in-out;
+}
+
+/* Step Number Pulse */
+.anim-premium .step-number-interactive {
+  transition: all 300ms ease;
+}
+
+.anim-premium .step-card-interactive:hover .step-number-interactive {
+  transform: scale(1.15);
+  color: #D4AF37 !important;
 }
