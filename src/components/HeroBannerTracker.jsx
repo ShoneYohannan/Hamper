@@ -53,7 +53,7 @@ export default function HeroBannerTracker({ onOpenBuilder }) {
       <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0">
         <video
           ref={videoRef}
-          src="/hero-character.mp4"
+          src={`${import.meta.env.BASE_URL || '/'}hero-character.mp4`}
           muted
           playsInline
           preload="auto"

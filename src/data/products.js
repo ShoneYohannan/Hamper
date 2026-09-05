@@ -1,3 +1,5 @@
+const BASE = import.meta.env.BASE_URL || '/';
+
 export const categories = [
   { id: 'all', label: 'All Hampers', icon: '✨' },
   { id: 'premium', label: 'Premium Luxury', icon: '👑' },
@@ -19,7 +21,7 @@ export const products = [
     longDescription: 'Our hallmark luxury hamper crafted for unmatched sophistication. Encased in a handcrafted matte forest green trunk with gold hardware, featuring vintage Dom Pérignon champagne, artisanal gold-dusted chocolate truffles, organic honeycomb with wooden dipper, slow-roasted gourmet nuts, and an aromatic bergamot oak candle.',
     rating: 5.0,
     reviewCount: 84,
-    image: '/images/premium_luxury_hamper.jpg',
+    image: `${BASE}images/premium_luxury_hamper.jpg`,
     category: 'premium',
     items: ['Vintage Champagne 750ml', 'Artisanal Gold Chocolate Truffles Box', 'Organic Raw Honeycomb 350g', 'Gourmet Roasted Salted Nuts Jar', 'Botanical Bergamot & Oak Candle', 'Gold Foil Keepsake Box with Satin Bow']
   },
@@ -34,7 +36,7 @@ export const products = [
     longDescription: 'A tender, heartwarming welcome for a newborn baby girl. Beautifully presented in a natural handwoven keepsake basket with dusty rose satin ribbon. Includes an ultra-soft plush pink bunny companion, 100% organic cotton floral swaddle blanket, handmade cozy knit booties, and hypoallergenic botanical baby balm.',
     rating: 5.0,
     reviewCount: 52,
-    image: '/images/baby_girl_hamper.jpg',
+    image: `${BASE}images/baby_girl_hamper.jpg`,
     category: 'baby-girl',
     items: ['Pastel Pink Plush Bunny Toy', '100% Organic Floral Cotton Swaddle', 'Handmade Soft Knit Pink Booties', 'Botanical Organic Baby Balm 50ml', 'Natural Woven Willow Basket', 'Embossed Welcome Baby Girl Card']
   },
@@ -49,7 +51,7 @@ export const products = [
     longDescription: 'Celebrate the sweetest new arrival with our charming Little Prince Hamper. Nestled inside a custom-lined willow gift basket with powder blue silk bow, featuring a cuddly sky-blue plush bear, luxurious pure cotton cable knit blanket, delicate knit booties, and pure organic chamomile baby lotion.',
     rating: 4.9,
     reviewCount: 47,
-    image: '/images/baby_boy_hamper.jpg',
+    image: `${BASE}images/baby_boy_hamper.jpg`,
     category: 'baby-boy',
     items: ['Sky Blue Plush Teddy Bear', 'Pure Cotton Cable Knit Baby Blanket', 'Handcrafted Powder Blue Booties', 'Gentle Organic Chamomile Baby Lotion 100ml', 'Handwoven Willow Basket with Fabric Liner', 'Gold Letterpress Baby Boy Card']
   },
@@ -64,7 +66,7 @@ export const products = [
     longDescription: 'Curated for grand milestones and sparkling moments. Features a bottle of premium sparkling beverage, gold-wrapped artisanal truffles, spiced gingerbread biscuits, and hand-rolled festive cinnamon treats.',
     rating: 5.0,
     reviewCount: 48,
-    image: '/images/festive_celebrations.jpg',
+    image: `${BASE}images/festive_celebrations.jpg`,
     category: 'festive',
     items: ['Premium Sparkling Celebration Sip 375ml', 'Gold Truffles Luxury Box', 'Festive Shortbread Tin', 'Gourmet Spiced Panettone', 'Cinnamon Sticks Jar']
   },
@@ -79,7 +81,7 @@ export const products = [
     longDescription: 'Gathered from independent master crafters. Packed with small-batch raw wildflower honey, handmade raspberry rose preserve, organic earl grey leaf tea, oat & cranberry biscuits, and rosemary sea salt almonds.',
     rating: 4.9,
     reviewCount: 36,
-    image: '/images/artisanal_delights.jpg',
+    image: `${BASE}images/artisanal_delights.jpg`,
     category: 'premium',
     items: ['Small-Batch Raw Wildflower Honey 250g', 'Raspberry & Rose Preserve 220g', 'Organic Earl Grey Tea 125g', 'Handmade Oat Cookies', 'Roasted Sea Salt Almonds']
   },
@@ -94,7 +96,7 @@ export const products = [
     longDescription: 'Designed to leave an unforgettable professional impression. Features a handcrafted forest green leather journal, weighted brass executive pen, single-origin Peru 75% dark chocolate, matte green insulated flask, and hammered copper mug.',
     rating: 5.0,
     reviewCount: 62,
-    image: '/images/corporate_elegance.jpg',
+    image: `${BASE}images/corporate_elegance.jpg`,
     category: 'corporate',
     items: ['Green Vegan Leather Executive Journal', 'Solid Weighted Brass Pen', 'Single-Origin 75% Cacao Chocolate', 'Matte Insulated Tumbler', 'Hammered Copper Mug']
   }

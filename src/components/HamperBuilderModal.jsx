@@ -28,7 +28,7 @@ export default function HamperBuilderModal({ isOpen, onClose, onAddCustomHamper 
       price: totalPrice,
       formattedPrice: `₹${totalPrice.toLocaleString()}`,
       description: `Custom hamper with ${selectedItems.length} curated treats, tied with ${selectedRibbon}.`,
-      image: '/images/hero_hamper.jpg',
+      image: `${import.meta.env.BASE_URL || '/'}images/hero_hamper.jpg`,
       badge: 'BESPOKE',
       badgeType: 'gold',
       quantity: 1
