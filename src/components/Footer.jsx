@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
 
+const BASE = import.meta.env.BASE_URL || '/';
+
 export default function Footer({ onSubscribe, onNavigate }) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -72,7 +74,7 @@ export default function Footer({ onSubscribe, onNavigate }) {
           {/* Brand mark & copyright */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/50 bg-[#340b49] shrink-0">
-              <img src="/images/logo.png" alt="Dazzling Hampers" className="w-full h-full object-cover" />
+              <img src={`${BASE}images/logo.png`} alt="Dazzling Hampers" className="w-full h-full object-cover" />
             </div>
             <button 
               onClick={(e) => handleNav('home', e)}
