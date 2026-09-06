@@ -67,15 +67,18 @@ export default function Footer({ onSubscribe, onNavigate }) {
 
       {/* ─── Minimalist Premium Footer ─── */}
       <div className="border-t border-neutral-800/80">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-neutral-500 font-normal">
+        <div className="max-w-[1720px] mx-auto px-6 sm:px-8 lg:px-12 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-neutral-500 font-normal">
           
           {/* Brand mark & copyright */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/50 bg-[#340b49] shrink-0">
+              <img src="/images/logo.png" alt="Dazzling Hampers" className="w-full h-full object-cover" />
+            </div>
             <button 
               onClick={(e) => handleNav('home', e)}
-              className="font-serif text-lg text-white font-normal hover:text-neutral-300 transition-colors"
+              className="font-serif text-lg text-white font-normal hover:text-[#D4AF37] transition-colors"
             >
-              The Hamper Co.
+              Dazzling Hampers
             </button>
             <span className="text-neutral-600">·</span>
             <span>© {new Date().getFullYear()} All rights reserved.</span>

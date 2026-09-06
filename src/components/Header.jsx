@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Search, ShoppingBag, Menu, X, Gift, Sparkles, Feather, Wand2, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
+const BASE = import.meta.env.BASE_URL || '/';
+
 export default function Header({ 
   cartCount, 
   onOpenCart, 
@@ -11,7 +13,7 @@ export default function Header({
   onNavigate
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme, isGlass, animIntensity, toggleAnimIntensity, isPremiumAnim } = useTheme();
+  const { toggleTheme, isGlass, toggleAnimIntensity, isPremiumAnim } = useTheme();
 
   const navItems = [
     { id: 'home', label: 'Home' },
@@ -30,29 +32,35 @@ export default function Header({
     <header className={`sticky top-0 z-40 w-full transition-all duration-300 ${
       isGlass 
         ? 'glass-header' 
-        : 'bg-[#FAF8F5]/90 backdrop-blur-md border-b border-black/[0.06]'
+        : 'bg-[#FAF8F5]/95 backdrop-blur-md border-b border-black/[0.06]'
     }`}>
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 lg:gap-8">
+      <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 h-20 sm:h-22 flex items-center justify-between gap-4 lg:gap-8">
         
         {/* Brand Logo - Navigates Home */}
         <button 
           onClick={(e) => handleNavClick('home', e)}
-          className="flex items-center gap-3 group flex-shrink-0 text-left focus:outline-none"
+          className="flex items-center gap-3.5 group flex-shrink-0 text-left focus:outline-none"
         >
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center font-serif text-base tracking-wider shadow-sm transition-transform duration-300 group-hover:scale-105 ${
+          {/* Circular Luxury Medallion Logo */}
+          <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden p-0.5 flex items-center justify-center transition-all duration-500 group-hover:scale-105 ${
             isGlass
-              ? 'bg-gradient-to-tr from-[#B78A45] to-[#F3E5AB] text-[#0A0D0C] font-semibold shadow-[0_0_15px_rgba(212,175,55,0.4)]'
-              : 'bg-[#171717] text-white'
+              ? 'bg-gradient-to-tr from-[#B78A45] via-[#F3E5AB] to-[#4a0e4e] shadow-[0_0_20px_rgba(212,175,55,0.4)] border border-[#D4AF37]/50'
+              : 'bg-[#171717] border border-neutral-300 shadow-sm'
           }`}>
-            H
+            <img 
+              src={`${BASE}images/logo.png`} 
+              alt="Dazzling Hampers" 
+              className="w-full h-full object-cover rounded-full bg-[#340b49]"
+            />
           </div>
+
           <div className="flex flex-col">
-            <span className={`font-serif text-xl sm:text-2xl tracking-tight transition-colors block leading-tight font-normal whitespace-nowrap ${
-              isGlass ? 'text-white' : 'text-[#171717]'
+            <span className={`font-serif text-xl sm:text-2xl md:text-[25px] tracking-tight transition-colors block leading-tight font-normal whitespace-nowrap ${
+              isGlass ? 'text-white group-hover:text-[#F3E5AB]' : 'text-[#171717] group-hover:text-neutral-700'
             }`}>
-              The Hamper Co.
+              Dazzling Hampers
             </span>
-            <span className={`text-[8.5px] tracking-[0.25em] uppercase font-medium block whitespace-nowrap ${
+            <span className={`text-[8.5px] sm:text-[9px] tracking-[0.24em] uppercase font-medium block whitespace-nowrap ${
               isGlass ? 'text-[#D4AF37]' : 'text-[#737373]'
             }`}>
               Haute Gifting Atelier
@@ -61,14 +69,14 @@ export default function Header({
         </button>
 
         {/* Desktop Navigation Links - Shown on lg (1024px+) with clean spacing */}
-        <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 flex-shrink-0">
+        <nav className="hidden lg:flex items-center space-x-6 xl:space-x-9 flex-shrink-0">
           {navItems.map((item) => {
             const isActive = currentPage === item.id;
             return (
               <button
                 key={item.id}
                 onClick={(e) => handleNavClick(item.id, e)}
-                className={`text-xs uppercase tracking-[0.14em] transition-all relative py-1 focus:outline-none whitespace-nowrap ${
+                className={`text-xs uppercase tracking-[0.15em] transition-all relative py-1 focus:outline-none whitespace-nowrap ${
                   isActive
                     ? isGlass ? 'text-white font-semibold' : 'text-neutral-900 font-semibold'
                     : isGlass ? 'text-neutral-400 hover:text-white font-medium' : 'text-neutral-500 hover:text-neutral-900 font-medium'
@@ -76,8 +84,8 @@ export default function Header({
               >
                 <span>{item.label}</span>
                 {isActive && (
-                  <span className={`absolute -bottom-1 left-0 right-0 h-[1.5px] rounded-full animate-fade-in transition-all duration-300 ${
-                    isGlass ? 'bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.8)]' : 'bg-[#171717]'
+                  <span className={`absolute -bottom-1 left-0 right-0 h-[2px] rounded-full animate-fade-in transition-all duration-300 ${
+                    isGlass ? 'bg-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.9)]' : 'bg-[#171717]'
                   }`} />
                 )}
               </button>
@@ -86,13 +94,13 @@ export default function Header({
         </nav>
 
         {/* Right Actions, Animation Mode Toggle & Theme Switcher */}
-        <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           
           {/* Dual Style Theme Toggle Switch */}
           <button
             onClick={toggleTheme}
             title={isGlass ? 'Switch back to Editorial Minimalist style' : 'Switch to Luxe Glassmorphism style'}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-medium transition-all duration-300 border ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-medium transition-all duration-300 border ${
               isGlass
                 ? 'bg-white/10 hover:bg-white/15 border-white/20 text-[#F3E5AB] shadow-[0_0_12px_rgba(212,175,55,0.2)]'
                 : 'bg-white hover:bg-neutral-100 border-neutral-300 text-neutral-700 shadow-sm'
@@ -113,11 +121,11 @@ export default function Header({
             )}
           </button>
 
-          {/* Animation Intensity Switch: High-End FX vs Classic Minimal (1-Click Revert Guarantee) */}
+          {/* Animation Intensity Switch: High-End FX vs Classic Minimal */}
           <button
             onClick={toggleAnimIntensity}
             title={isPremiumAnim ? 'Revert to previous smooth minimal animations' : 'Activate high-end element animations (3D tilt, magnetic glow)'}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-medium transition-all duration-300 border ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-medium transition-all duration-300 border ${
               isPremiumAnim
                 ? isGlass
                   ? 'bg-amber-500/20 border-[#D4AF37]/50 text-[#F3E5AB] shadow-[0_0_10px_rgba(212,175,55,0.25)]'
@@ -142,9 +150,10 @@ export default function Header({
             )}
           </button>
 
+          {/* Search Trigger */}
           <button
             onClick={onOpenSearch}
-            className={`p-2 transition-colors rounded-full focus:outline-none ${
+            className={`p-2 sm:p-2.5 transition-colors rounded-full focus:outline-none ${
               isGlass 
                 ? 'text-neutral-300 hover:text-white hover:bg-white/10' 
                 : 'text-neutral-700 hover:text-neutral-950 hover:bg-black/5'
@@ -154,9 +163,10 @@ export default function Header({
             <Search className="w-4 h-4" />
           </button>
 
+          {/* Bespoke Studio Trigger */}
           <button
             onClick={onOpenBuilder}
-            className={`hidden 2xl:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
+            className={`hidden xl:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
               isGlass
                 ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
                 : 'bg-transparent hover:bg-neutral-900 hover:text-white text-neutral-800 border border-neutral-300 hover:border-neutral-900'
@@ -169,7 +179,7 @@ export default function Header({
           {/* Cart Trigger */}
           <button
             onClick={onOpenCart}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full font-medium text-xs tracking-wider uppercase transition-all duration-300 active:scale-95 shadow-sm interactive-btn whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-medium text-xs tracking-wider uppercase transition-all duration-300 active:scale-95 shadow-sm interactive-btn whitespace-nowrap ${
               isGlass
                 ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_0_16px_rgba(212,175,55,0.35)]'
                 : 'bg-[#171717] hover:bg-neutral-800 text-white'
@@ -179,7 +189,7 @@ export default function Header({
             <span>Bag ({cartCount})</span>
           </button>
 
-          {/* Mobile Menu Trigger (shown up to lg 1024px) */}
+          {/* Mobile Menu Trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`lg:hidden p-2 transition-colors focus:outline-none ${
@@ -208,12 +218,12 @@ export default function Header({
                 className={`block w-full text-left py-2.5 text-sm uppercase tracking-wider transition-colors ${
                   isActive 
                     ? isGlass 
-                      ? 'text-[#D4AF37] font-semibold pl-2 border-l-2 border-[#D4AF37]' 
-                      : 'text-neutral-950 font-semibold pl-2 border-l-2 border-[#171717]'
-                    : isGlass
-                      ? 'text-neutral-400 hover:text-white'
-                      : 'text-neutral-600 hover:text-neutral-950'
-                }`}
+                    ? 'text-[#D4AF37] font-semibold pl-2 border-l-2 border-[#D4AF37]' 
+                    : 'text-neutral-950 font-semibold pl-2 border-l-2 border-[#171717]'
+                  : isGlass
+                    ? 'text-neutral-400 hover:text-white'
+                    : 'text-neutral-600 hover:text-neutral-950'
+              }`}
               >
                 {item.label}
               </button>

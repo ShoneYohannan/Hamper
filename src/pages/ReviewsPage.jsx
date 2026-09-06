@@ -72,7 +72,7 @@ export default function ReviewsPage() {
             <p className={`text-sm sm:text-base font-normal leading-relaxed ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              Unfiltered stories from patrons who have gifted The Hamper Co. for newborn arrivals, private reserves, and milestone celebrations.
+              Unfiltered stories from patrons who have gifted Dazzling Hampers for newborn arrivals, private reserves, and milestone celebrations.
             </p>
           </div>
         </ScrollReveal>

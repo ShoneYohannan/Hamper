@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Eye, ShoppingBag, Check, SlidersHorizontal, Search } from 'lucide-react';
+import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import { products, categories } from '../data/products';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
@@ -11,6 +12,14 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
   const [addedIds, setAddedIds] = useState({});
+
+  const handleWhatsAppOrder = (product, e) => {
+    if (e) e.stopPropagation();
+    const phone = product.whatsappNumber || '971501487453';
+    const defaultMsg = `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`;
+    const text = encodeURIComponent(product.whatsappMessage || defaultMsg);
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
+  };
 
   const handleAdd = (product, e) => {
     e.stopPropagation();
@@ -218,14 +227,23 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
                   </div>
 
                   {/* Price & Action Row */}
-                  <div className={`pt-6 mt-6 border-t flex items-center justify-between ${
+                  <div className={`pt-6 mt-6 border-t flex items-center justify-between gap-2 ${
                     isGlass ? 'border-white/10' : 'border-neutral-100'
                   }`}>
-                    <span className={`text-base font-normal ${
-                      isGlass ? 'text-[#F3E5AB] font-medium' : 'text-neutral-900'
-                    }`}>
-                      {product.formattedPrice}
-                    </span>
+                    <div>
+                      <span className={`text-base font-normal ${
+                        isGlass ? 'text-[#F3E5AB] font-medium' : 'text-neutral-900 font-medium'
+                      }`}>
+                        {product.formattedPrice}
+                      </span>
+                      {product.priceNote && (
+                        <span className={`block text-[11px] leading-tight font-normal ${
+                          isGlass ? 'text-amber-200/70' : 'text-neutral-500'
+                        }`}>
+                          {product.priceNote}
+                        </span>
+                      )}
+                    </div>
 
                     <div className="flex items-center gap-2">
                       <button
@@ -244,28 +262,43 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
                         <Eye className="w-4 h-4" />
                       </button>
 
-                      <button
-                        onClick={(e) => handleAdd(product, e)}
-                        className={`interactive-btn px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 ${
-                          addedIds[product.id]
-                            ? 'bg-emerald-800 text-white'
-                            : isGlass
-                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_2px_12px_rgba(212,175,55,0.3)]'
-                              : 'bg-[#171717] hover:bg-neutral-800 text-white'
-                        }`}
-                      >
-                        {addedIds[product.id] ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            <span>Added</span>
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingBag className="w-3.5 h-3.5" />
-                            <span>Add</span>
-                          </>
-                        )}
-                      </button>
+                      {product.category === 'bouquets' || product.whatsappNumber ? (
+                        <button
+                          onClick={(e) => handleWhatsAppOrder(product, e)}
+                          className={`interactive-btn px-4 sm:px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 transition-all ${
+                            isGlass
+                              ? 'bg-emerald-600/90 hover:bg-emerald-500 text-white font-semibold border border-emerald-400/40 shadow-[0_2px_12px_rgba(16,185,129,0.35)]'
+                              : 'bg-[#25D366] hover:bg-[#20ba5a] text-white font-medium shadow-sm'
+                          }`}
+                          title={`Order via WhatsApp (+971 501487453)`}
+                        >
+                          <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                          <span>WhatsApp</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => handleAdd(product, e)}
+                          className={`interactive-btn px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 ${
+                            addedIds[product.id]
+                              ? 'bg-emerald-800 text-white'
+                              : isGlass
+                                ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_2px_12px_rgba(212,175,55,0.3)]'
+                                : 'bg-[#171717] hover:bg-neutral-800 text-white'
+                          }`}
+                        >
+                          {addedIds[product.id] ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Added</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag className="w-3.5 h-3.5" />
+                              <span>Add</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

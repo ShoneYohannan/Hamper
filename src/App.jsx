@@ -256,7 +256,7 @@ export default function App() {
             <p className={`text-xs sm:text-sm leading-relaxed font-normal ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              Thank you for gifting with The Hamper Co. Your luxury bespoke allocation is being assembled with care.
+              Thank you for gifting with Dazzling Hampers. Your luxury bespoke allocation is being assembled with care.
             </p>
             <button
               onClick={() => {

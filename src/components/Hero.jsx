@@ -31,7 +31,7 @@ export default function Hero({ onOpenBuilder }) {
               : 'bg-white border border-neutral-200/80 text-neutral-500 shadow-[0_1px_3px_rgba(0,0,0,0.02)]'
           }`}>
             <Sparkles className={`w-3.5 h-3.5 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'} ${isPremiumAnim ? 'animate-pulse' : ''}`} />
-            <span>Curated Haute Hampers · Hand-Packed in India</span>
+            <span>Dazzling Hampers · Haute Gifting & Bouquets</span>
           </div>
         </ScrollReveal>
 
@@ -92,6 +92,8 @@ export default function Hero({ onOpenBuilder }) {
               ? 'text-neutral-400 border-white/10'
               : 'text-neutral-400 border-black/[0.04]'
           }`}>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>Bouquets</span>
+            <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
             <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>The Reserve</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
             <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>Newborn Keepsakes</span>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
+import WhatsAppIcon from './icons/WhatsAppIcon';
 
 export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem, onCheckout }) {
   if (!isOpen) return null;
@@ -7,6 +8,15 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const freeShippingThreshold = 5000;
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+
+  const hasBouquets = cartItems.some(i => i.category === 'bouquets' || i.currency === 'AED');
+
+  const handleWhatsAppCheckout = () => {
+    const phone = '971501487453';
+    const itemsList = cartItems.map(item => `• ${item.name} x${item.quantity} (${item.currency === 'AED' ? `${item.price * item.quantity} AED` : `₹${(item.price * item.quantity).toLocaleString()}`})`).join('\n');
+    const msg = `Hello! I would like to place an order from The Hamper Co.:\n\n${itemsList}\n\nTotal: ${hasBouquets ? `${subtotal} AED` : `₹${subtotal.toLocaleString()}`}`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -42,7 +52,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                     Complimentary White-Glove Delivery unlocked
                   </span>
                 ) : (
-                  `Add ₹${(freeShippingThreshold - subtotal).toLocaleString()} more for Complimentary Delivery`
+                  `Add ${hasBouquets ? `${freeShippingThreshold - subtotal} AED` : `₹${(freeShippingThreshold - subtotal).toLocaleString()}`} more for Complimentary Delivery`
                 )}
               </span>
               <span className="text-neutral-400">{Math.round(progressToFreeShipping)}%</span>
@@ -64,7 +74,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                 </div>
                 <div>
                   <p className="font-serif text-xl font-normal text-neutral-900">Your basket is empty</p>
-                  <p className="text-xs text-neutral-400 mt-1 font-normal">Explore our collections to select a hamper.</p>
+                  <p className="text-xs text-neutral-400 mt-1 font-normal">Explore our collections to select a hamper or bouquet.</p>
                 </div>
               </div>
             ) : (
@@ -82,7 +92,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                           {item.name}
                         </h4>
                         <p className="text-xs text-neutral-500 mt-0.5 font-normal">
-                          ₹{item.price.toLocaleString()} each
+                          {item.currency === 'AED' ? `${item.price} AED` : `₹${item.price.toLocaleString()}`} each
                         </p>
                       </div>
                       <button
@@ -115,7 +125,9 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                       </div>
 
                       <span className="font-normal text-sm text-neutral-900">
-                        ₹{(item.price * item.quantity).toLocaleString()}
+                        {item.currency === 'AED' 
+                          ? `${item.price * item.quantity} AED` 
+                          : `₹${(item.price * item.quantity).toLocaleString()}`}
                       </span>
                     </div>
                   </div>
@@ -130,25 +142,41 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs text-neutral-500 font-normal">
                   <span>Subtotal</span>
-                  <span className="font-medium text-neutral-900">₹{subtotal.toLocaleString()}</span>
+                  <span className="font-medium text-neutral-900">
+                    {hasBouquets ? `${subtotal} AED` : `₹${subtotal.toLocaleString()}`}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-xs text-neutral-500 font-normal">
                   <span>Standard Shipping</span>
-                  <span className="text-neutral-700 font-medium">Calculated at checkout</span>
+                  <span className="text-neutral-700 font-medium">
+                    {hasBouquets ? 'Delivery charges apply' : 'Calculated at checkout'}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-sm font-medium text-neutral-900 pt-2 border-t border-neutral-200/60">
                   <span>Estimated Total</span>
-                  <span className="text-base font-medium">₹{subtotal.toLocaleString()}</span>
+                  <span className="text-base font-medium">
+                    {hasBouquets ? `${subtotal} AED` : `₹${subtotal.toLocaleString()}`}
+                  </span>
                 </div>
               </div>
 
-              <button
-                onClick={onCheckout}
-                className="w-full bg-[#171717] hover:bg-neutral-800 text-white py-3.5 rounded-full text-xs font-medium uppercase tracking-[0.14em] transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95"
-              >
-                <span>Proceed to Checkout</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={handleWhatsAppCheckout}
+                  className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-[0.14em] transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95"
+                >
+                  <WhatsAppIcon className="w-4 h-4 fill-white" />
+                  <span>Order via WhatsApp (+971 501487453)</span>
+                </button>
+
+                <button
+                  onClick={onCheckout}
+                  className="w-full bg-[#171717] hover:bg-neutral-800 text-white py-3 rounded-full text-xs font-medium uppercase tracking-[0.14em] transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95"
+                >
+                  <span>Proceed to Checkout</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           )}
 

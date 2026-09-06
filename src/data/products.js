@@ -2,6 +2,7 @@ const BASE = import.meta.env.BASE_URL || '/';
 
 export const categories = [
   { id: 'all', label: 'All Hampers', icon: '✨' },
+  { id: 'bouquets', label: 'Bouquets', icon: '💐' },
   { id: 'premium', label: 'Premium Luxury', icon: '👑' },
   { id: 'baby-girl', label: 'Baby Girl', icon: '🎀' },
   { id: 'baby-boy', label: 'Baby Boy', icon: '🧸' },
@@ -10,6 +11,61 @@ export const categories = [
 ];
 
 export const products = [
+  {
+    id: 'personalized-memories-chocolate-bouquet',
+    name: 'Personalized Photo & Chocolate Bloom Bouquet',
+    badge: 'BOUQUET',
+    badgeType: 'rose',
+    price: 90,
+    formattedPrice: '90 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Personalized Photo & Chocolate Bloom Bouquet for 90 AED (Delivery charges apply).',
+    description: 'Custom polaroid keepsake prints, Cadbury Dairy Milk, Galaxy chocolates, Kinder Joy treats, and red roses in blush wrapping.',
+    longDescription: 'A heartfelt, personalized bouquet crafted with love and memories. Features custom mini polaroid memory prints arranged with Cadbury Dairy Milk chocolate, Galaxy silk bars, Kinder Joy surprise eggs, TimeOut bars, and fresh velvet red roses adorned with delicate baby’s breath in a blush pink bloom wrap with iridescent ribbon.',
+    rating: 5.0,
+    reviewCount: 42,
+    image: `${BASE}images/custom_polaroid_chocolate_bouquet.jpg`,
+    category: 'bouquets',
+    items: [
+      'Custom Mini Polaroid Keepsake Photos',
+      'Cadbury Dairy Milk Chocolate Bar',
+      'Galaxy Chocolate Silk Bars',
+      'Kinder Joy Surprise Treats (x2)',
+      'TimeOut Chocolate Crisp Bar',
+      'Fresh Velvet Red Roses & Baby’s Breath',
+      'Signature Daisy Blush Wrapping & Iridescent Ribbon',
+      'Personalized Greeting Card'
+    ]
+  },
+  {
+    id: 'ruby-gold-deluxe-chocolate-bouquet',
+    name: 'Ruby & Gold Deluxe Confectionery Bouquet',
+    badge: 'BOUQUET',
+    badgeType: 'gold',
+    price: 100,
+    formattedPrice: '100 AED',
+    priceNote: '(plus delivery)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Ruby & Gold Deluxe Confectionery Bouquet for 100 AED (plus delivery).',
+    description: 'Galaxy White bars, Kinder Bueno, Golden Twix, KitKat bars, and pearl-centered red roses in ruby & gold wrapping.',
+    longDescription: 'An opulent luxury confectionery bouquet designed to amaze. Handcrafted with rich ruby red and metallic gold origami wrapping with a gold heart satin bow. Loaded with premium Galaxy Smooth White chocolate bars, crispy Kinder Bueno, golden Twix caramel bars, crispy KitKat, and luxury red roses centered with golden pearls and delicate white lace.',
+    rating: 5.0,
+    reviewCount: 56,
+    image: `${BASE}images/ruby_gold_chocolate_bouquet.jpg`,
+    category: 'bouquets',
+    items: [
+      'Galaxy Smooth White Chocolate Bars (x3)',
+      'Kinder Bueno Crispy Hazelnut Bars (x2)',
+      'Golden Twix Caramel & Biscuit Bars (x2)',
+      'Crispy KitKat Chocolate Bars (x2)',
+      'Velvet Red Roses with Golden Pearl Centers (x3)',
+      'Delicate White Floral Lace Accent',
+      'Opulent Ruby & Gold Paper with Gold-Heart Ribbon Bow'
+    ]
+  },
   {
     id: 'premium-royal-reserve',
     name: 'The Royal Reserve Luxury Hamper',
