@@ -2,7 +2,6 @@ const BASE = import.meta.env.BASE_URL || '/';
 
 export const categories = [
   { id: 'all', label: 'All Hampers', icon: '✨' },
-  { id: 'reserve', label: 'The Reserve', icon: '💎' },
   { id: 'bouquets', label: 'Bouquets', icon: '💐' },
   { id: 'premium', label: 'Premium Luxury', icon: '👑' },
   { id: 'baby-girl', label: 'Baby Girl', icon: '🎀' },
@@ -11,7 +10,7 @@ export const categories = [
   { id: 'corporate', label: 'Corporate Gifting', icon: '💼' }
 ];
 
-export const products = [
+export const reserveProducts = [
   {
     id: 'grand-luxe-heart-acrylic-reserve',
     name: 'Grand Luxe Heart & Illuminated Acrylic Reserve Hamper',
@@ -68,7 +67,10 @@ export const products = [
       'Letterpress Gold-Foil "Happy Anniversary" Greeting Card with Interlocking Rings',
       'White-Glove Dispatch in Temperature-Controlled Velvet Protective Packaging'
     ]
-  },
+  }
+];
+
+export const products = [
   {
     id: 'personalized-memories-chocolate-bouquet',
     name: 'Personalized Photo & Chocolate Bloom Bouquet',

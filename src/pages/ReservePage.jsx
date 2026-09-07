@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingBag, Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
-import { products } from '../data/products';
+import { reserveProducts } from '../data/products';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import { useTheme } from '../context/ThemeContext';
@@ -18,8 +18,6 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
-  // Fetch the Reserve products
-  const reserveProducts = products.filter(p => p.category === 'reserve');
   const currentProduct = reserveProducts[currentIndex] || reserveProducts[0];
 
   const handleNext = () => {
@@ -225,18 +223,18 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                   }`}
                 >
                   
-                  {/* Grand Product Photo Showcase */}
-                  <div className="lg:col-span-6 relative aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-900/40 group">
+                  {/* Grand Product Photo Showcase - Full Uncut Image Display */}
+                  <div className="lg:col-span-6 relative w-full rounded-2xl overflow-hidden bg-black/40 border border-white/10 flex items-center justify-center p-2 sm:p-3 group">
                     <img
                       src={currentProduct.image}
                       alt={currentProduct.name}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out"
+                      className="w-full h-auto max-h-[580px] object-contain rounded-xl transition-transform duration-700 ease-out group-hover:scale-[1.01]"
                     />
                     
                     {/* Badge Overlay */}
                     <div className="absolute top-4 left-4">
                       <span className={`text-[10px] tracking-widest uppercase font-semibold px-3.5 py-1.5 rounded-full shadow-sm transition-all ${
-                        isGlass ? 'bg-black/75 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/40' : 'bg-white/95 text-neutral-800'
+                        isGlass ? 'bg-black/80 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/40' : 'bg-white/95 text-neutral-800'
                       }`}>
                         {currentProduct.badge}
                       </span>
@@ -245,7 +243,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                     {/* Pagination Badge Overlay inside image */}
                     <div className="absolute bottom-4 right-4">
                       <span className={`text-[10px] tracking-wider uppercase font-medium px-3 py-1 rounded-full backdrop-blur-md ${
-                        isGlass ? 'bg-black/70 text-neutral-300 border border-white/10' : 'bg-white/90 text-neutral-700'
+                        isGlass ? 'bg-black/80 text-neutral-300 border border-white/10' : 'bg-white/90 text-neutral-700'
                       }`}>
                         0{currentIndex + 1} / 0{reserveProducts.length}
                       </span>

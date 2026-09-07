@@ -30,11 +30,11 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
         </button>
 
         {/* Product Image */}
-        <div className="relative aspect-square md:aspect-auto bg-neutral-100 min-h-[220px]">
+        <div className="relative aspect-square md:aspect-auto bg-neutral-900/5 min-h-[260px] flex items-center justify-center p-3">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full max-h-[460px] object-contain"
           />
           <div className="absolute top-4 left-4">
             <span className="text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded-full bg-white/95 text-neutral-700 shadow-sm">
