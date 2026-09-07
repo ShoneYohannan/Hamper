@@ -172,7 +172,7 @@ export const steps = [
   {
     number: '03',
     title: 'Delivered in Mint Condition',
-    description: 'Carefully wrapped and hand-packed for immediate nationwide courier dispatch.'
+    description: 'Carefully wrapped and hand-packed with white-glove dispatch across India, UAE, and Qatar.'
   }
 ];
 

@@ -95,7 +95,7 @@ export default function ReviewsPage() {
               </div>
               <div className="space-y-1 pt-4 sm:pt-0">
                 <div className={`font-serif text-4xl font-normal ${isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'}`}>2,400+</div>
-                <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-300' : 'text-neutral-400'}`}>Delivered Nationwide</p>
+                <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-300' : 'text-neutral-400'}`}>Delivered across India, UAE & Qatar</p>
               </div>
             </div>
           </TiltCard>

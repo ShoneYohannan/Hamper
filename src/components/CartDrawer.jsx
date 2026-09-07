@@ -49,7 +49,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
               <span>
                 {subtotal >= freeShippingThreshold ? (
                   <span className="text-emerald-700 font-medium">
-                    Complimentary White-Glove Delivery unlocked
+                    Complimentary White-Glove Delivery unlocked (India · UAE · Qatar)
                   </span>
                 ) : (
                   `Add ${hasBouquets ? `${freeShippingThreshold - subtotal} AED` : `₹${(freeShippingThreshold - subtotal).toLocaleString()}`} more for Complimentary Delivery`

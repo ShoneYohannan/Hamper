@@ -142,7 +142,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                   }`}>
                     <div className="flex items-center gap-2 group">
                       <ShieldCheck className={`w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />
-                      <span>White-Glove Temperature Controlled Dispatch</span>
+                      <span>White-Glove Dispatch across India, UAE & Qatar</span>
                     </div>
                     <div className="flex items-center gap-2 group">
                       <Sparkles className={`w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />

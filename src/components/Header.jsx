@@ -47,6 +47,18 @@ export default function Header({
         ? 'glass-header' 
         : 'bg-[#FAF8F5]/95 backdrop-blur-md border-b border-black/[0.06]'
     }`}>
+      {/* Slim Luxury Delivery Ribbon */}
+      <div className={`w-full py-1.5 px-4 text-center border-b transition-colors ${
+        isGlass
+          ? 'bg-[#180422] border-[#D4AF37]/20 text-[#F3E5AB]'
+          : 'bg-[#1c1a17] border-neutral-800 text-neutral-300'
+      }`}>
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em]">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+          <span>Handcrafted Luxury Gifting · Dispatching across <strong className="font-semibold text-white">India · UAE · Qatar</strong></span>
+        </div>
+      </div>
+
       <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 h-18 sm:h-22 flex items-center justify-between gap-3 lg:gap-8">
         
         {/* Brand Logo - Navigates Home */}

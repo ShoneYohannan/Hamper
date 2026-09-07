@@ -72,17 +72,21 @@ export default function Footer({ onSubscribe, onNavigate }) {
         <div className="max-w-[1720px] mx-auto px-6 sm:px-8 lg:px-12 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-neutral-500 font-normal">
           
           {/* Brand mark & copyright */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/50 bg-[#340b49] shrink-0">
-              <img src={`${BASE}images/logo.png`} alt="Dazzling Hampers" className="w-full h-full object-cover" />
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/50 bg-[#340b49] shrink-0">
+                <img src={`${BASE}images/logo.png`} alt="Dazzling Hampers" className="w-full h-full object-cover" />
+              </div>
+              <button 
+                onClick={(e) => handleNav('home', e)}
+                className="font-serif text-lg text-white font-normal hover:text-[#D4AF37] transition-colors"
+              >
+                Dazzling Hampers
+              </button>
             </div>
-            <button 
-              onClick={(e) => handleNav('home', e)}
-              className="font-serif text-lg text-white font-normal hover:text-[#D4AF37] transition-colors"
-            >
-              Dazzling Hampers
-            </button>
-            <span className="text-neutral-600">·</span>
+            <span className="hidden sm:inline text-neutral-600">·</span>
+            <span className="text-[#F3E5AB]/90 font-medium tracking-wide">Delivering across India · UAE · Qatar</span>
+            <span className="hidden sm:inline text-neutral-600">·</span>
             <span>© {new Date().getFullYear()} All rights reserved.</span>
           </div>
 
