@@ -2,6 +2,7 @@ const BASE = import.meta.env.BASE_URL || '/';
 
 export const categories = [
   { id: 'all', label: 'All Hampers', icon: '✨' },
+  { id: 'reserve', label: 'The Reserve', icon: '💎' },
   { id: 'bouquets', label: 'Bouquets', icon: '💐' },
   { id: 'premium', label: 'Premium Luxury', icon: '👑' },
   { id: 'baby-girl', label: 'Baby Girl', icon: '🎀' },
@@ -11,6 +12,63 @@ export const categories = [
 ];
 
 export const products = [
+  {
+    id: 'grand-luxe-heart-acrylic-reserve',
+    name: 'Grand Luxe Heart & Illuminated Acrylic Reserve Hamper',
+    badge: 'THE RESERVE · 500 AED',
+    badgeType: 'gold',
+    price: 500,
+    formattedPrice: '500 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Grand Luxe Heart & Illuminated Acrylic Reserve Hamper for 500 AED (Delivery charges apply).',
+    description: 'Dual-heart luxury red hamper, luxury fragrance mist, crystal illuminated acrylic box with Bento cake, designer watch, LED fairy lights & "I Love You" balloons.',
+    longDescription: 'The pinnacle of celebratory romance and prestige. Features a handcrafted crimson dual-heart luxury display trunk with gold "Happy Birthday" topper, premium Japanese Cherry Blossom fragrance mist and luxury perfumes, golden Ferrero Rocher confections, and plush velvet roses. Accompanied by a crystal-clear illuminated acrylic keepsake case wrapped with silk ribbon and twinkling fairy LED lights, housing a custom pastel pink Bento celebration cake ("Just For You"), a designer quartz timepiece in a matte gift box, customized calendar plaque, and two floating red heart helium balloons with cursive "I Love You" script.',
+    rating: 5.0,
+    reviewCount: 38,
+    image: `${BASE}images/grand_luxe_acrylic_heart_reserve.jpg`,
+    category: 'reserve',
+    items: [
+      'Handcrafted Crimson Dual-Heart Luxury Display Trunk with Gold Plaque',
+      'Illuminated Crystal-Clear Acrylic Keepsake Box with Fairy LED String Lights',
+      'Custom Handcrafted Pastel Pink Bento Cake ("Just For You") with Gold Butterflies',
+      'Designer Quartz Timepiece in Signature Matte Presentation Box with Ribbon',
+      'Fine Fragrance Suite (Japanese Cherry Blossom Mist & Luxury Perfumes)',
+      'Golden Ferrero Rocher Confections & Sweet Treats',
+      'Fresh Silk Crimson & Blush Pink Velvet Roses with Baby’s Breath Florals',
+      'Dual Floating Metallic Red Heart Balloons with "I Love You" Cursive Script',
+      'Personalized Custom Date Plaque & Calligraphy Keepsake Card'
+    ]
+  },
+  {
+    id: 'eternal-oud-roses-anniversary-reserve',
+    name: 'Eternal Romance Oud & Roses Anniversary Reserve Hamper',
+    badge: 'THE RESERVE · 450 AED',
+    badgeType: 'gold',
+    price: 450,
+    formattedPrice: '450 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Eternal Romance Oud & Roses Anniversary Reserve Hamper for 450 AED (Delivery charges apply).',
+    description: 'Ahmed Al Maghribi Oud & Roses perfume, Marj luxury travel case, gold acrylic "Happy Anniversary" script, heirloom blush roses & daisy florals in dual heart box.',
+    longDescription: 'An heirloom-grade tribute to timeless love and devotion. Presented in a bespoke interconnected dual-heart crimson silhouette with gleaming mirror-polished gold "Happy Anniversary" script. Features an authentic flacon of Ahmed Al Maghribi’s legendary "Oud & Roses" luxury Eau De Parfum, a premium cylindrical Marj fragrance travel case, nestled among delicate blush pink heirloom roses, sunshine daisy blossoms, golden dried botanicals, and shimmering pearl accents. Includes a gold-embossed "Happy Anniversary" letterpress keepsake card with interlocking rings.',
+    rating: 5.0,
+    reviewCount: 49,
+    image: `${BASE}images/eternal_oud_roses_anniversary_reserve.jpg`,
+    category: 'reserve',
+    items: [
+      'Interconnected Dual-Heart Crimson Luxury Display Trunk with Gold Rim',
+      'Ahmed Al Maghribi Signature "Oud & Roses" Luxury Eau De Parfum (60ml)',
+      'Premium Marj Cylindrical Luxury Travel Case / Keepsake Scroll',
+      'Mirror-Polished Gold Acrylic "Happy Anniversary" Laser-Cut Topper',
+      'Fresh Silk Blush Pink Heirloom Roses & Sunshine Daisy Blossoms',
+      'Golden Botanical Accents, Miniature Pearl Beads & Dried Autumn Flora',
+      'Letterpress Gold-Foil "Happy Anniversary" Greeting Card with Interlocking Rings',
+      'White-Glove Dispatch in Temperature-Controlled Velvet Protective Packaging'
+    ]
+  },
   {
     id: 'personalized-memories-chocolate-bouquet',
     name: 'Personalized Photo & Chocolate Bloom Bouquet',
