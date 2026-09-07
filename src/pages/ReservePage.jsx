@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ShoppingBag, Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import { reserveProducts } from '../data/products';
@@ -8,11 +8,11 @@ import { useTheme } from '../context/ThemeContext';
 
 export default function ReservePage({ onAddToCart, onQuickView }) {
   const { isGlass, isPremiumAnim } = useTheme();
+  // Always start with 500 AED hamper at first (index 0)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [addedIds, setAddedIds] = useState({});
   const [inquirySent, setInquirySent] = useState(false);
   const [inquiryData, setInquiryData] = useState({ name: '', email: '', company: '', message: '' });
-  const [isPaused, setIsPaused] = useState(false);
 
   // Touch swipe handling
   const touchStartX = useRef(null);
@@ -28,15 +28,6 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
     setCurrentIndex((prev) => (prev - 1 + reserveProducts.length) % reserveProducts.length);
   };
 
-  // Auto-play timer for carousel with pause on hover
-  useEffect(() => {
-    if (isPaused || reserveProducts.length <= 1) return;
-    const interval = setInterval(() => {
-      handleNext();
-    }, 7000);
-    return () => clearInterval(interval);
-  }, [currentIndex, isPaused, reserveProducts.length]);
-
   const handleTouchStart = (e) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
@@ -49,9 +40,9 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
     if (!touchStartX.current || !touchEndX.current) return;
     const diff = touchStartX.current - touchEndX.current;
     if (diff > 50) {
-      handleNext(); // swipe left -> next
+      handleNext(); // swipe left -> next (450 AED)
     } else if (diff < -50) {
-      handlePrev(); // swipe right -> prev
+      handlePrev(); // swipe right -> prev (500 AED)
     }
     touchStartX.current = null;
     touchEndX.current = null;
@@ -164,8 +155,8 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                   }`}>
                     0{idx + 1}
                   </span>
-                  <span className="truncate max-w-[200px] sm:max-w-none">
-                    {idx === 0 ? 'Grand Luxe Heart & Acrylic (500 AED)' : 'Eternal Oud & Roses (450 AED)'}
+                  <span className="truncate max-w-[220px] sm:max-w-none">
+                    {idx === 0 ? '1st: Grand Luxe Heart & Acrylic (500 AED)' : '2nd: Eternal Oud & Roses (450 AED)'}
                   </span>
                 </button>
               );
@@ -177,8 +168,6 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
         <ScrollReveal delay={120} distance={20}>
           <div 
             className="relative"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -260,7 +249,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                           Haute Reserve 0{currentIndex + 1}
                         </span>
                         <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#F3E5AB] border border-[#D4AF37]/30">
-                          Signature Creation
+                          {currentIndex === 0 ? 'Primary Flagship' : 'Anniversary Selection'}
                         </span>
                       </div>
                       <h3 className={`font-serif text-2xl sm:text-3xl lg:text-4xl font-normal leading-tight ${
