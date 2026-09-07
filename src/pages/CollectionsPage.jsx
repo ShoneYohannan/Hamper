@@ -76,16 +76,16 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
           </div>
         </ScrollReveal>
 
-        {/* Category Pill Filter Bar */}
+        {/* Category Pill Filter Bar - Mobile Swipeable & Laptop Flex-Wrap */}
         <ScrollReveal delay={80} distance={12}>
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center py-1 px-1 -mx-4 sm:mx-0 px-4 sm:px-0">
             {categories.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-smooth interactive-btn ${
+                  className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-smooth interactive-btn whitespace-nowrap shrink-0 sm:shrink ${
                     isGlass
                       ? isActive
                         ? 'glass-pill-active'
@@ -136,14 +136,14 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
                   onChange={(e) => setSortBy(e.target.value)}
                   className={`rounded-full px-3 py-1.5 text-xs focus:outline-none cursor-pointer ${
                     isGlass
-                      ? 'bg-[#121816] border border-white/20 text-white focus:border-[#D4AF37]'
+                      ? 'bg-[#1c0827] border border-white/20 text-white focus:border-[#D4AF37]'
                       : 'bg-white border border-neutral-200/80 text-neutral-700 focus:border-neutral-400'
                   }`}
                 >
-                  <option value="featured" className={isGlass ? 'bg-[#121816]' : ''}>Featured</option>
-                  <option value="price-low" className={isGlass ? 'bg-[#121816]' : ''}>Price: Low to High</option>
-                  <option value="price-high" className={isGlass ? 'bg-[#121816]' : ''}>Price: High to Low</option>
-                  <option value="rating" className={isGlass ? 'bg-[#121816]' : ''}>Highest Rated</option>
+                  <option value="featured" className={isGlass ? 'bg-[#1c0827]' : ''}>Featured</option>
+                  <option value="price-low" className={isGlass ? 'bg-[#1c0827]' : ''}>Price: Low to High</option>
+                  <option value="price-high" className={isGlass ? 'bg-[#1c0827]' : ''}>Price: High to Low</option>
+                  <option value="rating" className={isGlass ? 'bg-[#1c0827]' : ''}>Highest Rated</option>
                 </select>
               </div>
             </div>

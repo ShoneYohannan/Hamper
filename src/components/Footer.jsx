@@ -25,7 +25,7 @@ export default function Footer({ onSubscribe, onNavigate }) {
   };
 
   return (
-    <footer className="bg-[#141716] text-white">
+    <footer className="bg-[#0d0213] text-white">
       {/* ─── Premium Dark CTA / Newsletter Section ─── */}
       <ScrollReveal distance={20}>
         <div className="max-w-4xl mx-auto px-6 sm:px-8 py-20 lg:py-28 text-center space-y-6">

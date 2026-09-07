@@ -18,7 +18,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
         className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
       />
 
-      <div className="relative w-full max-w-3xl bg-white rounded-3xl border border-neutral-200/80 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 grid grid-cols-1 md:grid-cols-2">
+      <div className="relative w-full max-w-3xl bg-white rounded-3xl border border-neutral-200/80 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto">
         
         {/* Close Button */}
         <button
@@ -30,7 +30,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
         </button>
 
         {/* Product Image */}
-        <div className="relative aspect-square md:aspect-auto bg-neutral-100">
+        <div className="relative aspect-square md:aspect-auto bg-neutral-100 min-h-[220px]">
           <img
             src={product.image}
             alt={product.name}
@@ -44,7 +44,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
         </div>
 
         {/* Product Details */}
-        <div className="p-6 md:p-8 flex flex-col justify-between space-y-6 bg-white">
+        <div className="p-6 md:p-8 flex flex-col justify-between space-y-6 bg-white overflow-y-auto">
           <div className="space-y-4">
             <div className="flex items-center gap-1.5 text-xs text-neutral-500">
               <div className="flex items-center gap-0.5">

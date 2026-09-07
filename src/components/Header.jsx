@@ -47,15 +47,15 @@ export default function Header({
         ? 'glass-header' 
         : 'bg-[#FAF8F5]/95 backdrop-blur-md border-b border-black/[0.06]'
     }`}>
-      <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 h-20 sm:h-22 flex items-center justify-between gap-4 lg:gap-8">
+      <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 h-18 sm:h-22 flex items-center justify-between gap-3 lg:gap-8">
         
         {/* Brand Logo - Navigates Home */}
         <button 
           onClick={(e) => handleNavClick('home', e)}
-          className="flex items-center gap-3.5 group flex-shrink-0 text-left focus:outline-none"
+          className="flex items-center gap-2.5 sm:gap-3.5 group flex-shrink-0 text-left focus:outline-none"
         >
           {/* Circular Luxury Medallion Logo */}
-          <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden p-0.5 flex items-center justify-center transition-all duration-500 group-hover:scale-105 ${
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden p-0.5 flex items-center justify-center transition-all duration-500 group-hover:scale-105 shrink-0 ${
             isGlass
               ? 'bg-gradient-to-tr from-[#B78A45] via-[#F3E5AB] to-[#4a0e4e] shadow-[0_0_20px_rgba(212,175,55,0.4)] border border-[#D4AF37]/50'
               : 'bg-[#171717] border border-neutral-300 shadow-sm'
@@ -68,12 +68,12 @@ export default function Header({
           </div>
 
           <div className="flex flex-col">
-            <span className={`font-serif text-xl sm:text-2xl md:text-[25px] tracking-tight transition-colors block leading-tight font-normal whitespace-nowrap ${
+            <span className={`font-serif text-lg sm:text-2xl md:text-[25px] tracking-tight transition-colors block leading-tight font-normal whitespace-nowrap ${
               isGlass ? 'text-white group-hover:text-[#F3E5AB]' : 'text-[#171717] group-hover:text-neutral-700'
             }`}>
               Dazzling Hampers
             </span>
-            <span className={`text-[8.5px] sm:text-[9px] tracking-[0.24em] uppercase font-medium block whitespace-nowrap ${
+            <span className={`text-[7.5px] sm:text-[9px] tracking-[0.22em] uppercase font-medium block whitespace-nowrap ${
               isGlass ? 'text-[#D4AF37]' : 'text-[#737373]'
             }`}>
               Haute Gifting Atelier
@@ -109,25 +109,24 @@ export default function Header({
         {/* Right Actions: WhatsApp Custom Curation & Cart */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           
-          {/* Custom Curation -> WhatsApp */}
+          {/* Custom Curation -> WhatsApp (Shows on tablet/laptop, and in mobile menu on phones) */}
           <button
             onClick={handleCustomCuration}
             title="Inquire about Custom Hamper Curation on WhatsApp"
-            className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
+            className={`hidden sm:inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
               isGlass
                 ? 'glass-pill border-[#D4AF37]/40 text-[#F3E5AB] hover:border-[#D4AF37] hover:bg-white/10 shadow-[0_0_12px_rgba(212,175,55,0.15)]'
                 : 'bg-transparent hover:bg-neutral-900 hover:text-white text-neutral-800 border border-neutral-300 hover:border-neutral-900'
             }`}
           >
             <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
-            <span className="hidden sm:inline">Custom Curation</span>
-            <span className="sm:hidden">Custom</span>
+            <span>Custom Curation</span>
           </button>
 
           {/* Cart Trigger */}
           <button
             onClick={onOpenCart}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-medium text-xs tracking-wider uppercase transition-all duration-300 active:scale-95 shadow-sm interactive-btn whitespace-nowrap ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full font-medium text-xs tracking-wider uppercase transition-all duration-300 active:scale-95 shadow-sm interactive-btn whitespace-nowrap ${
               isGlass
                 ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_0_16px_rgba(212,175,55,0.35)]'
                 : 'bg-[#171717] hover:bg-neutral-800 text-white'
@@ -140,8 +139,8 @@ export default function Header({
           {/* Mobile Menu Trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`lg:hidden p-2 transition-colors focus:outline-none ${
-              isGlass ? 'text-white' : 'text-neutral-700'
+            className={`lg:hidden p-2 rounded-full transition-colors focus:outline-none ${
+              isGlass ? 'text-white hover:bg-white/10' : 'text-neutral-700 hover:bg-black/5'
             }`}
             aria-label="Toggle navigation menu"
           >
@@ -152,9 +151,9 @@ export default function Header({
 
       {/* Mobile / Tablet Drawer Menu */}
       {mobileMenuOpen && (
-        <div className={`lg:hidden border-b px-6 py-6 space-y-3 shadow-lg animate-fade-in ${
+        <div className={`lg:hidden border-b px-6 py-6 space-y-3 shadow-2xl animate-fade-in ${
           isGlass 
-            ? 'bg-[#0F1413]/95 backdrop-blur-xl border-white/10 text-white' 
+            ? 'bg-[#14041d]/95 backdrop-blur-2xl border-[#D4AF37]/20 text-white' 
             : 'bg-white border-black/[0.06]'
         }`}>
           {navItems.map((item) => {
@@ -180,7 +179,7 @@ export default function Header({
 
           <button
             onClick={() => { setMobileMenuOpen(false); handleCustomCuration(); }}
-            className={`w-full text-center py-3 rounded-full font-medium text-xs tracking-widest uppercase mt-4 shadow-sm interactive-btn flex items-center justify-center gap-2 ${
+            className={`w-full text-center py-3.5 rounded-full font-medium text-xs tracking-widest uppercase mt-4 shadow-md interactive-btn flex items-center justify-center gap-2 ${
               isGlass
                 ? 'bg-[#D4AF37] text-black font-semibold shadow-[0_0_15px_rgba(212,175,55,0.4)]'
                 : 'bg-[#171717] text-white'

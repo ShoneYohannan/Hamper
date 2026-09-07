@@ -50,7 +50,7 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
 
         {/* Hero Main Headline */}
         <ScrollReveal delay={100} distance={18}>
-          <h1 className={`font-serif text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-normal tracking-[-0.025em] leading-[1.08] max-w-4xl mx-auto transition-colors duration-300 ${
+          <h1 className={`font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[76px] font-normal tracking-[-0.025em] leading-[1.12] sm:leading-[1.08] max-w-4xl mx-auto transition-colors duration-300 ${
             isGlass
               ? 'text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]'
               : 'text-[#171717]'
@@ -62,7 +62,7 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
 
         {/* Subtitle */}
         <ScrollReveal delay={180} distance={16}>
-          <p className={`text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal transition-colors duration-300 ${
+          <p className={`text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed font-normal transition-colors duration-300 px-2 sm:px-0 ${
             isGlass ? 'text-neutral-300' : 'text-neutral-500'
           }`}>
             From heirloom newborn keepsakes to vintage grand reserves, explore handcrafted hampers designed to evoke wonder from the very first ribbon pull.
@@ -71,10 +71,10 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
 
         {/* Action Buttons with Interactive Shimmer & Magnetic feel */}
         <ScrollReveal delay={260} distance={14}>
-          <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-3.5 pt-2 max-w-md sm:max-w-none mx-auto w-full">
             <button
               onClick={scrollToCollections}
-              className={`interactive-btn inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm active:scale-95 ${
+              className={`interactive-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm active:scale-95 ${
                 isGlass
                   ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_4px_25px_rgba(212,175,55,0.35)]'
                   : 'bg-[#171717] hover:bg-neutral-800 text-white'
@@ -86,7 +86,7 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
 
             <button
               onClick={handleCustom}
-              className={`interactive-btn inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm active:scale-95 ${
+              className={`interactive-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm active:scale-95 ${
                 isGlass
                   ? 'glass-pill border-[#D4AF37]/40 text-[#F3E5AB] hover:border-[#D4AF37] hover:bg-white/10'
                   : 'bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 hover:border-neutral-400'
@@ -100,20 +100,20 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
 
         {/* Category Milestone Line */}
         <ScrollReveal delay={340} distance={10}>
-          <div className={`pt-10 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[11px] font-medium uppercase tracking-[0.2em] border-t max-w-xl mx-auto transition-colors duration-300 ${
+          <div className={`pt-8 sm:pt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-6 md:gap-10 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em] sm:tracking-[0.2em] border-t max-w-xl mx-auto transition-colors duration-300 ${
             isGlass
               ? 'text-neutral-400 border-white/10'
               : 'text-neutral-400 border-black/[0.04]'
           }`}>
-            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>Bouquets</span>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Bouquets</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
-            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>The Reserve</span>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>The Reserve</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
-            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>Newborn Keepsakes</span>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Newborn Keepsakes</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
-            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>Festive & Pantry</span>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Festive & Pantry</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
-            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer" onClick={scrollToCollections}>Corporate</span>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Corporate</span>
           </div>
         </ScrollReveal>
 

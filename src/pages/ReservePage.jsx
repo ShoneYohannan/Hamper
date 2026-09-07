@@ -88,7 +88,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
         {reserveProduct && (
           <ScrollReveal delay={100} distance={20}>
             <TiltCard maxTilt={isPremiumAnim ? 4 : 0}>
-              <div className={`rounded-3xl p-8 sm:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center transition-smooth image-zoom-container ${
+              <div className={`rounded-3xl p-6 sm:p-10 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center transition-smooth image-zoom-container ${
                 isGlass 
                   ? 'glass-panel text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/15 hover:border-[#D4AF37]/40' 
                   : 'bg-white border border-neutral-200/70 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.07)]'
@@ -137,24 +137,24 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                   </p>
 
                   {/* Certified Attributes */}
-                  <div className={`pt-2 flex flex-wrap gap-6 text-xs font-normal border-t ${
+                  <div className={`pt-2 flex flex-wrap gap-4 sm:gap-6 text-xs font-normal border-t ${
                     isGlass ? 'border-white/10 text-neutral-300' : 'border-neutral-100 text-neutral-600'
                   }`}>
                     <div className="flex items-center gap-2 group">
-                      <ShieldCheck className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />
+                      <ShieldCheck className={`w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />
                       <span>White-Glove Temperature Controlled Dispatch</span>
                     </div>
                     <div className="flex items-center gap-2 group">
-                      <Sparkles className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />
+                      <Sparkles className={`w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />
                       <span>Personalized Calligraphy Card Included</span>
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="pt-3 flex flex-wrap items-center gap-4">
+                  <div className="pt-3 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
                     <button
                       onClick={handleAdd}
-                      className={`interactive-btn px-8 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase flex items-center gap-2 shadow-sm active:scale-95 ${
+                      className={`interactive-btn w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
                         isAdded
                           ? 'bg-emerald-800 text-white'
                           : isGlass
@@ -170,20 +170,21 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                       ) : (
                         <>
                           <ShoppingBag className="w-4 h-4" />
-                          <span>Claim Allocation · {reserveProduct.formattedPrice}</span>
+                          <span>Reserve Allocation</span>
                         </>
                       )}
                     </button>
 
                     <button
                       onClick={() => onQuickView(reserveProduct)}
-                      className={`interactive-btn px-6 py-3.5 rounded-full text-xs font-medium uppercase tracking-[0.14em] ${
+                      className={`interactive-btn w-full sm:w-auto px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-95 ${
                         isGlass
                           ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
-                          : 'border border-neutral-300 hover:border-neutral-900 text-neutral-800 bg-white'
+                          : 'bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 hover:border-neutral-400'
                       }`}
                     >
-                      Quick Inspection
+                      <span>Explore Notes</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
 

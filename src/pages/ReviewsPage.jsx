@@ -103,17 +103,17 @@ export default function ReviewsPage() {
 
         {/* Filter Pills and Write Review Button */}
         <ScrollReveal delay={150} distance={12}>
-          <div className={`flex flex-col sm:flex-row items-center justify-between gap-6 border-b pb-6 ${
+          <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 border-b pb-6 w-full ${
             isGlass ? 'border-white/10' : 'border-black/[0.04]'
           }`}>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar sm:flex-wrap py-1 px-1 w-full sm:w-auto -mx-4 sm:mx-0 px-4 sm:px-0">
               {occasionFilters.map((tab) => {
                 const isActive = selectedOccasion === tab.id;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setSelectedOccasion(tab.id)}
-                    className={`interactive-btn px-5 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-smooth ${
+                    className={`interactive-btn px-4 sm:px-5 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-smooth whitespace-nowrap shrink-0 sm:shrink ${
                       isGlass
                         ? isActive
                           ? 'glass-pill-active'
@@ -131,7 +131,7 @@ export default function ReviewsPage() {
 
             <button
               onClick={() => setShowSubmitModal(true)}
-              className={`interactive-btn inline-flex items-center gap-2 px-6 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all shadow-sm shrink-0 ${
+              className={`interactive-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all shadow-sm shrink-0 ${
                 isGlass
                   ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
                   : 'bg-white border border-neutral-300 hover:border-neutral-900 text-neutral-800 hover:text-black'

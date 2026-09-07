@@ -139,21 +139,21 @@ export default function App() {
   return (
     <div className={`min-h-screen flex flex-col font-sans relative transition-colors duration-500 ${
       isGlass 
-        ? 'bg-[#0A0D0C] text-neutral-100 selection:bg-[#D4AF37] selection:text-black' 
+        ? 'bg-[#0d0214] text-[#F8F6FA] selection:bg-[#D4AF37] selection:text-black' 
         : 'bg-[#FAF8F5] text-[#141615] selection:bg-[#141615] selection:text-white'
     }`}>
       
-      {/* Animated Ambient Gradient Mesh for Luxe Glass Mode */}
+      {/* Animated Ambient Gradient Mesh for Luxe Glass Mode (Matching Royal Violet & Imperial Gold Logo Shade) */}
       {isGlass && (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-          {/* Deep Emerald Glow Orb */}
-          <div className="absolute -top-32 -left-32 w-[550px] h-[550px] rounded-full bg-emerald-950/45 blur-[120px] animate-mesh-1" />
-          {/* Luminous Gold & Champagne Amber Glow Orb */}
-          <div className="absolute top-[25%] -right-40 w-[600px] h-[600px] rounded-full bg-[#B78A45]/20 blur-[140px] animate-mesh-2" />
-          {/* Deep Forest Teal Glow Orb */}
-          <div className="absolute top-[60%] -left-32 w-[650px] h-[650px] rounded-full bg-teal-950/35 blur-[130px] animate-mesh-3" />
+          {/* Deep Royal Purple Glow Orb */}
+          <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full bg-[#4a0e4e]/55 blur-[125px] animate-mesh-1" />
+          {/* Luminous Warm Imperial Gold Orb */}
+          <div className="absolute top-[22%] -right-40 w-[620px] h-[620px] rounded-full bg-[#D4AF37]/22 blur-[140px] animate-mesh-2" />
+          {/* Deep Velvet Plum Glow Orb */}
+          <div className="absolute top-[58%] -left-32 w-[680px] h-[680px] rounded-full bg-[#340b49]/60 blur-[135px] animate-mesh-3" />
           {/* Warm Champagne Velvet Bottom Orb */}
-          <div className="absolute bottom-0 right-[15%] w-[500px] h-[500px] rounded-full bg-[#D4AF37]/15 blur-[150px] animate-mesh-1" />
+          <div className="absolute bottom-0 right-[15%] w-[520px] h-[520px] rounded-full bg-[#B78A45]/20 blur-[150px] animate-mesh-1" />
         </div>
       )}
 
