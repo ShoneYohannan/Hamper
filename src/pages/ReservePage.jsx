@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ShoppingBag, Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ShoppingBag, Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import { products } from '../data/products';
 import ScrollReveal from '../components/ScrollReveal';
@@ -8,12 +8,56 @@ import { useTheme } from '../context/ThemeContext';
 
 export default function ReservePage({ onAddToCart, onQuickView }) {
   const { isGlass, isPremiumAnim } = useTheme();
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [addedIds, setAddedIds] = useState({});
   const [inquirySent, setInquirySent] = useState(false);
   const [inquiryData, setInquiryData] = useState({ name: '', email: '', company: '', message: '' });
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Touch swipe handling
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
 
   // Fetch the Reserve products
   const reserveProducts = products.filter(p => p.category === 'reserve');
+  const currentProduct = reserveProducts[currentIndex] || reserveProducts[0];
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % reserveProducts.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + reserveProducts.length) % reserveProducts.length);
+  };
+
+  // Auto-play timer for carousel with pause on hover
+  useEffect(() => {
+    if (isPaused || reserveProducts.length <= 1) return;
+    const interval = setInterval(() => {
+      handleNext();
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [currentIndex, isPaused, reserveProducts.length]);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    const diff = touchStartX.current - touchEndX.current;
+    if (diff > 50) {
+      handleNext(); // swipe left -> next
+    } else if (diff < -50) {
+      handlePrev(); // swipe right -> prev
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
 
   const handleAdd = (product) => {
     if (product) {
@@ -73,7 +117,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
     <div id="reserve" className={`py-20 lg:py-28 scroll-mt-20 transition-colors duration-400 ${
       isGlass ? 'bg-transparent border-t border-white/10' : 'bg-[#FAF8F5] border-t border-black/[0.04]'
     }`}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-24">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-16 sm:space-y-20">
         
         {/* Page Hero Header */}
         <ScrollReveal distance={16}>
@@ -96,43 +140,126 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
           </div>
         </ScrollReveal>
 
-        {/* Reserve Flagship Hampers Showcase */}
-        <div className="space-y-16">
-          {reserveProducts.map((product, idx) => (
-            <ScrollReveal key={product.id} delay={idx * 120} distance={24}>
-              <TiltCard maxTilt={isPremiumAnim ? 4 : 0}>
-                <div className={`rounded-3xl p-6 sm:p-10 lg:p-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center transition-smooth image-zoom-container ${
-                  isGlass 
-                    ? 'glass-panel text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/15 hover:border-[#D4AF37]/40' 
-                    : 'bg-white border border-neutral-200/70 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.07)]'
-                }`}>
-                  
-                  {/* Grand Photography */}
-                  <div className={`lg:col-span-6 relative aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-900/30 group ${
-                    idx % 2 === 1 ? 'lg:order-2' : ''
+        {/* Carousel Selection Tabs / Quick Switcher */}
+        <ScrollReveal delay={80} distance={12}>
+          <div className="flex items-center justify-center gap-3 overflow-x-auto no-scrollbar pb-2">
+            {reserveProducts.map((prod, idx) => {
+              const isActive = currentIndex === idx;
+              return (
+                <button
+                  key={prod.id}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`px-5 sm:px-6 py-3 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2.5 shrink-0 interactive-btn ${
+                    isGlass
+                      ? isActive
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] text-black font-semibold shadow-[0_4px_20px_rgba(212,175,55,0.4)] scale-102'
+                        : 'glass-pill text-white/80 hover:text-white border-white/15'
+                      : isActive
+                        ? 'bg-[#171717] text-white shadow-md'
+                        : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
+                  }`}
+                >
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
+                    isActive
+                      ? isGlass ? 'bg-black/20 text-black font-bold' : 'bg-white/20 text-white font-bold'
+                      : isGlass ? 'bg-white/10 text-[#D4AF37]' : 'bg-neutral-100 text-neutral-600'
                   }`}>
+                    0{idx + 1}
+                  </span>
+                  <span className="truncate max-w-[200px] sm:max-w-none">
+                    {idx === 0 ? 'Grand Luxe Heart & Acrylic (500 AED)' : 'Eternal Oud & Roses (450 AED)'}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </ScrollReveal>
+
+        {/* Interactive Luxury Carousel Stage */}
+        <ScrollReveal delay={120} distance={20}>
+          <div 
+            className="relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Previous Button (Desktop Floating Side Arrow) */}
+            <button
+              onClick={handlePrev}
+              className={`hidden md:flex absolute -left-5 lg:-left-7 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 shadow-xl active:scale-95 ${
+                isGlass
+                  ? 'bg-black/80 hover:bg-[#D4AF37] text-white hover:text-black border border-white/20 hover:border-[#D4AF37]'
+                  : 'bg-white hover:bg-neutral-900 text-neutral-800 hover:text-white border border-neutral-200 shadow-lg'
+              }`}
+              title="Previous Creation"
+              aria-label="Previous Creation"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Next Button (Desktop Floating Side Arrow) */}
+            <button
+              onClick={handleNext}
+              className={`hidden md:flex absolute -right-5 lg:-right-7 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 shadow-xl active:scale-95 ${
+                isGlass
+                  ? 'bg-black/80 hover:bg-[#D4AF37] text-white hover:text-black border border-white/20 hover:border-[#D4AF37]'
+                  : 'bg-white hover:bg-neutral-900 text-neutral-800 hover:text-white border border-neutral-200 shadow-lg'
+              }`}
+              title="Next Creation"
+              aria-label="Next Creation"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            {/* Main Active Carousel Card with 3D Tilt */}
+            {currentProduct && (
+              <TiltCard maxTilt={isPremiumAnim ? 3 : 0} className="w-full">
+                <div 
+                  key={currentProduct.id}
+                  className={`rounded-3xl p-6 sm:p-10 lg:p-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center transition-all duration-500 animate-fade-in image-zoom-container ${
+                    isGlass 
+                      ? 'glass-panel text-white shadow-[0_20px_60px_rgba(0,0,0,0.55)] border-white/15 hover:border-[#D4AF37]/40' 
+                      : 'bg-white border border-neutral-200/70 shadow-[0_4px_25px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]'
+                  }`}
+                >
+                  
+                  {/* Grand Product Photo Showcase */}
+                  <div className="lg:col-span-6 relative aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-900/40 group">
                     <img
-                      src={product.image}
-                      alt={product.name}
+                      src={currentProduct.image}
+                      alt={currentProduct.name}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out"
                     />
+                    
+                    {/* Badge Overlay */}
                     <div className="absolute top-4 left-4">
                       <span className={`text-[10px] tracking-widest uppercase font-semibold px-3.5 py-1.5 rounded-full shadow-sm transition-all ${
-                        isGlass ? 'bg-black/70 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/40' : 'bg-white/95 text-neutral-800'
+                        isGlass ? 'bg-black/75 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/40' : 'bg-white/95 text-neutral-800'
                       }`}>
-                        {product.badge}
+                        {currentProduct.badge}
+                      </span>
+                    </div>
+
+                    {/* Pagination Badge Overlay inside image */}
+                    <div className="absolute bottom-4 right-4">
+                      <span className={`text-[10px] tracking-wider uppercase font-medium px-3 py-1 rounded-full backdrop-blur-md ${
+                        isGlass ? 'bg-black/70 text-neutral-300 border border-white/10' : 'bg-white/90 text-neutral-700'
+                      }`}>
+                        0{currentIndex + 1} / 0{reserveProducts.length}
                       </span>
                     </div>
                   </div>
 
-                  {/* Editorial Information */}
-                  <div className={`lg:col-span-6 space-y-6 ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
+                  {/* Editorial & Ordering Narrative */}
+                  <div className="lg:col-span-6 space-y-6">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <span className={`text-[11px] uppercase tracking-[0.22em] font-semibold ${
                           isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'
                         }`}>
-                          Haute Reserve 0{idx + 1}
+                          Haute Reserve 0{currentIndex + 1}
                         </span>
                         <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#F3E5AB] border border-[#D4AF37]/30">
                           Signature Creation
@@ -141,17 +268,17 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                       <h3 className={`font-serif text-2xl sm:text-3xl lg:text-4xl font-normal leading-tight ${
                         isGlass ? 'text-white' : 'text-[#171717]'
                       }`}>
-                        {product.name}
+                        {currentProduct.name}
                       </h3>
                       <div className="flex items-baseline gap-2.5 pt-1">
                         <span className={`text-3xl font-normal ${
                           isGlass ? 'text-[#F3E5AB] font-medium' : 'text-neutral-900 font-medium'
                         }`}>
-                          {product.formattedPrice}
+                          {currentProduct.formattedPrice}
                         </span>
-                        {product.priceNote && (
+                        {currentProduct.priceNote && (
                           <span className={`text-xs ${isGlass ? 'text-amber-200/70' : 'text-neutral-500'}`}>
-                            {product.priceNote}
+                            {currentProduct.priceNote}
                           </span>
                         )}
                       </div>
@@ -160,11 +287,11 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                     <p className={`text-xs sm:text-sm leading-relaxed font-normal ${
                       isGlass ? 'text-neutral-300' : 'text-neutral-500'
                     }`}>
-                      {product.longDescription}
+                      {currentProduct.longDescription}
                     </p>
 
                     {/* Inclusions Highlights */}
-                    {product.items && (
+                    {currentProduct.items && (
                       <div className={`space-y-2 pt-3 border-t ${
                         isGlass ? 'border-white/10' : 'border-neutral-100'
                       }`}>
@@ -174,7 +301,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                           Artisan Inclusions:
                         </span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                          {product.items.slice(0, 6).map((item, i) => (
+                          {currentProduct.items.slice(0, 6).map((item, i) => (
                             <div key={i} className={`flex items-center gap-2 ${
                               isGlass ? 'text-neutral-300' : 'text-neutral-600'
                             }`}>
@@ -205,7 +332,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                     {/* Action Buttons */}
                     <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                       <button
-                        onClick={() => handleWhatsAppOrder(product)}
+                        onClick={() => handleWhatsAppOrder(currentProduct)}
                         className={`interactive-btn w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-semibold tracking-[0.12em] uppercase flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all ${
                           isGlass
                             ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.35)]'
@@ -218,16 +345,16 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                       </button>
 
                       <button
-                        onClick={() => handleAdd(product)}
+                        onClick={() => handleAdd(currentProduct)}
                         className={`interactive-btn w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-medium tracking-[0.12em] uppercase flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
-                          addedIds[product.id]
+                          addedIds[currentProduct.id]
                             ? 'bg-emerald-800 text-white'
                             : isGlass
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_4px_25px_rgba(212,175,55,0.4)]'
                               : 'bg-[#171717] hover:bg-neutral-800 text-white'
                         }`}
                       >
-                        {addedIds[product.id] ? (
+                        {addedIds[currentProduct.id] ? (
                           <>
                             <Check className="w-4 h-4" />
                             <span>Added to Bag</span>
@@ -241,7 +368,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                       </button>
 
                       <button
-                        onClick={() => onQuickView(product)}
+                        onClick={() => onQuickView(currentProduct)}
                         className={`interactive-btn w-full sm:w-auto px-5 py-3.5 rounded-full text-xs font-medium tracking-[0.12em] uppercase transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-95 ${
                           isGlass
                             ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
@@ -257,9 +384,64 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
 
                 </div>
               </TiltCard>
-            </ScrollReveal>
-          ))}
-        </div>
+            )}
+
+            {/* Mobile Carousel Navigation Controls */}
+            <div className="flex md:hidden items-center justify-between pt-6 px-2">
+              <button
+                onClick={handlePrev}
+                className={`px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-all ${
+                  isGlass ? 'glass-pill text-white border-white/20' : 'bg-white border border-neutral-200 text-neutral-700'
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Prev</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                {reserveProducts.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentIndex(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      currentIndex === idx 
+                        ? isGlass ? 'w-8 bg-[#D4AF37]' : 'w-8 bg-[#171717]'
+                        : isGlass ? 'w-2 bg-white/25' : 'w-2 bg-neutral-300'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={handleNext}
+                className={`px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-all ${
+                  isGlass ? 'glass-pill text-white border-white/20' : 'bg-white border border-neutral-200 text-neutral-700'
+                }`}
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Desktop Slide Indicator Dots */}
+            <div className="hidden md:flex items-center justify-center gap-2.5 pt-8">
+              {reserveProducts.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-400 ${
+                    currentIndex === idx 
+                      ? isGlass ? 'w-10 bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.6)]' : 'w-10 bg-[#171717]'
+                      : isGlass ? 'w-2.5 bg-white/20 hover:bg-white/40' : 'w-2.5 bg-neutral-300 hover:bg-neutral-400'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+          </div>
+        </ScrollReveal>
 
         {/* Detailed Provenance & Craftsmanship Grid */}
         <div className="space-y-10">
