@@ -1,10 +1,23 @@
 import React from 'react';
-import { ArrowDown, Gift, Sparkles } from 'lucide-react';
+import { ArrowDown, Sparkles } from 'lucide-react';
+import WhatsAppIcon from './icons/WhatsAppIcon';
 import ScrollReveal from './ScrollReveal';
 import { useTheme } from '../context/ThemeContext';
 
-export default function Hero({ onOpenBuilder }) {
+export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
   const { isGlass, isPremiumAnim } = useTheme();
+
+  const handleCustom = () => {
+    if (onOpenCustomWhatsApp) {
+      onOpenCustomWhatsApp();
+    } else if (onOpenBuilder) {
+      onOpenBuilder();
+    } else {
+      const phone = '971501487453';
+      const msg = encodeURIComponent('Hello Dazzling Hampers! I would like to inquire about a custom bespoke hamper curation.');
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const scrollToCollections = () => {
     const elem = document.getElementById('collections');
@@ -72,15 +85,15 @@ export default function Hero({ onOpenBuilder }) {
             </button>
 
             <button
-              onClick={onOpenBuilder}
+              onClick={handleCustom}
               className={`interactive-btn inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm active:scale-95 ${
                 isGlass
-                  ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
+                  ? 'glass-pill border-[#D4AF37]/40 text-[#F3E5AB] hover:border-[#D4AF37] hover:bg-white/10'
                   : 'bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 hover:border-neutral-400'
               }`}
             >
-              <Gift className={`w-3.5 h-3.5 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'}`} />
-              <span>Bespoke Studio</span>
+              <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
+              <span>Customise on WhatsApp</span>
             </button>
           </div>
         </ScrollReveal>

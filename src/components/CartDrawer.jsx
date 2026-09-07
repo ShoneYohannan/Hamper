@@ -14,7 +14,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
   const handleWhatsAppCheckout = () => {
     const phone = '971501487453';
     const itemsList = cartItems.map(item => `• ${item.name} x${item.quantity} (${item.currency === 'AED' ? `${item.price * item.quantity} AED` : `₹${(item.price * item.quantity).toLocaleString()}`})`).join('\n');
-    const msg = `Hello! I would like to place an order from The Hamper Co.:\n\n${itemsList}\n\nTotal: ${hasBouquets ? `${subtotal} AED` : `₹${subtotal.toLocaleString()}`}`;
+    const msg = `Hello! I would like to place an order from Dazzling Hampers:\n\n${itemsList}\n\nTotal: ${hasBouquets ? `${subtotal} AED` : `₹${subtotal.toLocaleString()}`}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
   };
 

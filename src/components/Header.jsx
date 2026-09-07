@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, ShoppingBag, Menu, X, Gift, Sparkles, Feather, Wand2, RefreshCw } from 'lucide-react';
+import { ShoppingBag, Menu, X, Gift } from 'lucide-react';
+import WhatsAppIcon from './icons/WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
 
 const BASE = import.meta.env.BASE_URL || '/';
@@ -7,13 +8,25 @@ const BASE = import.meta.env.BASE_URL || '/';
 export default function Header({ 
   cartCount, 
   onOpenCart, 
-  onOpenSearch, 
+  onOpenCustomWhatsApp,
   onOpenBuilder,
   currentPage = 'home',
   onNavigate
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { toggleTheme, isGlass, toggleAnimIntensity, isPremiumAnim } = useTheme();
+  const { isGlass } = useTheme();
+
+  const handleCustomCuration = () => {
+    if (onOpenCustomWhatsApp) {
+      onOpenCustomWhatsApp();
+    } else if (onOpenBuilder) {
+      onOpenBuilder();
+    } else {
+      const phone = '971501487453';
+      const msg = encodeURIComponent('Hello Dazzling Hampers! I would like to inquire about a custom hamper curation tailored for my special occasion.');
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const navItems = [
     { id: 'home', label: 'Home' },
@@ -68,7 +81,7 @@ export default function Header({
           </div>
         </button>
 
-        {/* Desktop Navigation Links - Shown on lg (1024px+) with clean spacing */}
+        {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center space-x-6 xl:space-x-9 flex-shrink-0">
           {navItems.map((item) => {
             const isActive = currentPage === item.id;
@@ -93,87 +106,22 @@ export default function Header({
           })}
         </nav>
 
-        {/* Right Actions, Animation Mode Toggle & Theme Switcher */}
+        {/* Right Actions: WhatsApp Custom Curation & Cart */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           
-          {/* Dual Style Theme Toggle Switch */}
+          {/* Custom Curation -> WhatsApp */}
           <button
-            onClick={toggleTheme}
-            title={isGlass ? 'Switch back to Editorial Minimalist style' : 'Switch to Luxe Glassmorphism style'}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-medium transition-all duration-300 border ${
+            onClick={handleCustomCuration}
+            title="Inquire about Custom Hamper Curation on WhatsApp"
+            className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
               isGlass
-                ? 'bg-white/10 hover:bg-white/15 border-white/20 text-[#F3E5AB] shadow-[0_0_12px_rgba(212,175,55,0.2)]'
-                : 'bg-white hover:bg-neutral-100 border-neutral-300 text-neutral-700 shadow-sm'
-            }`}
-          >
-            {isGlass ? (
-              <>
-                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse shrink-0" />
-                <span className="hidden xl:inline">Luxe Glass</span>
-                <span className="xl:hidden">Glass</span>
-              </>
-            ) : (
-              <>
-                <Feather className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
-                <span className="hidden xl:inline">Minimal</span>
-                <span className="xl:hidden">Min</span>
-              </>
-            )}
-          </button>
-
-          {/* Animation Intensity Switch: High-End FX vs Classic Minimal */}
-          <button
-            onClick={toggleAnimIntensity}
-            title={isPremiumAnim ? 'Revert to previous smooth minimal animations' : 'Activate high-end element animations (3D tilt, magnetic glow)'}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-medium transition-all duration-300 border ${
-              isPremiumAnim
-                ? isGlass
-                  ? 'bg-amber-500/20 border-[#D4AF37]/50 text-[#F3E5AB] shadow-[0_0_10px_rgba(212,175,55,0.25)]'
-                  : 'bg-amber-50 border-amber-300 text-amber-900 shadow-sm'
-                : isGlass
-                  ? 'bg-white/5 border-white/10 text-neutral-400'
-                  : 'bg-neutral-100 border-neutral-200 text-neutral-600'
-            }`}
-          >
-            {isPremiumAnim ? (
-              <>
-                <Wand2 className="w-3 h-3 text-[#D4AF37] shrink-0" />
-                <span className="hidden xl:inline">FX: High-End</span>
-                <span className="xl:hidden">FX</span>
-              </>
-            ) : (
-              <>
-                <RefreshCw className="w-3 h-3 text-neutral-400 shrink-0" />
-                <span className="hidden xl:inline">FX: Previous</span>
-                <span className="xl:hidden">Classic</span>
-              </>
-            )}
-          </button>
-
-          {/* Search Trigger */}
-          <button
-            onClick={onOpenSearch}
-            className={`p-2 sm:p-2.5 transition-colors rounded-full focus:outline-none ${
-              isGlass 
-                ? 'text-neutral-300 hover:text-white hover:bg-white/10' 
-                : 'text-neutral-700 hover:text-neutral-950 hover:bg-black/5'
-            }`}
-            aria-label="Search hampers"
-          >
-            <Search className="w-4 h-4" />
-          </button>
-
-          {/* Bespoke Studio Trigger */}
-          <button
-            onClick={onOpenBuilder}
-            className={`hidden xl:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
-              isGlass
-                ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
+                ? 'glass-pill border-[#D4AF37]/40 text-[#F3E5AB] hover:border-[#D4AF37] hover:bg-white/10 shadow-[0_0_12px_rgba(212,175,55,0.15)]'
                 : 'bg-transparent hover:bg-neutral-900 hover:text-white text-neutral-800 border border-neutral-300 hover:border-neutral-900'
             }`}
           >
-            <Gift className="w-3.5 h-3.5" />
-            <span>Custom Curation</span>
+            <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
+            <span className="hidden sm:inline">Custom Curation</span>
+            <span className="sm:hidden">Custom</span>
           </button>
 
           {/* Cart Trigger */}
@@ -230,37 +178,16 @@ export default function Header({
             );
           })}
 
-          <div className="pt-3 border-t border-white/10 space-y-2">
-            <div className="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-400">
-              <span>Theme Style:</span>
-              <button
-                onClick={toggleTheme}
-                className="font-semibold text-[#D4AF37]"
-              >
-                {isGlass ? '✨ Luxe Glass' : '📜 Minimal'}
-              </button>
-            </div>
-            
-            <div className="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-400">
-              <span>Animation Level:</span>
-              <button
-                onClick={toggleAnimIntensity}
-                className="font-semibold text-[#D4AF37]"
-              >
-                {isPremiumAnim ? '🪄 High-End (Active)' : '🌿 Classic Minimal'}
-              </button>
-            </div>
-          </div>
-
           <button
-            onClick={() => { setMobileMenuOpen(false); onOpenBuilder(); }}
-            className={`w-full text-center py-3 rounded-full font-medium text-xs tracking-widest uppercase mt-4 shadow-sm interactive-btn ${
+            onClick={() => { setMobileMenuOpen(false); handleCustomCuration(); }}
+            className={`w-full text-center py-3 rounded-full font-medium text-xs tracking-widest uppercase mt-4 shadow-sm interactive-btn flex items-center justify-center gap-2 ${
               isGlass
-                ? 'bg-[#D4AF37] text-black font-semibold'
+                ? 'bg-[#D4AF37] text-black font-semibold shadow-[0_0_15px_rgba(212,175,55,0.4)]'
                 : 'bg-[#171717] text-white'
             }`}
           >
-            Start Custom Curation
+            <WhatsAppIcon className="w-4 h-4 fill-current" />
+            <span>Customise on WhatsApp</span>
           </button>
         </div>
       )}

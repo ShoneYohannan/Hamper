@@ -1,12 +1,25 @@
 import React from 'react';
 import { steps } from '../data/products';
 import { Gift, HeartHandshake, Truck } from 'lucide-react';
+import WhatsAppIcon from './icons/WhatsAppIcon';
 import ScrollReveal from './ScrollReveal';
 import TiltCard from './TiltCard';
 import { useTheme } from '../context/ThemeContext';
 
-export default function Features({ onOpenBuilder }) {
+export default function Features({ onOpenCustomWhatsApp, onOpenBuilder }) {
   const { isGlass, isPremiumAnim } = useTheme();
+
+  const handleCustom = () => {
+    if (onOpenCustomWhatsApp) {
+      onOpenCustomWhatsApp();
+    } else if (onOpenBuilder) {
+      onOpenBuilder();
+    } else {
+      const phone = '971501487453';
+      const msg = encodeURIComponent('Hello Dazzling Hampers! I would like to inquire about a custom bespoke hamper curation.');
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const icons = [
     <Gift className={`w-4 h-4 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'}`} />,
@@ -88,15 +101,15 @@ export default function Features({ onOpenBuilder }) {
         <ScrollReveal delay={200} distance={12}>
           <div className="text-center pt-2">
             <button
-              onClick={onOpenBuilder}
+              onClick={handleCustom}
               className={`interactive-btn inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm active:scale-95 ${
                 isGlass
                   ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_4px_25px_rgba(212,175,55,0.35)]'
                   : 'bg-[#171717] hover:bg-neutral-800 text-white'
               }`}
             >
-              <Gift className={`w-3.5 h-3.5 ${isGlass ? 'text-[#0A0D0C]' : 'text-neutral-400'}`} />
-              <span>Design A Custom Hamper</span>
+              <WhatsAppIcon className="w-3.5 h-3.5 fill-[#0A0D0C]" />
+              <span>Customise on WhatsApp</span>
             </button>
           </div>
         </ScrollReveal>

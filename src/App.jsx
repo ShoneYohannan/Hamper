@@ -7,8 +7,6 @@ import Features from './components/Features';
 import ReviewsPage from './pages/ReviewsPage';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
-import SearchModal from './components/SearchModal';
-import HamperBuilderModal from './components/HamperBuilderModal';
 import QuickViewModal from './components/QuickViewModal';
 import Toast from './components/Toast';
 import { CheckCircle2 } from 'lucide-react';
@@ -19,8 +17,6 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('home');
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [builderOpen, setBuilderOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [toast, setToast] = useState(null);
   const [checkoutComplete, setCheckoutComplete] = useState(false);
@@ -132,6 +128,12 @@ export default function App() {
     setCartItems([]);
   };
 
+  const handleOpenCustomWhatsApp = () => {
+    const phone = '971501487453';
+    const message = 'Hello Dazzling Hampers! I would like to inquire about a custom hamper curation tailored for my special occasion.';
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  };
+
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -155,21 +157,20 @@ export default function App() {
         </div>
       )}
 
-      {/* Navigation Header with Active Scroll Indicator and Dual-Style Toggle */}
+      {/* Navigation Header with WhatsApp Custom Curation */}
       <Header 
         cartCount={totalCartCount}
         currentPage={activeSection}
         onNavigate={handleNavigate}
         onOpenCart={() => setCartOpen(true)}
-        onOpenSearch={() => setSearchOpen(true)}
-        onOpenBuilder={() => setBuilderOpen(true)}
+        onOpenCustomWhatsApp={handleOpenCustomWhatsApp}
       />
 
       {/* Main Continuous Boutique Experience with Scroll Spy Sections */}
       <main className="flex-grow relative z-10">
         {/* Section 1: Home / Hero */}
         <Hero 
-          onOpenBuilder={() => setBuilderOpen(true)} 
+          onOpenCustomWhatsApp={handleOpenCustomWhatsApp} 
         />
 
         {/* Section 2: Collections Catalog with Pill Filters, Search & Sort */}
@@ -186,7 +187,7 @@ export default function App() {
 
         {/* The Atelier 3-Step Process */}
         <Features 
-          onOpenBuilder={() => setBuilderOpen(true)}
+          onOpenCustomWhatsApp={handleOpenCustomWhatsApp}
         />
 
         {/* Section 4: Reviews, Verified Patron Stories & Submission Modal */}
@@ -207,22 +208,6 @@ export default function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onCheckout={handleCheckout}
-      />
-
-      <SearchModal 
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        onAddToCart={handleAddToCart}
-        onQuickView={(prod) => setQuickViewProduct(prod)}
-      />
-
-      <HamperBuilderModal 
-        isOpen={builderOpen}
-        onClose={() => setBuilderOpen(false)}
-        onAddCustomHamper={(customHamper) => {
-          handleAddToCart(customHamper);
-          setCartOpen(true);
-        }}
       />
 
       <QuickViewModal 
