@@ -135,40 +135,6 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
           </div>
         </ScrollReveal>
 
-        {/* Carousel Selection Tabs / Quick Switcher */}
-        <ScrollReveal delay={80} distance={12}>
-          <div className="flex items-center justify-center gap-3 overflow-x-auto no-scrollbar pb-2">
-            {reserveProducts.map((prod, idx) => {
-              const isActive = currentIndex === idx;
-              return (
-                <button
-                  key={prod.id}
-                  onClick={() => setCurrentIndex(idx)}
-                  className={`px-5 sm:px-6 py-3 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2.5 shrink-0 interactive-btn ${
-                    isGlass
-                      ? isActive
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] text-black font-semibold shadow-[0_4px_20px_rgba(212,175,55,0.4)] scale-102'
-                        : 'glass-pill text-white/80 hover:text-white border-white/15'
-                      : isActive
-                        ? 'bg-[#171717] text-white shadow-md'
-                        : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
-                  }`}
-                >
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
-                    isActive
-                      ? isGlass ? 'bg-black/20 text-black font-bold' : 'bg-white/20 text-white font-bold'
-                      : isGlass ? 'bg-white/10 text-[#D4AF37]' : 'bg-neutral-100 text-neutral-600'
-                  }`}>
-                    0{idx + 1}
-                  </span>
-                  <span className="truncate max-w-[220px] sm:max-w-none">
-                    {idx === 0 ? '1st: Grand Luxe Heart & Acrylic (500 AED)' : '2nd: Eternal Oud & Roses (450 AED)'}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </ScrollReveal>
 
         {/* Interactive Luxury Carousel Stage */}
         <ScrollReveal delay={120} distance={20}>

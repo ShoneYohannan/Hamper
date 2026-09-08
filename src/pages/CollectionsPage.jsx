@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useRef } from 'react';
-import { Eye, ShoppingBag, Check, SlidersHorizontal, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Eye, ShoppingBag, Check, SlidersHorizontal, Search } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
@@ -13,35 +13,8 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
   const [addedIds, setAddedIds] = useState({});
+  const sectionRef = useRef(null);
   const sliderRef = useRef(null);
-
-  const scrollSlider = (direction) => {
-    if (sliderRef.current) {
-      const scrollAmount = sliderRef.current.clientWidth * 0.82;
-      sliderRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handleWhatsAppOrder = (product, e) => {
-    if (e) e.stopPropagation();
-    const phone = product.whatsappNumber || siteSettings.whatsappNumber || '971501487453';
-    const defaultMsg = `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`;
-    const text = encodeURIComponent(product.whatsappMessage || defaultMsg);
-    window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
-  };
-
-
-  const handleAdd = (product, e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-    setAddedIds(prev => ({ ...prev, [product.id]: true }));
-    setTimeout(() => {
-      setAddedIds(prev => ({ ...prev, [product.id]: false }));
-    }, 1500);
-  };
 
   const filteredAndSortedProducts = useMemo(() => {
     let list = products.filter((p) => {
@@ -60,10 +33,83 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
     }
 
     return list;
-  }, [selectedCategory, sortBy, searchQuery]);
+  }, [products, selectedCategory, sortBy, searchQuery]);
+
+  // Mobile Scroll-Driven Animation:
+  // As the user scrolls down vertically on mobile, the hamper cards smoothly glide horizontally across the screen.
+  // The user does not need to swipe left or right.
+  useEffect(() => {
+    let animId = null;
+    let targetScrollLeft = 0;
+    let currentScrollLeft = 0;
+
+    const onScroll = () => {
+      if (window.innerWidth >= 768) return;
+      const el = sliderRef.current;
+      const sec = sectionRef.current;
+      if (!el || !sec) return;
+
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // Start gliding when top of section enters 85% of screen height
+      // Finish gliding when section center passes
+      const startPoint = vh * 0.85;
+      const endPoint = -rect.height * 0.35;
+      const totalDistance = startPoint - endPoint;
+      const currentProgressDist = startPoint - rect.top;
+
+      const progress = Math.max(0, Math.min(1, currentProgressDist / totalDistance));
+      const maxScroll = el.scrollWidth - el.clientWidth;
+
+      if (maxScroll > 0) {
+        targetScrollLeft = progress * maxScroll;
+      }
+    };
+
+    const tick = () => {
+      if (window.innerWidth < 768 && sliderRef.current) {
+        const delta = targetScrollLeft - currentScrollLeft;
+        if (Math.abs(delta) > 0.4) {
+          currentScrollLeft += delta * 0.14;
+          sliderRef.current.scrollLeft = currentScrollLeft;
+        }
+      }
+      animId = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    animId = requestAnimationFrame(tick);
+
+    onScroll();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, [filteredAndSortedProducts.length]);
+
+  const handleWhatsAppOrder = (product, e) => {
+    if (e) e.stopPropagation();
+    const phone = product.whatsappNumber || siteSettings.whatsappNumber || '971501487453';
+    const defaultMsg = `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`;
+    const text = encodeURIComponent(product.whatsappMessage || defaultMsg);
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleAdd = (product, e) => {
+    e.stopPropagation();
+    onAddToCart(product);
+    setAddedIds(prev => ({ ...prev, [product.id]: true }));
+    setTimeout(() => {
+      setAddedIds(prev => ({ ...prev, [product.id]: false }));
+    }, 1500);
+  };
 
   return (
-    <div id="collections" className={`py-20 lg:py-28 scroll-mt-20 transition-colors duration-400 ${
+    <div ref={sectionRef} id="collections" className={`py-20 lg:py-28 scroll-mt-20 transition-colors duration-400 ${
       isGlass ? 'bg-transparent border-t border-white/10' : 'bg-[#FAF8F5] border-t border-black/[0.04]'
     }`}>
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-12">
@@ -181,52 +227,15 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
           </div>
         )}
 
-        {/* Mobile Swipe Hint & Navigation Controls */}
-        {filteredAndSortedProducts.length > 1 && (
-          <div className="flex md:hidden items-center justify-between px-1 -mb-6 text-xs">
-            <span className={`text-[11px] font-medium tracking-wider uppercase flex items-center gap-1.5 ${
-              isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'
-            }`}>
-              <span>Swipe left & right to browse</span>
-            </span>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => scrollSlider('left')}
-                className={`p-2 rounded-full border transition-all active:scale-95 ${
-                  isGlass 
-                    ? 'bg-white/5 border-white/15 text-white hover:border-[#D4AF37]' 
-                    : 'bg-white border-neutral-200 text-neutral-800 shadow-sm'
-                }`}
-                aria-label="Previous hamper"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => scrollSlider('right')}
-                className={`p-2 rounded-full border transition-all active:scale-95 ${
-                  isGlass 
-                    ? 'bg-white/5 border-white/15 text-white hover:border-[#D4AF37]' 
-                    : 'bg-white border-neutral-200 text-neutral-800 shadow-sm'
-                }`}
-                aria-label="Next hamper"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* On Mobile: Horizontal card rail with left-to-right swipe (snap-x). On Desktop (md+): Multi-Column Grid */}
+        {/* On Mobile: Horizontal card rail animated automatically by vertical page scroll. On Desktop (md+): Multi-Column Grid */}
         <div 
           ref={sliderRef}
-          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10 overflow-x-auto md:overflow-x-visible pb-6 md:pb-0 pt-2 px-4 -mx-4 sm:px-6 sm:-mx-6 md:px-0 md:mx-0 snap-x snap-mandatory scroll-smooth no-scrollbar"
+          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10 overflow-x-auto md:overflow-x-visible pb-6 md:pb-0 pt-2 px-4 -mx-4 sm:px-6 sm:-mx-6 md:px-0 md:mx-0 no-scrollbar touch-pan-y pointer-events-auto"
         >
-          {filteredAndSortedProducts.map((product, index) => (
-            <ScrollReveal 
+          {filteredAndSortedProducts.map((product) => (
+            <div 
               key={product.id} 
-              delay={(index % 3) * 80} 
-              distance={20}
-              className="h-full shrink-0 w-[84vw] max-w-[325px] sm:w-[340px] snap-center md:w-auto md:max-w-none md:shrink md:snap-align-none"
+              className="h-full shrink-0 w-[84vw] max-w-[325px] sm:w-[340px] md:w-auto md:max-w-none md:shrink transition-transform duration-300"
             >
               <TiltCard
                 onClick={() => onQuickView(product)}
@@ -354,7 +363,7 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
                   </div>
                 </div>
               </TiltCard>
-            </ScrollReveal>
+            </div>
           ))}
         </div>
 
