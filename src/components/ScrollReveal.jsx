@@ -34,7 +34,7 @@ export default function ScrollReveal({
       },
       {
         threshold,
-        rootMargin: '0px 0px -40px 0px'
+        rootMargin: '120px 120px -20px 120px'
       }
     );
 

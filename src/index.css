@@ -71,6 +71,15 @@ html.theme-glass ::-webkit-scrollbar-thumb:hover {
   background: rgba(212, 175, 55, 0.6);
 }
 
+/* Hide scrollbar utility for mobile swiping */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Keyframes */
 @keyframes fadeIn {
   from { opacity: 0; }

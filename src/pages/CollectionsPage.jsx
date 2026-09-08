@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Eye, ShoppingBag, Check, SlidersHorizontal, Search } from 'lucide-react';
+import React, { useState, useMemo, useRef } from 'react';
+import { Eye, ShoppingBag, Check, SlidersHorizontal, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
@@ -13,6 +13,17 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
   const [addedIds, setAddedIds] = useState({});
+  const sliderRef = useRef(null);
+
+  const scrollSlider = (direction) => {
+    if (sliderRef.current) {
+      const scrollAmount = sliderRef.current.clientWidth * 0.82;
+      sliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleWhatsAppOrder = (product, e) => {
     if (e) e.stopPropagation();
@@ -170,14 +181,52 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
           </div>
         )}
 
-        {/* Multi-Column Grid with Interactive 3D TiltCards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+        {/* Mobile Swipe Hint & Navigation Controls */}
+        {filteredAndSortedProducts.length > 1 && (
+          <div className="flex md:hidden items-center justify-between px-1 -mb-6 text-xs">
+            <span className={`text-[11px] font-medium tracking-wider uppercase flex items-center gap-1.5 ${
+              isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'
+            }`}>
+              <span>Swipe left & right to browse</span>
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => scrollSlider('left')}
+                className={`p-2 rounded-full border transition-all active:scale-95 ${
+                  isGlass 
+                    ? 'bg-white/5 border-white/15 text-white hover:border-[#D4AF37]' 
+                    : 'bg-white border-neutral-200 text-neutral-800 shadow-sm'
+                }`}
+                aria-label="Previous hamper"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => scrollSlider('right')}
+                className={`p-2 rounded-full border transition-all active:scale-95 ${
+                  isGlass 
+                    ? 'bg-white/5 border-white/15 text-white hover:border-[#D4AF37]' 
+                    : 'bg-white border-neutral-200 text-neutral-800 shadow-sm'
+                }`}
+                aria-label="Next hamper"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* On Mobile: Horizontal card rail with left-to-right swipe (snap-x). On Desktop (md+): Multi-Column Grid */}
+        <div 
+          ref={sliderRef}
+          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10 overflow-x-auto md:overflow-x-visible pb-6 md:pb-0 pt-2 px-4 -mx-4 sm:px-6 sm:-mx-6 md:px-0 md:mx-0 snap-x snap-mandatory scroll-smooth no-scrollbar"
+        >
           {filteredAndSortedProducts.map((product, index) => (
             <ScrollReveal 
               key={product.id} 
               delay={(index % 3) * 80} 
               distance={20}
-              className="h-full"
+              className="h-full shrink-0 w-[84vw] max-w-[325px] sm:w-[340px] snap-center md:w-auto md:max-w-none md:shrink md:snap-align-none"
             >
               <TiltCard
                 onClick={() => onQuickView(product)}
