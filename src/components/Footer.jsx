@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Lock } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
+import { useCms } from '../context/CmsContext';
 
 const BASE = import.meta.env.BASE_URL || '/';
 
 export default function Footer({ onSubscribe, onNavigate }) {
+  const { openAdmin } = useCms();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -90,12 +92,20 @@ export default function Footer({ onSubscribe, onNavigate }) {
             <span>© {new Date().getFullYear()} All rights reserved.</span>
           </div>
 
-          {/* Clean Navigation Links */}
+          {/* Clean Navigation Links & Atelier CMS Trigger */}
           <div className="flex flex-wrap items-center gap-6 text-[11px] uppercase tracking-wider text-neutral-400">
             <button onClick={(e) => handleNav('home', e)} className="hover:text-white transition-colors">Home</button>
             <button onClick={(e) => handleNav('collections', e)} className="hover:text-white transition-colors">Collections</button>
             <button onClick={(e) => handleNav('reserve', e)} className="hover:text-white transition-colors">The Reserve</button>
             <button onClick={(e) => handleNav('reviews', e)} className="hover:text-white transition-colors">Reviews</button>
+            <button 
+              onClick={() => openAdmin()}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 transition-colors"
+              title="Open Atelier CMS Portal"
+            >
+              <Lock className="w-3 h-3" />
+              <span>Atelier CMS</span>
+            </button>
           </div>
 
         </div>
@@ -103,3 +113,4 @@ export default function Footer({ onSubscribe, onNavigate }) {
     </footer>
   );
 }
+

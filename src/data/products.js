@@ -67,10 +67,119 @@ export const reserveProducts = [
       'Letterpress Gold-Foil "Happy Anniversary" Greeting Card with Interlocking Rings',
       'White-Glove Dispatch in Temperature-Controlled Velvet Protective Packaging'
     ]
+  },
+  {
+    id: 'grand-car-trunk-surprise-reserve',
+    name: 'Grand Car Trunk Celebration Surprise Experience',
+    badge: 'THE RESERVE · 400 AED',
+    badgeType: 'gold',
+    price: 400,
+    formattedPrice: '400 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Grand Car Trunk Celebration Surprise Experience for 400 AED (Delivery charges apply).',
+    description: 'Bespoke vehicle trunk celebration experience with custom birthday cake showcase, hanging memory Polaroids, dual confectionery bouquets, warm LED ambient lighting, and celebratory bunting.',
+    longDescription: 'An extraordinary celebration surprise staged directly inside a luxury vehicle boot or trunk. Features an illuminated showcase displaying a handcrafted birthday cake, a custom crimson velvet rose bouquet, a deluxe Cadbury and Galaxy confectionery bouquet, hanging satin ribbon with personal Polaroid memories, "Happy Birthday" bunting, warm LED ambient candles and fairy lights, an ornate golden vanity mirror, and floating balloons over a plush white faux fur base.',
+    rating: 5.0,
+    reviewCount: 31,
+    image: `${BASE}images/grand_car_trunk_surprise_reserve.jpg`,
+    category: 'reserve',
+    items: [
+      'Complete Bespoke Luxury Vehicle Boot / Trunk Celebration Experience Setup',
+      'Handcrafted Gourmet Celebration Cake in Illuminated Showcase Display',
+      'Deluxe Cadbury & Galaxy Chocolate & Treat Bloom Bouquet',
+      'Crimson Velvet Rose & Memory Photo Bloom Bouquet',
+      'Hanging Ribbon Memory Polaroid Keepsake Prints & "Happy Birthday" Bunting',
+      'Warm Amber LED Ambient Pillar & Fairy String Lighting',
+      'Gleaming Ornate Vanity Mirror Accent & Helium Gold Balloons',
+      'White Faux Fur Base Blanket with Complete On-Site Styling'
+    ]
   }
 ];
 
 export const products = [
+  {
+    id: 'baby-boy-luxury-trunk',
+    name: 'Little Prince Deluxe Baby Boy Gift Trunk',
+    badge: 'BABY BOY',
+    badgeType: 'sky',
+    price: 200,
+    formattedPrice: '200 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Little Prince Deluxe Baby Boy Gift Trunk for 200 AED (Delivery charges apply).',
+    description: 'Luxe textured trunk with "It\'s A Boy" emblem, organic striped onesie, soft cotton garments, baby rattles, and sky-blue keepsake roses.',
+    longDescription: 'A distinguished celebration hamper crafted to welcome a precious newborn baby boy. Encased in a deluxe textured woven keepsake trunk tied with a soft satin bow, featuring an embossed "It\'s A Boy" badge, organic cotton striped rompers and sleepsuits, plush booties, an interactive rattle toy set, and delicate sky-blue keepsake roses.',
+    rating: 5.0,
+    reviewCount: 29,
+    image: `${BASE}images/baby_boy_luxury_hamper.jpg`,
+    category: 'baby-boy',
+    items: [
+      'Deluxe Textured Keepsake Trunk with Satin Ribbon Bow',
+      'Embossed "It\'s A Boy" Signature Badge',
+      'Organic Cotton Striped Romper & Onesie Apparel',
+      'Plush Cotton Baby Booties & Soft Cuddle Apparel',
+      'Interactive Baby Rattle Set',
+      'Sky-Blue Silk Keepsake Roses & Organza Ribbon Accents',
+      'Personalized Welcome Baby Boy Greeting Card'
+    ]
+  },
+  {
+    id: 'shirt-and-half-kg-cake-hamper',
+    name: "Gentleman's Shirt & Handcrafted Cake Acrylic Trunk",
+    badge: 'BESTSELLER',
+    badgeType: 'gold',
+    price: 200,
+    formattedPrice: '200 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: "Hello! I would like to order the Gentleman's Shirt & Handcrafted Cake Acrylic Trunk for 200 AED (Delivery charges apply).",
+    description: 'Crystal-clear luxury acrylic trunk featuring a fine formal shirt, velvet red roses, Ferrero Rocher, personalized couple illustration card, and a separate round celebratory box with 1/2 kg gourmet heart-dusted cake.',
+    longDescription: 'The quintessential celebration gift pairing exquisite confectionery with fine wardrobe attire. Presented in a crystal-clear acrylic keepsake case tied with gold-patterned burgundy ribbon, holding a premium men\'s formal shirt, deep crimson velvet roses, golden Ferrero Rocher truffles, a personalized couple portrait card, and accompanied by a separate cylindrical showcase box housing a 1/2 kg gourmet vanilla-cream cake decorated with ruby red hearts and golden "Happy Birthday" script.',
+    rating: 5.0,
+    reviewCount: 46,
+    image: `${BASE}images/shirt_and_half_kg_cake_hamper.jpg`,
+    category: 'festive',
+    items: [
+      'Crystal-Clear Acrylic Display Trunk with Satin Gold-Pattern Ribbon',
+      'Handcrafted 1/2 kg Celebration Cake with Heart Accents in Round Showcase Box',
+      'Premium Men\'s Formal Shirt / Attire Presentation',
+      'Golden Ferrero Rocher Hazelnut Truffles (x2)',
+      'Silk Velvet Crimson Roses with Gold "Happy Birthday" Laser-Cut Script',
+      'Personalized Custom Couple Sketch / Keepsake Birthday Card',
+      'Luxury Burgundy Satin Ribbon & Gold Foil Toppers'
+    ]
+  },
+  {
+    id: 'first-birthday-celebration-hamper',
+    name: 'First Birthday Princess Celebration Hamper Basket',
+    badge: '1ST BIRTHDAY',
+    badgeType: 'rose',
+    price: 200,
+    formattedPrice: '200 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the First Birthday Princess Celebration Hamper Basket for 200 AED (Delivery charges apply).',
+    description: 'Handwoven wicker basket adorned with pink satin bows, crowned "1" milestone badge, plush winged dragon companion, floral headbands, pastel baby apparel, and gold "Happy Birthday" script.',
+    longDescription: 'Make a little one\'s first milestone unforgettable. Hand-arranged in a charcoal woven wicker basket finished with lace trim and pink gingham ribbon bows. Features a sparkling crowned rose-gold "1" milestone plaque, an ultra-soft plush pink winged dragon, a set of handmade floral and pearl baby headbands, soft mint and pink apparel, and elegant silk roses.',
+    rating: 5.0,
+    reviewCount: 38,
+    image: `${BASE}images/first_birthday_celebration_hamper.jpg`,
+    category: 'baby-girl',
+    items: [
+      'Handwoven Charcoal Basket with Delicate Lace Border & Pink Satin Bows',
+      'Crowned Rose-Gold "1" Milestone Birthday Plaque',
+      'Plush Pink Winged Dragon Keepsake Soft Toy',
+      'Handmade Floral & Pearl Baby Headband Collection',
+      'Organic Pastel Mint & Pink Cotton Apparel',
+      'Silk Roses & Golden "Happy Birthday" Keepsake Topper',
+      'Personalized 1st Birthday Wishes Greeting Card'
+    ]
+  },
   {
     id: 'personalized-memories-chocolate-bouquet',
     name: 'Personalized Photo & Chocolate Bloom Bouquet',

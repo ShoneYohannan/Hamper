@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Menu, X, Gift } from 'lucide-react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 import WhatsAppIcon from './icons/WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
+import { useCms } from '../context/CmsContext';
+
 
 const BASE = import.meta.env.BASE_URL || '/';
 
@@ -15,6 +17,7 @@ export default function Header({
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isGlass } = useTheme();
+  const { siteSettings } = useCms();
 
   const handleCustomCuration = () => {
     if (onOpenCustomWhatsApp) {
@@ -22,8 +25,8 @@ export default function Header({
     } else if (onOpenBuilder) {
       onOpenBuilder();
     } else {
-      const phone = '971501487453';
-      const msg = encodeURIComponent('Hello Dazzling Hampers! I would like to inquire about a custom hamper curation tailored for my special occasion.');
+      const phone = siteSettings.whatsappNumber || '971501487453';
+      const msg = encodeURIComponent(siteSettings.whatsappMessage || 'Hello Dazzling Hampers! I would like to inquire about a custom hamper curation tailored for my special occasion.');
       window.open(`https://wa.me/${phone}?text=${msg}`, '_blank', 'noopener,noreferrer');
     }
   };
@@ -55,9 +58,10 @@ export default function Header({
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em]">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-          <span>Handcrafted Luxury Gifting · Dispatching across <strong className="font-semibold text-white">India · UAE · Qatar</strong></span>
+          <span>{siteSettings.announcementText || 'Handcrafted Luxury Gifting · Dispatching across India · UAE · Qatar'}</span>
         </div>
       </div>
+
 
       <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 h-18 sm:h-22 flex items-center justify-between gap-3 lg:gap-8">
         

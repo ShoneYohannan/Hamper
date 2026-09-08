@@ -3,9 +3,11 @@ import { ArrowDown, Sparkles } from 'lucide-react';
 import WhatsAppIcon from './icons/WhatsAppIcon';
 import ScrollReveal from './ScrollReveal';
 import { useTheme } from '../context/ThemeContext';
+import { useCms } from '../context/CmsContext';
 
 export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
   const { isGlass, isPremiumAnim } = useTheme();
+  const { siteSettings } = useCms();
 
   const handleCustom = () => {
     if (onOpenCustomWhatsApp) {
@@ -13,8 +15,8 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
     } else if (onOpenBuilder) {
       onOpenBuilder();
     } else {
-      const phone = '971501487453';
-      const msg = encodeURIComponent('Hello Dazzling Hampers! I would like to inquire about a custom bespoke hamper curation.');
+      const phone = siteSettings.whatsappNumber || '971501487453';
+      const msg = encodeURIComponent(siteSettings.whatsappMessage || 'Hello Dazzling Hampers! I would like to inquire about a custom bespoke hamper curation.');
       window.open(`https://wa.me/${phone}?text=${msg}`, '_blank', 'noopener,noreferrer');
     }
   };
@@ -44,7 +46,7 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
               : 'bg-white border border-neutral-200/80 text-neutral-500 shadow-[0_1px_3px_rgba(0,0,0,0.02)]'
           }`}>
             <Sparkles className={`w-3.5 h-3.5 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'} ${isPremiumAnim ? 'animate-pulse' : ''}`} />
-            <span>Delivering Across India · UAE · Qatar</span>
+            <span>{siteSettings.heroBadge || 'Delivering Across India · UAE · Qatar'}</span>
           </div>
         </ScrollReveal>
 
@@ -55,8 +57,7 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
               ? 'text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]'
               : 'text-[#171717]'
           }`}>
-            The art of gifting, elevated for life’s{' '}
-            <span className={isGlass ? 'text-gradient-gold' : ''}>sweetest milestones.</span>
+            {siteSettings.heroHeadline || 'The art of gifting, elevated for life’s sweetest milestones.'}
           </h1>
         </ScrollReveal>
 
@@ -65,9 +66,10 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
           <p className={`text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed font-normal transition-colors duration-300 px-2 sm:px-0 ${
             isGlass ? 'text-neutral-300' : 'text-neutral-500'
           }`}>
-            From heirloom newborn keepsakes to vintage grand reserves, explore handcrafted hampers designed to evoke wonder from the very first ribbon pull.
+            {siteSettings.heroSubtitle || 'From heirloom newborn keepsakes to vintage grand reserves, explore handcrafted hampers designed to evoke wonder from the very first ribbon pull.'}
           </p>
         </ScrollReveal>
+
 
         {/* Action Buttons with Interactive Shimmer & Magnetic feel */}
         <ScrollReveal delay={260} distance={14}>

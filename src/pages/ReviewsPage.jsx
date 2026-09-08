@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Star, CheckCircle2, MessageSquare, Send } from 'lucide-react';
-import { testimonials } from '../data/products';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import { useTheme } from '../context/ThemeContext';
+import { useCms } from '../context/CmsContext';
 
 export default function ReviewsPage() {
   const { isGlass, isPremiumAnim } = useTheme();
+  const { testimonials, addTestimonial } = useCms();
   const [selectedOccasion, setSelectedOccasion] = useState('all');
-  const [reviewsList, setReviewsList] = useState(testimonials);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [newReview, setNewReview] = useState({ author: '', location: '', hamper: '', quote: '', rating: '5' });
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
@@ -22,25 +22,24 @@ export default function ReviewsPage() {
   ];
 
   const filteredReviews = selectedOccasion === 'all'
-    ? reviewsList
-    : reviewsList.filter(r => r.occasion === selectedOccasion);
+    ? testimonials
+    : testimonials.filter(r => r.occasion === selectedOccasion);
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     if (newReview.author && newReview.quote) {
       const added = {
-        id: Date.now(),
         rating: `${newReview.rating} / 5`,
         stars: Number(newReview.rating),
         quote: `“${newReview.quote}”`,
         author: newReview.author,
-        location: newReview.location || 'India',
+        location: newReview.location || 'UAE & India',
         occasion: 'reserve',
         occasionLabel: 'Verified Patron',
         hamper: newReview.hamper || 'Curated Hamper',
         date: 'Just now'
       };
-      setReviewsList([added, ...reviewsList]);
+      addTestimonial(added);
       setSubmittedSuccess(true);
       setTimeout(() => {
         setSubmittedSuccess(false);
@@ -49,6 +48,7 @@ export default function ReviewsPage() {
       }, 2000);
     }
   };
+
 
   return (
     <div id="reviews" className={`py-20 lg:py-28 scroll-mt-20 transition-colors duration-400 ${

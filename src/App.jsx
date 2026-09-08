@@ -9,17 +9,22 @@ import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import QuickViewModal from './components/QuickViewModal';
 import Toast from './components/Toast';
+import AdminPortal from './components/admin/AdminPortal';
+import AdminLoginModal from './components/admin/AdminLoginModal';
 import { CheckCircle2 } from 'lucide-react';
 import { useTheme } from './context/ThemeContext';
+import { useCms } from './context/CmsContext';
 
 export default function App() {
   const { isGlass } = useTheme();
+  const { siteSettings, openAdmin } = useCms();
   const [activeSection, setActiveSection] = useState('home');
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [toast, setToast] = useState(null);
   const [checkoutComplete, setCheckoutComplete] = useState(false);
+
 
   // Scroll Spy: Tracks which section is currently in view and underlines it in the header
   useEffect(() => {
@@ -76,19 +81,27 @@ export default function App() {
     }
   };
 
-  // Handle direct hash navigation on initial load (e.g. #collections, #reserve, #reviews)
+  // Handle direct hash navigation on initial load (e.g. #collections, #reserve, #reviews, #admin)
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    if (hash && ['collections', 'reserve', 'reviews'].includes(hash)) {
-      setTimeout(() => {
-        const el = document.getElementById(hash);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-          setActiveSection(hash);
-        }
-      }, 250);
-    }
-  }, []);
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      if (hash === 'admin' || hash === 'cms') {
+        openAdmin();
+      } else if (hash && ['collections', 'reserve', 'reviews'].includes(hash)) {
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            setActiveSection(hash);
+          }
+        }, 250);
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, [openAdmin]);
 
   const showToast = (title, message, type = 'cart') => {
     setToast({ title, message, type });
@@ -129,10 +142,11 @@ export default function App() {
   };
 
   const handleOpenCustomWhatsApp = () => {
-    const phone = '971501487453';
-    const message = 'Hello Dazzling Hampers! I would like to inquire about a custom hamper curation tailored for my special occasion.';
+    const phone = siteSettings.whatsappNumber || '971501487453';
+    const message = siteSettings.whatsappMessage || 'Hello Dazzling Hampers! I would like to inquire about a custom hamper curation tailored for my special occasion.';
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   };
+
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -260,6 +274,12 @@ export default function App() {
         </div>
       )}
 
+      {/* Admin CMS Suite & Login Modal */}
+      <AdminPortal />
+      <AdminLoginModal />
+
     </div>
   );
 }
+
+

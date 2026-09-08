@@ -1,14 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { ShoppingBag, Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
-import { reserveProducts } from '../data/products';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import { useTheme } from '../context/ThemeContext';
+import { useCms } from '../context/CmsContext';
 
 export default function ReservePage({ onAddToCart, onQuickView }) {
   const { isGlass, isPremiumAnim } = useTheme();
-  // Always start with 500 AED hamper at first (index 0)
+  const { reserveProducts, siteSettings } = useCms();
+  // Always start with first Reserve hamper (index 0)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [addedIds, setAddedIds] = useState({});
   const [inquirySent, setInquirySent] = useState(false);
@@ -18,13 +19,16 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
-  const currentProduct = reserveProducts[currentIndex] || reserveProducts[0];
+  const safeIndex = Math.min(currentIndex, Math.max(0, reserveProducts.length - 1));
+  const currentProduct = reserveProducts[safeIndex] || reserveProducts[0] || null;
 
   const handleNext = () => {
+    if (reserveProducts.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % reserveProducts.length);
   };
 
   const handlePrev = () => {
+    if (reserveProducts.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + reserveProducts.length) % reserveProducts.length);
   };
 
@@ -40,9 +44,9 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
     if (!touchStartX.current || !touchEndX.current) return;
     const diff = touchStartX.current - touchEndX.current;
     if (diff > 50) {
-      handleNext(); // swipe left -> next (450 AED)
+      handleNext();
     } else if (diff < -50) {
-      handlePrev(); // swipe right -> prev (500 AED)
+      handlePrev();
     }
     touchStartX.current = null;
     touchEndX.current = null;
@@ -59,12 +63,14 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
   };
 
   const handleWhatsAppOrder = (product) => {
-    const phone = product.whatsappNumber || '971501487453';
+    if (!product) return;
+    const phone = product.whatsappNumber || siteSettings.whatsappNumber || '971501487453';
     const text = encodeURIComponent(
       product.whatsappMessage || `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`
     );
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
+
 
   const handleInquirySubmit = (e) => {
     e.preventDefault();

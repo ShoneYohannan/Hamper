@@ -1,13 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { Eye, ShoppingBag, Check, SlidersHorizontal, Search } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
-import { products, categories } from '../data/products';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import { useTheme } from '../context/ThemeContext';
+import { useCms } from '../context/CmsContext';
 
 export default function CollectionsPage({ onAddToCart, onQuickView }) {
   const { isGlass, isPremiumAnim } = useTheme();
+  const { products, categories, siteSettings } = useCms();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,11 +16,12 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
 
   const handleWhatsAppOrder = (product, e) => {
     if (e) e.stopPropagation();
-    const phone = product.whatsappNumber || '971501487453';
+    const phone = product.whatsappNumber || siteSettings.whatsappNumber || '971501487453';
     const defaultMsg = `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`;
     const text = encodeURIComponent(product.whatsappMessage || defaultMsg);
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
+
 
   const handleAdd = (product, e) => {
     e.stopPropagation();
