@@ -26,8 +26,8 @@ import {
   SUPABASE_SQL_SETUP_SCRIPT
 } from '../services/supabase';
 
-const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v6';
-const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v6';
+const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v9';
+const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v9';
 const ADMIN_AUTH_KEY = 'dazzling_hampers_admin_auth';
 const ADMIN_PIN_KEY = 'dazzling_hampers_admin_pin';
 const DEFAULT_PIN = '2026';
@@ -127,7 +127,9 @@ export function CmsProvider({ children }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.testimonials && Array.isArray(parsed.testimonials)) {
-          return parsed.testimonials;
+          const dummyAuthors = ['Pooja K.', 'Vikram S.', 'Ananya R.', 'Rajiv M.', 'Meera & Dev', 'Sunita P.'];
+          const cleaned = parsed.testimonials.filter(t => !dummyAuthors.includes(t.author));
+          if (cleaned.length > 0) return cleaned;
         }
       }
     } catch (e) {

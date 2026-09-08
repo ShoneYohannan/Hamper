@@ -111,7 +111,7 @@ export default function HomePage({ onOpenBuilder, onNavigate, onAddToCart, onQui
             onClick={() => onNavigate('reviews')}
             className="inline-flex items-center gap-2 border border-neutral-300 hover:border-neutral-900 px-7 py-3 rounded-full text-xs font-medium uppercase tracking-[0.14em] text-neutral-800 hover:text-black transition-all group bg-white shadow-sm"
           >
-            <span>Read All Client Reviews ({6})</span>
+            <span>Read Client Reviews</span>
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
           </button>
         </div>

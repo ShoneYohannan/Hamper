@@ -14,10 +14,9 @@ export default function ReviewsPage() {
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
   const occasionFilters = [
-    { id: 'all', label: 'All Stories' },
-    { id: 'baby', label: 'Newborn Keepsakes' },
-    { id: 'reserve', label: 'The Reserve' },
-    { id: 'festive', label: 'Festive & Pantry' }
+    { id: 'all', label: 'All Verified Stories' },
+    { id: 'bouquets', label: 'Bouquets & Cakes' },
+    { id: 'reserve', label: 'Express Concierge' }
   ];
 
   const filteredReviews = selectedOccasion === 'all'
@@ -143,7 +142,7 @@ export default function ReviewsPage() {
         </ScrollReveal>
 
         {/* Reviews Multi-Column Grid with 3D TiltCards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className={`grid grid-cols-1 ${filteredReviews.length <= 2 ? 'md:grid-cols-2 max-w-5xl mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'} gap-8`}>
           {filteredReviews.map((item, index) => (
             <ScrollReveal key={item.id} delay={(index % 3) * 80} distance={18} className="h-full">
               <TiltCard maxTilt={isPremiumAnim ? 6 : 0} className="h-full">
@@ -173,27 +172,47 @@ export default function ReviewsPage() {
                     </div>
 
                     {/* Quote Text */}
-                    <p className={`font-serif text-lg font-normal leading-relaxed ${
+                    <p className={`font-serif text-lg sm:text-xl font-normal leading-relaxed ${
                       isGlass ? 'text-white' : 'text-[#171717]'
                     }`}>
                       {item.quote}
                     </p>
                   </div>
 
-                  {/* Author, Hamper & Date Footer */}
-                  <div className={`pt-4 border-t space-y-1.5 text-xs font-normal ${
-                    isGlass ? 'border-white/10 text-neutral-300' : 'border-neutral-100 text-neutral-500'
+                  {/* Author, Hamper & Date Footer - High Contrast & Clearly Visible */}
+                  <div className={`pt-5 border-t space-y-2 text-xs ${
+                    isGlass ? 'border-white/15' : 'border-neutral-200'
                   }`}>
-                    <div className={`flex items-center justify-between font-medium ${
-                      isGlass ? 'text-white' : 'text-neutral-800'
-                    }`}>
-                      <span>{item.author}</span>
-                      <span className={`uppercase font-normal ${isGlass ? 'text-neutral-400' : 'text-neutral-400'}`}>{item.location}</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`font-semibold text-sm tracking-tight ${
+                          isGlass ? 'text-white' : 'text-neutral-900'
+                        }`}>
+                          {item.author}
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                          isGlass 
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30' 
+                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        }`}>
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          <span>WhatsApp Verified</span>
+                        </span>
+                      </div>
+                      <span className={`text-[11px] uppercase tracking-wider font-medium ${
+                        isGlass ? 'text-[#F3E5AB]' : 'text-neutral-500'
+                      }`}>
+                        {item.location}
+                      </span>
                     </div>
+
                     {item.hamper && (
-                      <p className={`text-[11px] italic line-clamp-1 ${isGlass ? 'text-[#D4AF37]/80' : 'text-neutral-400'}`}>
-                        {item.hamper} · {item.date || 'Verified Patron'}
-                      </p>
+                      <div className={`text-xs font-medium flex items-center justify-between gap-2 pt-0.5 ${
+                        isGlass ? 'text-[#D4AF37]' : 'text-neutral-700'
+                      }`}>
+                        <span>{item.hamper}</span>
+                        <span className="text-[11px] opacity-75 font-normal shrink-0">{item.date || 'Verified Order'}</span>
+                      </div>
                     )}
                   </div>
                 </div>

@@ -20,8 +20,8 @@ export default function Testimonials() {
           </p>
         </div>
 
-        {/* Testimonials 3 Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Testimonials 2 Grid */}
+        <div className={`grid grid-cols-1 ${testimonials.length <= 2 ? 'md:grid-cols-2 max-w-5xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
           {testimonials.map((item) => (
             <div 
               key={item.id}
@@ -29,22 +29,36 @@ export default function Testimonials() {
             >
               <div className="space-y-4">
                 {/* 5 Clean Minimal Stars */}
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-[#171717] text-[#171717]" />
-                  ))}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    {[...Array(item.stars || 5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-[#171717] text-[#171717]" />
+                    ))}
+                  </div>
+                  {item.occasionLabel && (
+                    <span className="text-[10px] tracking-wider uppercase font-medium px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600">
+                      {item.occasionLabel}
+                    </span>
+                  )}
                 </div>
 
                 {/* Quote Text */}
-                <p className="font-serif text-lg sm:text-xl text-[#171717] font-normal leading-relaxed">
+                <p className="font-serif text-base sm:text-lg text-[#171717] font-normal leading-relaxed">
                   {item.quote}
                 </p>
               </div>
 
-              {/* Author & Location */}
-              <div className="pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-medium text-neutral-400">
-                <span className="text-neutral-800 font-medium">{item.author}</span>
-                <span className="tracking-wider uppercase">{item.location}</span>
+              {/* Author & Location Footer */}
+              <div className="pt-4 border-t border-neutral-100 space-y-1 text-xs">
+                <div className="flex items-center justify-between font-medium text-neutral-800">
+                  <span className="font-semibold text-neutral-900">{item.author}</span>
+                  <span className="tracking-wider uppercase text-[11px] text-neutral-500 font-medium">{item.location}</span>
+                </div>
+                {item.hamper && (
+                  <p className="text-[11px] text-neutral-500 font-normal">
+                    {item.hamper}
+                  </p>
+                )}
               </div>
             </div>
           ))}
