@@ -13,8 +13,17 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
   const [addedIds, setAddedIds] = useState({});
-  const sectionRef = useRef(null);
-  const sliderRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
+  const trackRef = useRef(null);
+  const cardsRowRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [maxScrollWidth, setMaxScrollWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const filteredAndSortedProducts = useMemo(() => {
     let list = products.filter((p) => {
@@ -35,61 +44,63 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
     return list;
   }, [products, selectedCategory, sortBy, searchQuery]);
 
-  // Mobile Scroll-Driven Animation:
-  // As the user scrolls down vertically on mobile, the hamper cards smoothly glide horizontally across the screen.
-  // The user does not need to swipe left or right.
+  // Measure max horizontal travel width on mobile
   useEffect(() => {
-    let animId = null;
-    let targetScrollLeft = 0;
-    let currentScrollLeft = 0;
+    if (!isMobile) return;
 
-    const onScroll = () => {
-      if (window.innerWidth >= 768) return;
-      const el = sliderRef.current;
-      const sec = sectionRef.current;
-      if (!el || !sec) return;
-
-      const rect = sec.getBoundingClientRect();
-      const vh = window.innerHeight;
-
-      // Start gliding when top of section enters 85% of screen height
-      // Finish gliding when section center passes
-      const startPoint = vh * 0.85;
-      const endPoint = -rect.height * 0.35;
-      const totalDistance = startPoint - endPoint;
-      const currentProgressDist = startPoint - rect.top;
-
-      const progress = Math.max(0, Math.min(1, currentProgressDist / totalDistance));
-      const maxScroll = el.scrollWidth - el.clientWidth;
-
-      if (maxScroll > 0) {
-        targetScrollLeft = progress * maxScroll;
+    const measure = () => {
+      if (cardsRowRef.current) {
+        const rowW = cardsRowRef.current.scrollWidth;
+        const viewW = window.innerWidth;
+        const max = Math.max(0, rowW - viewW + 36);
+        setMaxScrollWidth(max);
       }
     };
 
-    const tick = () => {
-      if (window.innerWidth < 768 && sliderRef.current) {
-        const delta = targetScrollLeft - currentScrollLeft;
-        if (Math.abs(delta) > 0.4) {
-          currentScrollLeft += delta * 0.14;
-          sliderRef.current.scrollLeft = currentScrollLeft;
-        }
+    measure();
+    const t = setTimeout(measure, 150);
+    window.addEventListener('resize', measure);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('resize', measure);
+    };
+  }, [isMobile, filteredAndSortedProducts]);
+
+  // Mobile Scroll-Driven Animation:
+  // As the user scrolls vertically down the page, the cards automatically translate horizontally from left to right.
+  // The user does not need to swipe horizontally with their fingers.
+  useEffect(() => {
+    if (!isMobile || filteredAndSortedProducts.length <= 1) {
+      setScrollProgress(0);
+      return;
+    }
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const track = trackRef.current;
+          if (track) {
+            const rect = track.getBoundingClientRect();
+            const topOffset = 70;
+            const scrollDistance = track.offsetHeight - window.innerHeight;
+            if (scrollDistance > 0) {
+              const currentDist = topOffset - rect.top;
+              const progress = Math.max(0, Math.min(1, currentDist / scrollDistance));
+              setScrollProgress(progress);
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
-      animId = requestAnimationFrame(tick);
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    animId = requestAnimationFrame(tick);
-
     onScroll();
 
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (animId) cancelAnimationFrame(animId);
-    };
-  }, [filteredAndSortedProducts.length]);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isMobile, filteredAndSortedProducts.length]);
 
   const handleWhatsAppOrder = (product, e) => {
     if (e) e.stopPropagation();
@@ -109,10 +120,23 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
   };
 
   return (
-    <div ref={sectionRef} id="collections" className={`py-20 lg:py-28 scroll-mt-20 transition-colors duration-400 ${
-      isGlass ? 'bg-transparent border-t border-white/10' : 'bg-[#FAF8F5] border-t border-black/[0.04]'
-    }`}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-12">
+    <div 
+      ref={trackRef} 
+      id="collections" 
+      className={`transition-colors duration-400 ${
+        isGlass ? 'bg-transparent border-t border-white/10' : 'bg-[#FAF8F5] border-t border-black/[0.04]'
+      }`}
+      style={{
+        minHeight: isMobile && filteredAndSortedProducts.length > 1 
+          ? `${Math.max(160, filteredAndSortedProducts.length * 36)}vh` 
+          : 'auto'
+      }}
+    >
+      <div className={`max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 ${
+        isMobile && filteredAndSortedProducts.length > 1
+          ? 'sticky top-16 sm:top-20 h-[calc(100vh-4.5rem)] overflow-hidden flex flex-col justify-between py-3'
+          : 'py-20 lg:py-28 space-y-12'
+      }`}>
         
         {/* Page Header */}
         <ScrollReveal distance={16}>
@@ -228,15 +252,21 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
         )}
 
         {/* On Mobile: Horizontal card rail animated automatically by vertical page scroll. On Desktop (md+): Multi-Column Grid */}
-        <div 
-          ref={sliderRef}
-          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10 overflow-x-auto md:overflow-x-visible pb-6 md:pb-0 pt-2 px-4 -mx-4 sm:px-6 sm:-mx-6 md:px-0 md:mx-0 no-scrollbar touch-pan-y pointer-events-auto"
-        >
-          {filteredAndSortedProducts.map((product) => (
-            <div 
-              key={product.id} 
-              className="h-full shrink-0 w-[84vw] max-w-[325px] sm:w-[340px] md:w-auto md:max-w-none md:shrink transition-transform duration-300"
-            >
+        <div className="overflow-hidden md:overflow-visible w-full py-1">
+          <div 
+            ref={cardsRowRef}
+            className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10 transition-transform duration-75 ease-out will-change-transform touch-pan-y"
+            style={{
+              transform: isMobile && filteredAndSortedProducts.length > 1 
+                ? `translate3d(-${scrollProgress * maxScrollWidth}px, 0, 0)` 
+                : 'none'
+            }}
+          >
+            {filteredAndSortedProducts.map((product) => (
+              <div 
+                key={product.id} 
+                className="h-full shrink-0 w-[80vw] max-w-[315px] md:w-auto md:max-w-none md:shrink"
+              >
               <TiltCard
                 onClick={() => onQuickView(product)}
                 maxTilt={isPremiumAnim ? 7 : 0}
@@ -365,7 +395,32 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
               </TiltCard>
             </div>
           ))}
+          </div>
         </div>
+
+        {/* Mobile Dynamic Scroll-Driven Progress Bar */}
+        {isMobile && filteredAndSortedProducts.length > 1 && (
+          <div className="flex md:hidden flex-col gap-1.5 pt-2 pb-1 px-1">
+            <div className="flex items-center justify-between text-[11px] font-medium tracking-wider uppercase">
+              <span className={isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'}>
+                Hamper {Math.min(filteredAndSortedProducts.length, Math.floor(scrollProgress * (filteredAndSortedProducts.length - 0.05)) + 1)} of {filteredAndSortedProducts.length}
+              </span>
+              <span className={isGlass ? 'text-neutral-400' : 'text-neutral-400'}>
+                Scroll down to view all
+              </span>
+            </div>
+            <div className={`w-full h-1 rounded-full overflow-hidden ${
+              isGlass ? 'bg-white/10' : 'bg-neutral-200'
+            }`}>
+              <div 
+                className={`h-full transition-all duration-75 rounded-full ${
+                  isGlass ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB]' : 'bg-[#171717]'
+                }`}
+                style={{ width: `${Math.max(15, scrollProgress * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
