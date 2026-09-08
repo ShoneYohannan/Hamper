@@ -54,6 +54,10 @@ async function supabaseFetch(endpoint, options = {}) {
     throw new Error('Supabase URL or Anon Key is missing.');
   }
 
+  if (anonKey.startsWith('sb_secret_')) {
+    throw new Error('You provided a Supabase Secret Key (sb_secret_...). Please use your public "anon" key from Supabase Dashboard -> Project Settings -> API.');
+  }
+
   const fullUrl = `${url}/rest/v1/${endpoint.replace(/^\/+/, '')}`;
   const headers = {
     'apikey': anonKey,
@@ -94,6 +98,13 @@ export async function testSupabaseConnection(inputUrl = null, inputKey = null) {
 
   if (!conf.url || !conf.anonKey) {
     return { success: false, message: 'Please enter both Supabase Project URL and Anon API Key.' };
+  }
+
+  if (conf.anonKey.startsWith('sb_secret_')) {
+    return {
+      success: false,
+      message: 'You entered a Secret Service Key (sb_secret_...). Please use your public "anon" key from Supabase Dashboard -> Project Settings -> API.'
+    };
   }
 
   try {
