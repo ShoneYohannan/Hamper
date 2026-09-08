@@ -919,7 +919,7 @@ export default function AdminPortal() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
-                      <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
+                      <WhatsAppIcon className="w-4 h-4 shrink-0" />
                       <span>WhatsApp Order Phone (International Format)</span>
                     </label>
                     <input

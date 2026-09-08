@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
-import { Eye, ShoppingBag, Check, CheckCircle2 } from 'lucide-react';
+import { Eye, Check, CheckCircle2 } from 'lucide-react';
+import WhatsAppIcon from './icons/WhatsAppIcon';
 import { products, categories } from '../data/products';
 
 export default function ProductGrid({ onAddToCart, onQuickView }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [addedIds, setAddedIds] = useState({});
-
-  const handleAdd = (product, e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-    setAddedIds(prev => ({ ...prev, [product.id]: true }));
-    setTimeout(() => {
-      setAddedIds(prev => ({ ...prev, [product.id]: false }));
-    }, 1500);
+  const handleWhatsAppOrder = (product, e) => {
+    if (e) e.stopPropagation();
+    const phone = product.whatsappNumber || '971501487453';
+    const defaultMsg = `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`;
+    const text = encodeURIComponent(product.whatsappMessage || defaultMsg);
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   const filteredProducts = selectedCategory === 'all'
     ? products
-    : products.filter(p => p.category === selectedCategory);
+    : products.filter(p => 
+        p.category === selectedCategory || 
+        (Array.isArray(p.categories) && p.categories.includes(selectedCategory)) ||
+        (selectedCategory === 'budget-friendly' && (p.category === 'budget-friendly' || p.isBudgetFriendly || (p.price && p.price <= 150)))
+      );
 
   const flagshipProduct = products.find(p => p.id === 'premium-royal-reserve');
 
@@ -116,24 +118,11 @@ export default function ProductGrid({ onAddToCart, onQuickView }) {
                 {/* Actions */}
                 <div className="pt-2 flex flex-wrap items-center gap-3">
                   <button
-                    onClick={(e) => handleAdd(flagshipProduct, e)}
-                    className={`px-7 py-3 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2 shadow-sm active:scale-95 ${
-                      addedIds[flagshipProduct.id]
-                        ? 'bg-emerald-800 text-white'
-                        : 'bg-[#171717] hover:bg-neutral-800 text-white'
-                    }`}
+                    onClick={(e) => handleWhatsAppOrder(flagshipProduct, e)}
+                    className="px-7 py-3 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2 shadow-sm active:scale-95 bg-[#25D366] hover:bg-[#20ba5a] text-white"
                   >
-                    {addedIds[flagshipProduct.id] ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>Added to Bag</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Add to Bag</span>
-                      </>
-                    )}
+                    <WhatsAppIcon className="w-4 h-4 fill-current" />
+                    <span>Order on WhatsApp</span>
                   </button>
 
                   <button
@@ -207,24 +196,12 @@ export default function ProductGrid({ onAddToCart, onQuickView }) {
                   </button>
 
                   <button
-                    onClick={(e) => handleAdd(product, e)}
-                    className={`px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all flex items-center gap-1.5 shadow-sm ${
-                      addedIds[product.id]
-                        ? 'bg-emerald-800 text-white'
-                        : 'bg-[#171717] hover:bg-neutral-800 text-white active:scale-95'
-                    }`}
+                    onClick={(e) => handleWhatsAppOrder(product, e)}
+                    className="px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all flex items-center gap-1.5 shadow-sm bg-[#25D366] hover:bg-[#20ba5a] text-white active:scale-95"
+                    title="Order via WhatsApp"
                   >
-                    {addedIds[product.id] ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Added</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-3.5 h-3.5" />
-                        <span>Add</span>
-                      </>
-                    )}
+                    <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                    <span>Order</span>
                   </button>
                 </div>
               </div>

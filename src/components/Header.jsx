@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import WhatsAppIcon from './icons/WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
 import { useCms } from '../context/CmsContext';
@@ -125,31 +125,18 @@ export default function Header({
         {/* Right Actions: WhatsApp Custom Curation & Cart */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           
-          {/* Custom Curation -> WhatsApp (Shows on tablet/laptop, and in mobile menu on phones) */}
+          {/* Custom Curation -> WhatsApp Concierge */}
           <button
             onClick={handleCustomCuration}
             title="Inquire about Custom Hamper Curation on WhatsApp"
-            className={`hidden sm:inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap ${
-              isGlass
-                ? 'glass-pill border-[#D4AF37]/40 text-[#F3E5AB] hover:border-[#D4AF37] hover:bg-white/10 shadow-[0_0_12px_rgba(212,175,55,0.15)]'
-                : 'bg-transparent hover:bg-neutral-900 hover:text-white text-neutral-800 border border-neutral-300 hover:border-neutral-900'
-            }`}
-          >
-            <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
-            <span>Custom Curation</span>
-          </button>
-
-          {/* Cart Trigger */}
-          <button
-            onClick={onOpenCart}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full font-medium text-xs tracking-wider uppercase transition-all duration-300 active:scale-95 shadow-sm interactive-btn whitespace-nowrap ${
+            className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 active:scale-95 interactive-btn whitespace-nowrap shadow-sm ${
               isGlass
                 ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_0_16px_rgba(212,175,55,0.35)]'
-                : 'bg-[#171717] hover:bg-neutral-800 text-white'
+                : 'bg-[#171717] hover:bg-neutral-800 text-white shadow-sm'
             }`}
           >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>Bag ({cartCount})</span>
+            <WhatsAppIcon className="w-4 h-4 shrink-0 drop-shadow-sm" />
+            <span>Custom Curation</span>
           </button>
 
           {/* Mobile Menu Trigger */}
@@ -201,7 +188,7 @@ export default function Header({
                 : 'bg-[#171717] text-white'
             }`}
           >
-            <WhatsAppIcon className="w-4 h-4 fill-current" />
+            <WhatsAppIcon className="w-4 h-4 shrink-0 drop-shadow-sm" />
             <span>Customise on WhatsApp</span>
           </button>
         </div>

@@ -26,8 +26,8 @@ import {
   SUPABASE_SQL_SETUP_SCRIPT
 } from '../services/supabase';
 
-const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v2';
-const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v2';
+const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v6';
+const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v6';
 const ADMIN_AUTH_KEY = 'dazzling_hampers_admin_auth';
 const ADMIN_PIN_KEY = 'dazzling_hampers_admin_pin';
 const DEFAULT_PIN = '2026';
@@ -71,6 +71,18 @@ export function CmsProvider({ children }) {
   });
 
   const [reserveProducts, setReserveProducts] = useState(() => {
+    const priority = [500, 450, 400];
+    const sortByPriority = (list) => {
+      return [...list].sort((a, b) => {
+        const aIdx = priority.indexOf(Number(a.price));
+        const bIdx = priority.indexOf(Number(b.price));
+        if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+        if (aIdx !== -1) return -1;
+        if (bIdx !== -1) return 1;
+        return (Number(b.price) || 0) - (Number(a.price) || 0);
+      });
+    };
+
     try {
       const deleted = JSON.parse(localStorage.getItem(DELETED_IDS_KEY) || '[]');
       const deletedSet = new Set(deleted.map(String));
@@ -80,10 +92,11 @@ export function CmsProvider({ children }) {
         if (parsed.reserveProducts && Array.isArray(parsed.reserveProducts)) {
           const existingIds = new Set(parsed.reserveProducts.map(p => String(p.id)));
           const missingDefaults = defaultReserveProducts.filter(p => !existingIds.has(String(p.id)) && !deletedSet.has(String(p.id)));
-          return [...missingDefaults, ...parsed.reserveProducts].filter(p => !deletedSet.has(String(p.id)));
+          const combined = [...missingDefaults, ...parsed.reserveProducts].filter(p => !deletedSet.has(String(p.id)));
+          return sortByPriority(combined);
         }
       }
-      return defaultReserveProducts.filter(p => !deletedSet.has(String(p.id)));
+      return sortByPriority(defaultReserveProducts.filter(p => !deletedSet.has(String(p.id))));
     } catch (e) {
       console.warn('Failed to parse CMS reserve products from storage:', e);
     }
@@ -96,13 +109,16 @@ export function CmsProvider({ children }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.categories && Array.isArray(parsed.categories)) {
-          return parsed.categories;
+          const filtered = parsed.categories.filter(c => c.id !== 'corporate');
+          const existingIds = new Set(filtered.map(c => c.id));
+          const missingDefaults = defaultCategories.filter(c => !existingIds.has(c.id) && c.id !== 'corporate');
+          return [...filtered, ...missingDefaults];
         }
       }
     } catch (e) {
       console.warn('Failed to parse CMS categories from storage:', e);
     }
-    return defaultCategories;
+    return defaultCategories.filter(c => c.id !== 'corporate');
   });
 
   const [testimonials, setTestimonials] = useState(() => {

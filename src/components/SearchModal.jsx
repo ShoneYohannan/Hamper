@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, X, ShoppingBag } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import WhatsAppIcon from './icons/WhatsAppIcon';
 import { products } from '../data/products';
 
@@ -90,28 +90,14 @@ export default function SearchModal({ isOpen, onClose, onAddToCart, onQuickView 
                         <span className="text-[10px] text-neutral-500 block">{product.priceNote}</span>
                       )}
                     </div>
-                    {isBouquet ? (
-                      <button
-                        onClick={(e) => handleWhatsApp(product, e)}
-                        className="p-2 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full transition-all shadow-sm"
-                        title="Order via WhatsApp (+971 501487453)"
-                        aria-label={`Order ${product.name} on WhatsApp`}
-                      >
-                        <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onAddToCart(product);
-                        }}
-                        className="p-2 bg-[#171717] hover:bg-neutral-800 text-white rounded-full transition-all shadow-sm"
-                        title="Add to Cart"
-                        aria-label={`Add ${product.name} to cart`}
-                      >
-                        <ShoppingBag className="w-3.5 h-3.5 text-white" />
-                      </button>
-                    )}
+                    <button
+                      onClick={(e) => handleWhatsApp(product, e)}
+                      className="p-2 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full transition-all shadow-sm active:scale-95"
+                      title="Order via WhatsApp (+971 501487453)"
+                      aria-label={`Order ${product.name} on WhatsApp`}
+                    >
+                      <WhatsAppIcon className="w-4 h-4 shrink-0" variant="white" />
+                    </button>
                   </div>
                 </div>
               );

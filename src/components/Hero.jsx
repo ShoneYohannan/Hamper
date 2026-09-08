@@ -94,7 +94,7 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
                   : 'bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 hover:border-neutral-400'
               }`}
             >
-              <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
+              <WhatsAppIcon className="w-4 h-4 shrink-0 drop-shadow-sm" />
               <span>Customise on WhatsApp</span>
             </button>
           </div>
@@ -114,8 +114,6 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
             <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Newborn Keepsakes</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
             <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Festive & Pantry</span>
-            <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
-            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Corporate</span>
           </div>
         </ScrollReveal>
 

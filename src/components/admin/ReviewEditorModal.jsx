@@ -169,7 +169,7 @@ export default function ReviewEditorModal({ isOpen, onClose, reviewToEdit = null
               type="text"
               value={formData.occasionLabel}
               onChange={(e) => setFormData(prev => ({ ...prev, occasionLabel: e.target.value }))}
-              placeholder="e.g. Anniversary Surprise, Baby Shower, VIP Corporate"
+              placeholder="e.g. Anniversary Surprise, Baby Shower, Festive Gift"
               className={`w-full px-4 py-2.5 rounded-xl text-sm border focus:outline-none ${
                 isGlass 
                   ? 'bg-white/5 border-white/10 focus:border-[#D4AF37] text-white' 

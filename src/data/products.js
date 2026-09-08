@@ -2,12 +2,12 @@ const BASE = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) |
 
 export const categories = [
   { id: 'all', label: 'All Hampers', icon: '✨' },
+  { id: 'budget-friendly', label: 'Budget Friendly', icon: '🏷️' },
   { id: 'bouquets', label: 'Bouquets', icon: '💐' },
   { id: 'premium', label: 'Premium Luxury', icon: '👑' },
   { id: 'baby-girl', label: 'Baby Girl', icon: '🎀' },
   { id: 'baby-boy', label: 'Baby Boy', icon: '🧸' },
-  { id: 'festive', label: 'Festive & Celebration', icon: '🥂' },
-  { id: 'corporate', label: 'Corporate Gifting', icon: '💼' }
+  { id: 'festive', label: 'Festive & Celebration', icon: '🥂' }
 ];
 
 export const reserveProducts = [
@@ -99,6 +99,36 @@ export const reserveProducts = [
 ];
 
 export const products = [
+  {
+    id: 'grand-luxe-heart-acrylic-reserve',
+    name: 'Grand Luxe Heart & Illuminated Acrylic Reserve Hamper',
+    badge: 'PREMIUM LUXURY',
+    badgeType: 'gold',
+    price: 500,
+    formattedPrice: '500 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Grand Luxe Heart & Illuminated Acrylic Reserve Hamper for 500 AED (Delivery charges apply).',
+    description: 'Dual-heart luxury red hamper, luxury fragrance mist, crystal illuminated acrylic box with Bento cake, designer watch, LED fairy lights & "I Love You" balloons.',
+    longDescription: 'The pinnacle of celebratory romance and prestige. Features a handcrafted crimson dual-heart luxury display trunk with gold "Happy Birthday" topper, premium Japanese Cherry Blossom fragrance mist and luxury perfumes, golden Ferrero Rocher confections, and plush velvet roses. Accompanied by a crystal-clear illuminated acrylic keepsake case wrapped with silk ribbon and twinkling fairy LED lights, housing a custom pastel pink Bento celebration cake ("Just For You"), a designer quartz timepiece in a matte gift box, customized calendar plaque, and two floating red heart helium balloons with cursive "I Love You" script.',
+    rating: 5.0,
+    reviewCount: 38,
+    image: `${BASE}images/grand_luxe_acrylic_heart_reserve.jpg`,
+    category: 'premium',
+    excludeFromAllCollections: true,
+    items: [
+      'Handcrafted Crimson Dual-Heart Luxury Display Trunk with Gold Plaque',
+      'Illuminated Crystal-Clear Acrylic Keepsake Box with Fairy LED String Lights',
+      'Custom Handcrafted Pastel Pink Bento Cake ("Just For You") with Gold Butterflies',
+      'Designer Quartz Timepiece in Signature Matte Presentation Box with Ribbon',
+      'Fine Fragrance Suite (Japanese Cherry Blossom Mist & Luxury Perfumes)',
+      'Golden Ferrero Rocher Confections & Sweet Treats',
+      'Fresh Silk Crimson & Blush Pink Velvet Roses with Baby’s Breath Florals',
+      'Dual Floating Metallic Red Heart Balloons with "I Love You" Cursive Script',
+      'Personalized Custom Date Plaque & Calligraphy Keepsake Card'
+    ]
+  },
   {
     id: 'baby-boy-luxury-trunk',
     name: 'Little Prince Deluxe Baby Boy Gift Trunk',
@@ -234,6 +264,90 @@ export const products = [
       'Delicate White Floral Lace Accent',
       'Opulent Ruby & Gold Paper with Gold-Heart Ribbon Bow'
     ]
+  },
+  {
+    id: 'crimson-stone-bouquet-150',
+    name: 'Crimson Stone Signature Bouquet',
+    badge: 'BUDGET FRIENDLY',
+    badgeType: 'gold',
+    price: 150,
+    formattedPrice: '150 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Crimson Stone Signature Bouquet for 150 AED (Delivery charges apply).',
+    description: 'Premium 1st stone celebration bouquet with Kinder Bueno chocolate arrangement, red velvet roses, and a handcrafted birthday cake in luxury crimson & gold wrapping.',
+    longDescription: 'A stunning first-stone milestone bouquet crafted with the finest chocolates and florals. Features a generous arrangement of Kinder Bueno bars and Galaxy chocolates nestled among lush red velvet roses and baby\'s breath, presented in vibrant crimson wrapping with gold accents. Accompanied by a beautiful handcrafted celebration cake, making it the perfect 1st stone gift experience.',
+    rating: 5.0,
+    reviewCount: 34,
+    image: `${BASE}images/stone_bouquet_1st_kinder_bueno.jpg`,
+    category: 'budget-friendly',
+    categories: ['budget-friendly', 'bouquets'],
+    items: [
+      'Kinder Bueno Chocolate Bars (x6+)',
+      'Galaxy Chocolate Bars (x2)',
+      'Fresh Velvet Red Roses (x5)',
+      'Baby\'s Breath & Floral Accents',
+      'Handcrafted Birthday Celebration Cake',
+      'Luxury Crimson & Gold Origami Wrapping',
+      'Gold Heart Satin Bow & Personalized Card'
+    ]
+  },
+  {
+    id: 'rose-kitkat-stone-bouquet-120',
+    name: 'Rose & KitKat Celebration Stone Bouquet',
+    badge: 'BUDGET FRIENDLY',
+    badgeType: 'rose',
+    price: 120,
+    formattedPrice: '120 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Rose & KitKat Celebration Stone Bouquet for 120 AED (Delivery charges apply).',
+    description: '2nd stone bouquet with KitKat chocolate arrangement, white celebration cake, black marble wrapping, memory mirror, and classic red roses.',
+    longDescription: 'An elegant second-stone celebration gift combining luxury chocolate and romance. A sleek black marble-patterned wrap houses a generous bouquet of KitKat bars interspersed with plush white baby\'s breath blossoms and classic red roses. Complemented by a delicate white celebration cake with heart motifs and a charming tabletop memory mirror, making every moment feel extraordinary.',
+    rating: 5.0,
+    reviewCount: 27,
+    image: `${BASE}images/stone_bouquet_2nd_kitkat.jpg`,
+    category: 'budget-friendly',
+    categories: ['budget-friendly', 'bouquets'],
+    items: [
+      'KitKat Chocolate Bars (x5+)',
+      'White Baby\'s Breath Floral Clusters',
+      'Classic Red Roses (x3)',
+      'White Heart Celebration Cake',
+      'Tabletop Memory Mirror Keepsake',
+      'Luxury Black Marble Origami Wrapping',
+      'Red Satin Bow & Personalized Card'
+    ]
+  },
+  {
+    id: 'anniversary-stone-bouquet-100',
+    name: 'Anniversary Stone Keepsake Bouquet',
+    badge: 'BUDGET FRIENDLY',
+    badgeType: 'rose',
+    price: 100,
+    formattedPrice: '100 AED',
+    priceNote: '(Delivery charges apply)',
+    currency: 'AED',
+    whatsappNumber: '971501487453',
+    whatsappMessage: 'Hello! I would like to order the Anniversary Stone Keepsake Bouquet for 100 AED (Delivery charges apply).',
+    description: '3rd stone anniversary bouquet with Cadbury Dairy Milk, a single heirloom red rose, botanical baby\'s breath, and a handcrafted anniversary cake on white marble.',
+    longDescription: 'A tender and romantic third-stone anniversary keepsake. A refined blush-wrapped single stem heirloom crimson rose nestled with golden botanical accents, baby\'s breath, and a Cadbury Dairy Milk bar — all elegantly presented alongside a handcrafted anniversary cake inscribed with a personal message. Simple, heartfelt, and unforgettable.',
+    rating: 5.0,
+    reviewCount: 19,
+    image: `${BASE}images/stone_bouquet_3rd_anniversary.jpg`,
+    category: 'budget-friendly',
+    categories: ['budget-friendly', 'bouquets'],
+    items: [
+      'Cadbury Dairy Milk Chocolate Bar',
+      'Heirloom Single Stem Crimson Rose',
+      'Baby\'s Breath & Golden Botanical Accents',
+      'Handcrafted Anniversary Celebration Cake',
+      'Personalized Anniversary Message Inscription',
+      'Blush Pink Satin Organza Wrapping',
+      'Burgundy & Gold Ribbon Bow'
+    ]
   }
 ];
 
@@ -241,7 +355,7 @@ export const steps = [
   {
     number: '01',
     title: 'Choose Your Hamper Style',
-    description: 'Pick from our curated Premium, Baby, Festive, or Corporate collections.'
+    description: 'Pick from our curated Premium, Baby, Bouquets, or Festive collections.'
   },
   {
     number: '02',
@@ -296,12 +410,12 @@ export const testimonials = [
     id: 4,
     rating: '5 / 5',
     stars: 5,
-    quote: '“Ordered 25 corporate elegance trunks for our annual partner retreat. The embossed brass pens and leather journals were universally praised.”',
+    quote: '“Ordered bespoke luxury celebration trunks for our family milestone. The personalized keepsake box and golden touches were universally praised.”',
     author: 'Rajiv M.',
     location: 'Hyderabad',
-    occasion: 'corporate',
-    occasionLabel: 'Corporate Gifting',
-    hamper: 'Executive Corporate Elegance',
+    occasion: 'festive',
+    occasionLabel: 'Festive & Celebration',
+    hamper: 'Grand Luxe Celebration Trunk',
     date: 'December 2025'
   },
   {

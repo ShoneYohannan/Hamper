@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Eye, ShoppingBag, Check, SlidersHorizontal, Search } from 'lucide-react';
+import { Eye, SlidersHorizontal, Search } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
@@ -12,12 +12,10 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
-  const [addedIds, setAddedIds] = useState({});
+  const [clickedCardId, setClickedCardId] = useState(null);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
-  const trackRef = useRef(null);
-  const cardsRowRef = useRef(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [maxScrollWidth, setMaxScrollWidth] = useState(0);
+  const scrollRailRef = useRef(null);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -27,7 +25,31 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
 
   const filteredAndSortedProducts = useMemo(() => {
     let list = products.filter((p) => {
-      const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+      // Do not show 500 AED Reserve hamper in the general 'all' collections view to prevent duplication with Reserve page
+      if (selectedCategory === 'all' && (p.excludeFromAllCollections || p.id === 'grand-luxe-heart-acrylic-reserve')) {
+        return false;
+      }
+
+      const matchesCategory =
+        (selectedCategory === 'all' && !p.excludeFromAllCollections) ||
+        p.category === selectedCategory ||
+        (Array.isArray(p.categories) && p.categories.includes(selectedCategory)) ||
+        (selectedCategory === 'premium' && (
+          p.category === 'premium' ||
+          p.id === 'grand-luxe-heart-acrylic-reserve' ||
+          p.price === 500
+        )) ||
+        (selectedCategory === 'budget-friendly' && (
+          p.category === 'budget-friendly' ||
+          p.isBudgetFriendly ||
+          p.id?.includes('stone-bouquet') ||
+          (p.price && p.price <= 150)
+        )) ||
+        (selectedCategory === 'bouquets' && (
+          p.category === 'bouquets' ||
+          p.categories?.includes('bouquets') ||
+          p.id?.includes('bouquet')
+        ));
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             p.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
@@ -39,67 +61,36 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
       list = [...list].sort((a, b) => b.price - a.price);
     } else if (sortBy === 'rating') {
       list = [...list].sort((a, b) => b.rating - a.rating);
+    } else if (selectedCategory === 'budget-friendly' && sortBy === 'featured') {
+      list = [...list].sort((a, b) => (a.price || 0) - (b.price || 0));
     }
 
     return list;
   }, [products, selectedCategory, sortBy, searchQuery]);
 
-  // Measure max horizontal travel width on mobile
+  // Reset active card index when filters change
+  useEffect(() => {
+    setActiveCardIndex(0);
+    if (scrollRailRef.current) {
+      scrollRailRef.current.scrollTo({ left: 0, behavior: 'instant' });
+    }
+  }, [filteredAndSortedProducts.length, selectedCategory, searchQuery]);
+
+  // Track which card is in view via scroll position on the rail
   useEffect(() => {
     if (!isMobile) return;
+    const rail = scrollRailRef.current;
+    if (!rail) return;
 
-    const measure = () => {
-      if (cardsRowRef.current) {
-        const rowW = cardsRowRef.current.scrollWidth;
-        const viewW = window.innerWidth;
-        const max = Math.max(0, rowW - viewW + 36);
-        setMaxScrollWidth(max);
-      }
-    };
-
-    measure();
-    const t = setTimeout(measure, 150);
-    window.addEventListener('resize', measure);
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener('resize', measure);
-    };
-  }, [isMobile, filteredAndSortedProducts]);
-
-  // Mobile Scroll-Driven Animation:
-  // As the user scrolls vertically down the page, the cards automatically translate horizontally from left to right.
-  // The user does not need to swipe horizontally with their fingers.
-  useEffect(() => {
-    if (!isMobile || filteredAndSortedProducts.length <= 1) {
-      setScrollProgress(0);
-      return;
-    }
-
-    let ticking = false;
     const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const track = trackRef.current;
-          if (track) {
-            const rect = track.getBoundingClientRect();
-            const topOffset = 70;
-            const scrollDistance = track.offsetHeight - window.innerHeight;
-            if (scrollDistance > 0) {
-              const currentDist = topOffset - rect.top;
-              const progress = Math.max(0, Math.min(1, currentDist / scrollDistance));
-              setScrollProgress(progress);
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
+      const cardWidth = rail.firstElementChild?.offsetWidth || rail.offsetWidth * 0.82;
+      const gap = 16;
+      const idx = Math.round(rail.scrollLeft / (cardWidth + gap));
+      setActiveCardIndex(Math.max(0, Math.min(idx, filteredAndSortedProducts.length - 1)));
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    return () => window.removeEventListener('scroll', onScroll);
+    rail.addEventListener('scroll', onScroll, { passive: true });
+    return () => rail.removeEventListener('scroll', onScroll);
   }, [isMobile, filteredAndSortedProducts.length]);
 
   const handleWhatsAppOrder = (product, e) => {
@@ -110,33 +101,23 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
-  const handleAdd = (product, e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-    setAddedIds(prev => ({ ...prev, [product.id]: true }));
+  const handleCardClick = (product, e) => {
+    if (e && e.target.closest('button, a')) return;
+    setClickedCardId(product.id);
+    setTimeout(() => setClickedCardId(null), 380);
     setTimeout(() => {
-      setAddedIds(prev => ({ ...prev, [product.id]: false }));
-    }, 1500);
+      onQuickView(product);
+    }, 160);
   };
 
   return (
-    <div 
-      ref={trackRef} 
-      id="collections" 
-      className={`transition-colors duration-400 ${
+    <div
+      id="collections"
+      className={`py-16 sm:py-20 lg:py-28 transition-colors duration-400 ${
         isGlass ? 'bg-transparent border-t border-white/10' : 'bg-[#FAF8F5] border-t border-black/[0.04]'
       }`}
-      style={{
-        minHeight: isMobile && filteredAndSortedProducts.length > 1 
-          ? `${Math.max(160, filteredAndSortedProducts.length * 36)}vh` 
-          : 'auto'
-      }}
     >
-      <div className={`max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 ${
-        isMobile && filteredAndSortedProducts.length > 1
-          ? 'sticky top-16 sm:top-20 h-[calc(100vh-4.5rem)] overflow-hidden flex flex-col justify-between py-3'
-          : 'py-20 lg:py-28 space-y-12'
-      }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 space-y-8 sm:space-y-12">
         
         {/* Page Header */}
         <ScrollReveal distance={16}>
@@ -210,7 +191,7 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
             <div className={`flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto text-xs font-normal ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              <span>Showing {filteredAndSortedProducts.length} of {products.length} hampers</span>
+              <span>Showing {filteredAndSortedProducts.length} of {products.filter(p => !p.excludeFromAllCollections && p.id !== 'grand-luxe-heart-acrylic-reserve').length} hampers</span>
 
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="w-3 h-3 text-neutral-400" />
@@ -251,108 +232,248 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
           </div>
         )}
 
-        {/* On Mobile: Horizontal card rail animated automatically by vertical page scroll. On Desktop (md+): Multi-Column Grid */}
-        <div className="overflow-hidden md:overflow-visible w-full py-1">
-          <div 
-            ref={cardsRowRef}
-            className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10 transition-transform duration-75 ease-out will-change-transform touch-pan-y"
-            style={{
-              transform: isMobile && filteredAndSortedProducts.length > 1 
-                ? `translate3d(-${scrollProgress * maxScrollWidth}px, 0, 0)` 
-                : 'none'
-            }}
-          >
-            {filteredAndSortedProducts.map((product) => (
-              <div 
-                key={product.id} 
-                className="h-full shrink-0 w-[80vw] max-w-[315px] md:w-auto md:max-w-none md:shrink"
-              >
-              <TiltCard
-                onClick={() => onQuickView(product)}
-                maxTilt={isPremiumAnim ? 7 : 0}
-                className="h-full"
-              >
+        {/* ── MOBILE: Native horizontal scroll-snap rail ────────────────────────── */}
+        {/* ── DESKTOP (md+): Multi-column grid ────────────────────────────────── */}
+        {isMobile && filteredAndSortedProducts.length > 0 ? (
+          <>
+            {/* Scroll rail — native scroll-snap, no sticky / transform hacks */}
+            <div
+              ref={scrollRailRef}
+              className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory scroll-smooth no-scrollbar"
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
+            >
+              {filteredAndSortedProducts.map((product) => (
                 <div
-                  className={`rounded-2xl p-6 sm:p-7 cursor-pointer flex flex-col justify-between group h-full transition-smooth image-zoom-container ${
-                    isGlass 
-                      ? 'glass-panel glass-panel-hover text-white' 
-                      : 'bg-white border border-neutral-200/70 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-neutral-300 hover:shadow-[0_8px_25px_rgba(0,0,0,0.06)]'
-                  }`}
+                  key={product.id}
+                  className="shrink-0 snap-center w-[82vw] max-w-[320px]"
                 >
-                  <div>
-                    {/* Product Image */}
-                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-5 bg-neutral-900/20">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out"
-                      />
-                      <div className="absolute top-3.5 left-3.5">
-                        <span className={`text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded-full shadow-sm transition-all duration-300 ${
-                          isGlass 
-                            ? 'bg-black/60 backdrop-blur-md text-[#F3E5AB] border border-white/10 group-hover:border-[#D4AF37]/50' 
-                            : 'bg-white/95 text-neutral-600'
+                  <div
+                    onClick={(e) => handleCardClick(product, e)}
+                    className={`rounded-2xl p-5 cursor-pointer flex flex-col justify-between group h-full transition-all duration-300 image-zoom-container hamper-card-interactive ${
+                      clickedCardId === product.id ? 'hamper-click-animated' : ''
+                    } ${
+                      isGlass
+                        ? 'glass-panel glass-panel-hover text-white'
+                        : 'bg-white border border-neutral-200/70 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-neutral-300 hover:shadow-[0_8px_25px_rgba(0,0,0,0.06)]'
+                    }`}
+                  >
+                    <div>
+                      <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-neutral-900/20">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                        />
+                        <div className="absolute top-3 left-3">
+                          <span className={`text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded-full shadow-sm ${
+                            isGlass
+                              ? 'bg-black/60 backdrop-blur-md text-[#F3E5AB] border border-white/10'
+                              : 'bg-white/95 text-neutral-600'
+                          }`}>
+                            {product.badge}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <h3 className={`font-serif text-lg font-normal leading-snug ${
+                          isGlass ? 'text-white' : 'text-[#171717]'
                         }`}>
-                          {product.badge}
-                        </span>
+                          {product.name}
+                        </h3>
+                        <p className={`text-xs leading-relaxed line-clamp-2 ${
+                          isGlass ? 'text-neutral-300' : 'text-neutral-500'
+                        }`}>
+                          {product.description}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Title & Info */}
-                    <div className="space-y-2">
-                      <h3 className={`font-serif text-xl sm:text-2xl font-normal leading-snug transition-colors ${
-                        isGlass 
-                          ? 'text-white group-hover:text-[#F3E5AB]' 
-                          : 'text-[#171717] group-hover:text-neutral-700'
-                      }`}>
-                        {product.name}
-                      </h3>
-                      
-                      <p className={`text-xs sm:text-sm leading-relaxed line-clamp-2 ${
-                        isGlass ? 'text-neutral-300' : 'text-neutral-500'
-                      }`}>
-                        {product.description}
-                      </p>
+                    <div className={`pt-4 mt-4 border-t flex items-center justify-between gap-2 ${
+                      isGlass ? 'border-white/10' : 'border-neutral-100'
+                    }`}>
+                      <div>
+                        <span className={`text-base font-medium ${
+                          isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'
+                        }`}>
+                          {product.formattedPrice}
+                        </span>
+                        {product.priceNote && (
+                          <span className={`block text-[11px] leading-tight ${
+                            isGlass ? 'text-amber-200/70' : 'text-neutral-500'
+                          }`}>
+                            {product.priceNote}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+                          className={`p-2 rounded-full transition-all ${
+                            isGlass
+                              ? 'text-neutral-300 hover:text-white hover:bg-white/10'
+                              : 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100'
+                          }`}
+                          aria-label={`Quick view ${product.name}`}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={(e) => handleWhatsAppOrder(product, e)}
+                          className={`px-3.5 py-2 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 transition-all ${
+                            isGlass
+                              ? 'bg-emerald-600/90 text-white border border-emerald-400/40'
+                              : 'bg-[#25D366] text-white'
+                          }`}
+                        >
+                          <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" variant="white" />
+                          <span>Order</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
 
-                  {/* Price & Action Row */}
-                  <div className={`pt-6 mt-6 border-t flex items-center justify-between gap-2 ${
-                    isGlass ? 'border-white/10' : 'border-neutral-100'
-                  }`}>
+            {/* Smooth dot + progress indicator */}
+            {filteredAndSortedProducts.length > 1 && (
+              <div className="flex flex-col gap-2 pt-1 pb-2">
+                {/* Dot indicators */}
+                <div className="flex items-center justify-center gap-1.5">
+                  {filteredAndSortedProducts.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        if (scrollRailRef.current) {
+                          const cardWidth = scrollRailRef.current.firstElementChild?.offsetWidth || scrollRailRef.current.offsetWidth * 0.82;
+                          scrollRailRef.current.scrollTo({ left: idx * (cardWidth + 16), behavior: 'smooth' });
+                        }
+                      }}
+                      className={`rounded-full transition-all duration-300 ${
+                        activeCardIndex === idx
+                          ? isGlass ? 'w-6 h-2 bg-[#D4AF37]' : 'w-6 h-2 bg-[#171717]'
+                          : isGlass ? 'w-2 h-2 bg-white/25' : 'w-2 h-2 bg-neutral-300'
+                      }`}
+                      aria-label={`Go to hamper ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+                {/* Smooth progress bar */}
+                <div className={`mx-auto w-24 h-0.5 rounded-full overflow-hidden ${
+                  isGlass ? 'bg-white/10' : 'bg-neutral-200'
+                }`}>
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ease-out ${
+                      isGlass ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB]' : 'bg-[#171717]'
+                    }`}
+                    style={{
+                      width: filteredAndSortedProducts.length > 1
+                        ? `${((activeCardIndex + 1) / filteredAndSortedProducts.length) * 100}%`
+                        : '100%'
+                    }}
+                  />
+                </div>
+                <p className={`text-center text-[11px] tracking-widest uppercase font-medium ${
+                  isGlass ? 'text-neutral-400' : 'text-neutral-400'
+                }`}>
+                  {activeCardIndex + 1} / {filteredAndSortedProducts.length}
+                </p>
+              </div>
+            )}
+          </>
+        ) : (
+          /* ── DESKTOP GRID ────────────────────────────────────────────────────── */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-10">
+            {filteredAndSortedProducts.map((product) => (
+              <div key={product.id} className="h-full">
+                <TiltCard
+                  key={product.id}
+                  onClick={(e) => handleCardClick(product, e)}
+                  maxTilt={isPremiumAnim ? 7 : 0}
+                  className="h-full"
+                >
+                  <div
+                    className={`rounded-2xl p-6 sm:p-7 cursor-pointer flex flex-col justify-between group h-full transition-smooth image-zoom-container hamper-card-interactive ${
+                      clickedCardId === product.id ? 'hamper-click-animated' : ''
+                    } ${
+                      isGlass
+                        ? 'glass-panel glass-panel-hover text-white'
+                        : 'bg-white border border-neutral-200/70 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-neutral-300 hover:shadow-[0_8px_25px_rgba(0,0,0,0.06)]'
+                    }`}
+                  >
                     <div>
-                      <span className={`text-base font-normal ${
-                        isGlass ? 'text-[#F3E5AB] font-medium' : 'text-neutral-900 font-medium'
-                      }`}>
-                        {product.formattedPrice}
-                      </span>
-                      {product.priceNote && (
-                        <span className={`block text-[11px] leading-tight font-normal ${
-                          isGlass ? 'text-amber-200/70' : 'text-neutral-500'
+                      <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-5 bg-neutral-900/20">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out"
+                        />
+                        <div className="absolute top-3.5 left-3.5">
+                          <span className={`text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded-full shadow-sm transition-all duration-300 ${
+                            isGlass
+                              ? 'bg-black/60 backdrop-blur-md text-[#F3E5AB] border border-white/10 group-hover:border-[#D4AF37]/50'
+                              : 'bg-white/95 text-neutral-600'
+                          }`}>
+                            {product.badge}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h3 className={`font-serif text-xl sm:text-2xl font-normal leading-snug transition-colors ${
+                          isGlass
+                            ? 'text-white group-hover:text-[#F3E5AB]'
+                            : 'text-[#171717] group-hover:text-neutral-700'
                         }`}>
-                          {product.priceNote}
-                        </span>
-                      )}
+                          {product.name}
+                        </h3>
+                        <p className={`text-xs sm:text-sm leading-relaxed line-clamp-2 ${
+                          isGlass ? 'text-neutral-300' : 'text-neutral-500'
+                        }`}>
+                          {product.description}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onQuickView(product);
-                        }}
-                        className={`p-2.5 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 ${
-                          isGlass
-                            ? 'text-neutral-300 hover:text-white hover:bg-white/10'
-                            : 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100'
-                        }`}
-                        title="Quick View"
-                        aria-label={`Quick view ${product.name}`}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
+                    <div className={`pt-6 mt-6 border-t flex items-center justify-between gap-2 ${
+                      isGlass ? 'border-white/10' : 'border-neutral-100'
+                    }`}>
+                      <div>
+                        <span className={`text-base font-normal ${
+                          isGlass ? 'text-[#F3E5AB] font-medium' : 'text-neutral-900 font-medium'
+                        }`}>
+                          {product.formattedPrice}
+                        </span>
+                        {product.priceNote && (
+                          <span className={`block text-[11px] leading-tight font-normal ${
+                            isGlass ? 'text-amber-200/70' : 'text-neutral-500'
+                          }`}>
+                            {product.priceNote}
+                          </span>
+                        )}
+                      </div>
 
-                      {product.category === 'bouquets' || product.whatsappNumber ? (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+                          className={`p-2.5 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 ${
+                            isGlass
+                              ? 'text-neutral-300 hover:text-white hover:bg-white/10'
+                              : 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100'
+                          }`}
+                          title="Quick View"
+                          aria-label={`Quick view ${product.name}`}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+
                         <button
                           onClick={(e) => handleWhatsAppOrder(product, e)}
                           className={`interactive-btn px-4 sm:px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 transition-all ${
@@ -360,65 +481,17 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
                               ? 'bg-emerald-600/90 hover:bg-emerald-500 text-white font-semibold border border-emerald-400/40 shadow-[0_2px_12px_rgba(16,185,129,0.35)]'
                               : 'bg-[#25D366] hover:bg-[#20ba5a] text-white font-medium shadow-sm'
                           }`}
-                          title={`Order via WhatsApp (+971 501487453)`}
+                          title="Order via WhatsApp"
                         >
-                          <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                          <WhatsAppIcon className="w-4 h-4 shrink-0" variant="white" />
                           <span>WhatsApp</span>
                         </button>
-                      ) : (
-                        <button
-                          onClick={(e) => handleAdd(product, e)}
-                          className={`interactive-btn px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 ${
-                            addedIds[product.id]
-                              ? 'bg-emerald-800 text-white'
-                              : isGlass
-                                ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_2px_12px_rgba(212,175,55,0.3)]'
-                                : 'bg-[#171717] hover:bg-neutral-800 text-white'
-                          }`}
-                        >
-                          {addedIds[product.id] ? (
-                            <>
-                              <Check className="w-3.5 h-3.5" />
-                              <span>Added</span>
-                            </>
-                          ) : (
-                            <>
-                              <ShoppingBag className="w-3.5 h-3.5" />
-                              <span>Add</span>
-                            </>
-                          )}
-                        </button>
-                      )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </TiltCard>
-            </div>
-          ))}
-          </div>
-        </div>
-
-        {/* Mobile Dynamic Scroll-Driven Progress Bar */}
-        {isMobile && filteredAndSortedProducts.length > 1 && (
-          <div className="flex md:hidden flex-col gap-1.5 pt-2 pb-1 px-1">
-            <div className="flex items-center justify-between text-[11px] font-medium tracking-wider uppercase">
-              <span className={isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'}>
-                Hamper {Math.min(filteredAndSortedProducts.length, Math.floor(scrollProgress * (filteredAndSortedProducts.length - 0.05)) + 1)} of {filteredAndSortedProducts.length}
-              </span>
-              <span className={isGlass ? 'text-neutral-400' : 'text-neutral-400'}>
-                Scroll down to view all
-              </span>
-            </div>
-            <div className={`w-full h-1 rounded-full overflow-hidden ${
-              isGlass ? 'bg-white/10' : 'bg-neutral-200'
-            }`}>
-              <div 
-                className={`h-full transition-all duration-75 rounded-full ${
-                  isGlass ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB]' : 'bg-[#171717]'
-                }`}
-                style={{ width: `${Math.max(15, scrollProgress * 100)}%` }}
-              />
-            </div>
+                </TiltCard>
+              </div>
+            ))}
           </div>
         )}
 

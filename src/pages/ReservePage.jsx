@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { ShoppingBag, Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useMemo } from 'react';
+import { Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
@@ -19,17 +19,30 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
-  const safeIndex = Math.min(currentIndex, Math.max(0, reserveProducts.length - 1));
-  const currentProduct = reserveProducts[safeIndex] || reserveProducts[0] || null;
+  // Guarantee strict Reserve order: 500 AED first, then 450 AED, then 400 AED
+  const sortedReserveProducts = useMemo(() => {
+    const priority = [500, 450, 400];
+    return [...reserveProducts].sort((a, b) => {
+      const aIdx = priority.indexOf(Number(a.price));
+      const bIdx = priority.indexOf(Number(b.price));
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+      if (aIdx !== -1) return -1;
+      if (bIdx !== -1) return 1;
+      return (Number(b.price) || 0) - (Number(a.price) || 0);
+    });
+  }, [reserveProducts]);
+
+  const safeIndex = Math.min(currentIndex, Math.max(0, sortedReserveProducts.length - 1));
+  const currentProduct = sortedReserveProducts[safeIndex] || sortedReserveProducts[0] || null;
 
   const handleNext = () => {
-    if (reserveProducts.length === 0) return;
-    setCurrentIndex((prev) => (prev + 1) % reserveProducts.length);
+    if (sortedReserveProducts.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % sortedReserveProducts.length);
   };
 
   const handlePrev = () => {
-    if (reserveProducts.length === 0) return;
-    setCurrentIndex((prev) => (prev - 1 + reserveProducts.length) % reserveProducts.length);
+    if (sortedReserveProducts.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + sortedReserveProducts.length) % sortedReserveProducts.length);
   };
 
   const handleTouchStart = (e) => {
@@ -185,28 +198,24 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                 >
                   
                   {/* Grand Product Photo Showcase - Full Uncut Image Display */}
-                  <div className="lg:col-span-6 relative w-full rounded-2xl overflow-hidden bg-black/40 border border-white/10 flex items-center justify-center p-2 sm:p-3 group">
+                  <div className="lg:col-span-6 relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/15 group">
                     <img
                       src={currentProduct.image}
                       alt={currentProduct.name}
-                      className="w-full h-auto max-h-[580px] object-contain rounded-xl transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+                      className="w-full h-auto block rounded-2xl transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                     />
                     
                     {/* Badge Overlay */}
-                    <div className="absolute top-4 left-4">
-                      <span className={`text-[10px] tracking-widest uppercase font-semibold px-3.5 py-1.5 rounded-full shadow-sm transition-all ${
-                        isGlass ? 'bg-black/80 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/40' : 'bg-white/95 text-neutral-800'
-                      }`}>
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="text-[10px] tracking-widest uppercase font-semibold px-3.5 py-1.5 rounded-full shadow-md bg-black/85 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/40">
                         {currentProduct.badge}
                       </span>
                     </div>
 
-                    {/* Pagination Badge Overlay inside image */}
-                    <div className="absolute bottom-4 right-4">
-                      <span className={`text-[10px] tracking-wider uppercase font-medium px-3 py-1 rounded-full backdrop-blur-md ${
-                        isGlass ? 'bg-black/80 text-neutral-300 border border-white/10' : 'bg-white/90 text-neutral-700'
-                      }`}>
-                        0{currentIndex + 1} / 0{reserveProducts.length}
+                    {/* Pagination Badge Overlay - placed at top right so it never obstructs the cake/hamper at the bottom */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <span className="text-[10px] tracking-wider uppercase font-medium px-3 py-1.5 rounded-full shadow-md backdrop-blur-md bg-black/85 text-[#F3E5AB] border border-[#D4AF37]/30">
+                        0{currentIndex + 1} / 0{sortedReserveProducts.length}
                       </span>
                     </div>
                   </div>
@@ -221,7 +230,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                           Haute Reserve 0{currentIndex + 1}
                         </span>
                         <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#F3E5AB] border border-[#D4AF37]/30">
-                          {currentIndex === 0 ? 'Primary Flagship' : 'Anniversary Selection'}
+                          {currentProduct?.price === 500 ? '500 AED Flagship Reserve' : currentProduct?.price === 450 ? '450 AED Anniversary Reserve' : '400 AED Celebration Experience'}
                         </span>
                       </div>
                       <h3 className={`font-serif text-2xl sm:text-3xl lg:text-4xl font-normal leading-tight ${
@@ -288,49 +297,26 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Action Buttons: Exclusive Concierge WhatsApp Reservation (No checkout / cart option) */}
                     <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                       <button
                         onClick={() => handleWhatsAppOrder(currentProduct)}
-                        className={`interactive-btn w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-semibold tracking-[0.12em] uppercase flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all ${
+                        className={`interactive-btn w-full sm:w-auto px-7 py-3.5 rounded-full text-xs font-semibold tracking-[0.14em] uppercase flex items-center justify-center gap-2.5 shadow-lg active:scale-95 transition-all ${
                           isGlass
-                            ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.35)]'
+                            ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:brightness-110 text-white shadow-[0_4px_25px_rgba(16,185,129,0.35)]'
                             : 'bg-[#25D366] hover:bg-[#20ba5a] text-white'
                         }`}
-                        title="Order directly on WhatsApp"
+                        title="Reserve directly on WhatsApp"
                       >
-                        <WhatsAppIcon className="w-4 h-4 fill-current" />
-                        <span>Order on WhatsApp</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleAdd(currentProduct)}
-                        className={`interactive-btn w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-medium tracking-[0.12em] uppercase flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
-                          addedIds[currentProduct.id]
-                            ? 'bg-emerald-800 text-white'
-                            : isGlass
-                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_4px_25px_rgba(212,175,55,0.4)]'
-                              : 'bg-[#171717] hover:bg-neutral-800 text-white'
-                        }`}
-                      >
-                        {addedIds[currentProduct.id] ? (
-                          <>
-                            <Check className="w-4 h-4" />
-                            <span>Added to Bag</span>
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingBag className="w-4 h-4" />
-                            <span>Add to Bag</span>
-                          </>
-                        )}
+                        <WhatsAppIcon className="w-4.5 h-4.5 shrink-0" variant="white" />
+                        <span>Reserve on WhatsApp</span>
                       </button>
 
                       <button
                         onClick={() => onQuickView(currentProduct)}
-                        className={`interactive-btn w-full sm:w-auto px-5 py-3.5 rounded-full text-xs font-medium tracking-[0.12em] uppercase transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-95 ${
+                        className={`interactive-btn w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-medium tracking-[0.14em] uppercase transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-95 ${
                           isGlass
-                            ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37]'
+                            ? 'glass-pill border-white/20 text-white hover:border-[#D4AF37] hover:bg-white/10'
                             : 'bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 hover:border-neutral-400'
                         }`}
                       >
@@ -358,7 +344,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
               </button>
 
               <div className="flex items-center gap-2">
-                {reserveProducts.map((_, idx) => (
+                {sortedReserveProducts.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentIndex(idx)}
@@ -385,7 +371,7 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
 
             {/* Desktop Slide Indicator Dots */}
             <div className="hidden md:flex items-center justify-center gap-2.5 pt-8">
-              {reserveProducts.map((_, idx) => (
+              {sortedReserveProducts.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}

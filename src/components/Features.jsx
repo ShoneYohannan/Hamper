@@ -108,7 +108,7 @@ export default function Features({ onOpenCustomWhatsApp, onOpenBuilder }) {
                   : 'bg-[#171717] hover:bg-neutral-800 text-white'
               }`}
             >
-              <WhatsAppIcon className="w-3.5 h-3.5 fill-[#0A0D0C]" />
+              <WhatsAppIcon className="w-4 h-4 shrink-0 drop-shadow-sm" />
               <span>Customise on WhatsApp</span>
             </button>
           </div>

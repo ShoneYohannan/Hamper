@@ -17,7 +17,6 @@ export default function ReviewsPage() {
     { id: 'all', label: 'All Stories' },
     { id: 'baby', label: 'Newborn Keepsakes' },
     { id: 'reserve', label: 'The Reserve' },
-    { id: 'corporate', label: 'Corporate Gifting' },
     { id: 'festive', label: 'Festive & Pantry' }
   ];
 
