@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { 
   products as defaultProducts, 
   reserveProducts as defaultReserveProducts, 
@@ -166,22 +166,31 @@ export function CmsProvider({ children }) {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Auto-sync entire state to localStorage whenever modified
+  // Debounced auto-sync of state to localStorage to prevent UI stutter
+  const syncTimeoutRef = useRef(null);
+
   useEffect(() => {
-    try {
-      const payload = {
-        products,
-        reserveProducts,
-        categories,
-        testimonials,
-        siteSettings,
-        mediaLibrary,
-        updatedAt: new Date().toISOString()
-      };
-      localStorage.setItem(CMS_STORAGE_KEY, JSON.stringify(payload));
-    } catch (e) {
-      console.error('Failed to persist CMS data to localStorage:', e);
-    }
+    if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    syncTimeoutRef.current = setTimeout(() => {
+      try {
+        const payload = {
+          products,
+          reserveProducts,
+          categories,
+          testimonials,
+          siteSettings,
+          mediaLibrary,
+          updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem(CMS_STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        console.error('Failed to persist CMS data to localStorage:', e);
+      }
+    }, 200);
+
+    return () => {
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    };
   }, [products, reserveProducts, categories, testimonials, siteSettings, mediaLibrary]);
 
   // Load from Supabase Cloud on initial mount if configured
@@ -390,12 +399,16 @@ export function CmsProvider({ children }) {
   };
 
 
-  // Site Settings (Local + Cloud)
+  // Site Settings (Local + Cloud with Debounce)
+  const cloudSettingsTimeoutRef = useRef(null);
   const updateSiteSettings = (fields) => {
     setSiteSettings((prev) => {
       const updated = { ...prev, ...fields };
       if (isSupabaseConnected()) {
-        upsertCloudSiteSettings(updated);
+        if (cloudSettingsTimeoutRef.current) clearTimeout(cloudSettingsTimeoutRef.current);
+        cloudSettingsTimeoutRef.current = setTimeout(() => {
+          upsertCloudSiteSettings(updated);
+        }, 1000);
       }
       return updated;
     });

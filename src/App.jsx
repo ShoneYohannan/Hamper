@@ -17,7 +17,7 @@ import { useCms } from './context/CmsContext';
 
 export default function App() {
   const { isGlass } = useTheme();
-  const { siteSettings, openAdmin } = useCms();
+  const { siteSettings, openAdmin, isAdminModalOpen } = useCms();
   const [activeSection, setActiveSection] = useState('home');
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -158,61 +158,65 @@ export default function App() {
     }`}>
       
       {/* Animated Ambient Gradient Mesh for Luxe Glass Mode (Matching Royal Violet & Imperial Gold Logo Shade) */}
-      {isGlass && (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {isGlass && !isAdminModalOpen && (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 contain-paint">
           {/* Deep Royal Purple Glow Orb */}
-          <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full bg-[#4a0e4e]/55 blur-[125px] animate-mesh-1" />
+          <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-[#4a0e4e]/50 blur-[90px] animate-mesh-1 will-change-transform" />
           {/* Luminous Warm Imperial Gold Orb */}
-          <div className="absolute top-[22%] -right-40 w-[620px] h-[620px] rounded-full bg-[#D4AF37]/22 blur-[140px] animate-mesh-2" />
+          <div className="absolute top-[22%] -right-40 w-[540px] h-[540px] rounded-full bg-[#D4AF37]/20 blur-[100px] animate-mesh-2 will-change-transform" />
           {/* Deep Velvet Plum Glow Orb */}
-          <div className="absolute top-[58%] -left-32 w-[680px] h-[680px] rounded-full bg-[#340b49]/60 blur-[135px] animate-mesh-3" />
+          <div className="absolute top-[58%] -left-32 w-[580px] h-[580px] rounded-full bg-[#340b49]/55 blur-[95px] animate-mesh-3 will-change-transform" />
           {/* Warm Champagne Velvet Bottom Orb */}
-          <div className="absolute bottom-0 right-[15%] w-[520px] h-[520px] rounded-full bg-[#B78A45]/20 blur-[150px] animate-mesh-1" />
+          <div className="absolute bottom-0 right-[15%] w-[460px] h-[460px] rounded-full bg-[#B78A45]/18 blur-[100px] animate-mesh-1 will-change-transform" />
         </div>
       )}
 
-      {/* Navigation Header with WhatsApp Custom Curation */}
-      <Header 
-        cartCount={totalCartCount}
-        currentPage={activeSection}
-        onNavigate={handleNavigate}
-        onOpenCart={() => setCartOpen(true)}
-        onOpenCustomWhatsApp={handleOpenCustomWhatsApp}
-      />
+      {/* Navigation Header & Main Storefront (Completely unmounted in CMS mode for blazing fast 0ms latency) */}
+      {!isAdminModalOpen && (
+        <>
+          <Header 
+            cartCount={totalCartCount}
+            currentPage={activeSection}
+            onNavigate={handleNavigate}
+            onOpenCart={() => setCartOpen(true)}
+            onOpenCustomWhatsApp={handleOpenCustomWhatsApp}
+          />
 
-      {/* Main Continuous Boutique Experience with Scroll Spy Sections */}
-      <main className="flex-grow relative z-10">
-        {/* Section 1: Home / Hero */}
-        <Hero 
-          onOpenCustomWhatsApp={handleOpenCustomWhatsApp} 
-        />
+          {/* Main Continuous Boutique Experience with Scroll Spy Sections */}
+          <main className="flex-grow relative z-10">
+            {/* Section 1: Home / Hero */}
+            <Hero 
+              onOpenCustomWhatsApp={handleOpenCustomWhatsApp} 
+            />
 
-        {/* Section 2: Collections Catalog with Pill Filters, Search & Sort */}
-        <CollectionsPage 
-          onAddToCart={handleAddToCart}
-          onQuickView={(prod) => setQuickViewProduct(prod)}
-        />
+            {/* Section 2: Collections Catalog with Pill Filters, Search & Sort */}
+            <CollectionsPage 
+              onAddToCart={handleAddToCart}
+              onQuickView={(prod) => setQuickViewProduct(prod)}
+            />
 
-        {/* Section 3: The Reserve Vault & VIP Concierge Inquiry */}
-        <ReservePage 
-          onAddToCart={handleAddToCart}
-          onQuickView={(prod) => setQuickViewProduct(prod)}
-        />
+            {/* Section 3: The Reserve Vault & VIP Concierge Inquiry */}
+            <ReservePage 
+              onAddToCart={handleAddToCart}
+              onQuickView={(prod) => setQuickViewProduct(prod)}
+            />
 
-        {/* The Atelier 3-Step Process */}
-        <Features 
-          onOpenCustomWhatsApp={handleOpenCustomWhatsApp}
-        />
+            {/* The Atelier 3-Step Process */}
+            <Features 
+              onOpenCustomWhatsApp={handleOpenCustomWhatsApp}
+            />
 
-        {/* Section 4: Reviews, Verified Patron Stories & Submission Modal */}
-        <ReviewsPage />
-      </main>
+            {/* Section 4: Reviews, Verified Patron Stories & Submission Modal */}
+            <ReviewsPage />
+          </main>
 
-      {/* Footer with onNavigate */}
-      <Footer 
-        onNavigate={handleNavigate}
-        onSubscribe={(email) => showToast('Subscribed', `Privilege code dispatched to ${email}`, 'newsletter')}
-      />
+          {/* Footer with onNavigate */}
+          <Footer 
+            onNavigate={handleNavigate}
+            onSubscribe={(email) => showToast('Subscribed', `Privilege code dispatched to ${email}`, 'newsletter')}
+          />
+        </>
+      )}
 
       {/* Modals & Overlays */}
       <CartDrawer 

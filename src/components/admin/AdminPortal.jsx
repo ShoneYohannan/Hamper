@@ -32,6 +32,7 @@ import { useCms } from '../../context/CmsContext';
 import ProductEditorModal from './ProductEditorModal';
 import ReviewEditorModal from './ReviewEditorModal';
 import WhatsAppIcon from '../icons/WhatsAppIcon';
+import { compressImageFile } from '../../utils/imageCompressor';
 
 export default function AdminPortal() {
   const {
@@ -132,18 +133,18 @@ export default function AdminPortal() {
 
 
   // Media upload
-  const handleMediaUpload = (e) => {
+  const handleMediaUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const url = ev.target?.result;
-      if (typeof url === 'string') {
-        addMediaItem({ name: file.name, url });
+    try {
+      const compressedUrl = await compressImageFile(file, 1200, 1200, 0.82);
+      if (compressedUrl) {
+        addMediaItem({ name: file.name, url: compressedUrl });
       }
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      alert('Failed to process image file.');
+    }
   };
 
   const copyToClipboard = (text) => {

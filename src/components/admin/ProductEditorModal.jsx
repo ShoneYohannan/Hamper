@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Upload, Sparkles, Plus, Trash2, Image as ImageIcon, Eye, Check } from 'lucide-react';
 import { useCms } from '../../context/CmsContext';
 import { useTheme } from '../../context/ThemeContext';
+import { compressImageFile } from '../../utils/imageCompressor';
 
 export default function ProductEditorModal({ 
   isOpen, 
@@ -88,29 +89,26 @@ export default function ProductEditorModal({
 
   if (!isOpen) return null;
 
-  // Handle local image file upload and auto-compress/convert to base64
-  const handleFileUpload = (e) => {
+  // Handle local image file upload and auto-compress/convert to lightweight base64
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setIsUploading(true);
-    const reader = new FileReader();
-    reader.onload = (uploadEvent) => {
-      const base64Url = uploadEvent.target?.result;
-      if (typeof base64Url === 'string') {
-        setFormData(prev => ({ ...prev, image: base64Url }));
+    try {
+      const compressedUrl = await compressImageFile(file, 1200, 1200, 0.82);
+      if (compressedUrl) {
+        setFormData(prev => ({ ...prev, image: compressedUrl }));
         addMediaItem({
           name: file.name,
-          url: base64Url
+          url: compressedUrl
         });
       }
+    } catch {
+      alert('Failed to process image file.');
+    } finally {
       setIsUploading(false);
-    };
-    reader.onerror = () => {
-      alert('Failed to read image file.');
-      setIsUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handlePriceChange = (val) => {

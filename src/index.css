@@ -99,58 +99,61 @@ html.theme-glass ::-webkit-scrollbar-thumb:hover {
   }
 }
 
-/* Animated Ambient Gradient Mesh for Glass Theme */
+/* Animated Ambient Gradient Mesh for Glass Theme (Hardware Accelerated) */
 @keyframes meshDrift1 {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(60px, -50px) scale(1.15); }
-  66% { transform: translate(-40px, 40px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% { transform: translate3d(0px, 0px, 0) scale(1); }
+  33% { transform: translate3d(50px, -40px, 0) scale(1.1); }
+  66% { transform: translate3d(-35px, 30px, 0) scale(0.92); }
+  100% { transform: translate3d(0px, 0px, 0) scale(1); }
 }
 
 @keyframes meshDrift2 {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(-70px, 60px) scale(0.95); }
-  66% { transform: translate(50px, -30px) scale(1.12); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% { transform: translate3d(0px, 0px, 0) scale(1); }
+  33% { transform: translate3d(-55px, 45px, 0) scale(0.95); }
+  66% { transform: translate3d(40px, -25px, 0) scale(1.08); }
+  100% { transform: translate3d(0px, 0px, 0) scale(1); }
 }
 
 @keyframes meshDrift3 {
-  0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(40px, 50px) scale(1.1); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% { transform: translate3d(0px, 0px, 0) scale(1); }
+  50% { transform: translate3d(30px, 35px, 0) scale(1.06); }
+  100% { transform: translate3d(0px, 0px, 0) scale(1); }
 }
 
 /* Element Animation Keyframes */
 @keyframes floatSubtle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
+  0%, 100% { transform: translate3d(0, 0px, 0); }
+  50% { transform: translate3d(0, -5px, 0); }
 }
 
 @keyframes pulseGoldGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.25); }
-  50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.55); }
+  0%, 100% { box-shadow: 0 0 12px rgba(212, 175, 55, 0.22); }
+  50% { box-shadow: 0 0 22px rgba(212, 175, 55, 0.45); }
 }
 
 @keyframes shimmerSweep {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(200%) skewX(-15deg); }
+  0% { transform: translate3d(-100%, 0, 0) skewX(-15deg); }
+  100% { transform: translate3d(200%, 0, 0) skewX(-15deg); }
 }
 
 @keyframes starTwinkle {
   0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.25); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 0.85; }
 }
 
 .animate-mesh-1 {
-  animation: meshDrift1 18s ease-in-out infinite;
+  animation: meshDrift1 20s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-mesh-2 {
-  animation: meshDrift2 22s ease-in-out infinite;
+  animation: meshDrift2 24s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-mesh-3 {
-  animation: meshDrift3 26s ease-in-out infinite;
+  animation: meshDrift3 28s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-float-subtle {
@@ -158,19 +161,19 @@ html.theme-glass ::-webkit-scrollbar-thumb:hover {
 }
 
 .animate-fade-in {
-  animation: fadeIn 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-scale-in {
-  animation: scaleIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scaleIn 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .transition-smooth {
-  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==========================================================
@@ -180,19 +183,20 @@ html.theme-glass ::-webkit-scrollbar-thumb:hover {
 
 /* Translucent Frosted Glass Card */
 .glass-panel {
-  background: rgba(28, 8, 38, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(212, 175, 55, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(8, 0, 14, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
-  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(28, 8, 38, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(8, 0, 14, 0.45), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), border-color 300ms ease, box-shadow 300ms ease;
+  contain: paint;
 }
 
 .glass-panel-hover:hover {
-  background: rgba(42, 14, 58, 0.8);
+  background: rgba(42, 14, 58, 0.85);
   border-color: rgba(212, 175, 55, 0.5);
-  box-shadow: 0 16px 40px 0 rgba(8, 0, 14, 0.6), 0 0 28px -2px rgba(183, 110, 230, 0.25), inset 0 1px 2px 0 rgba(255, 255, 255, 0.22);
-  transform: translateY(-3px);
+  box-shadow: 0 14px 36px 0 rgba(8, 0, 14, 0.55), 0 0 24px -2px rgba(183, 110, 230, 0.22);
+  transform: translate3d(0, -3px, 0);
 }
 
 /* Floating Frosted Navigation Bar - Deep Plum Glass */
