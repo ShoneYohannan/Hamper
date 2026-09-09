@@ -12,6 +12,7 @@ export default function BudgetFriendlyPage({ onQuickView, onNavigate }) {
   const [clickedCardId, setClickedCardId] = useState(null);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
   const scrollRailRef = useRef(null);
+  const mobileContainerRef = useRef(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   useEffect(() => {
@@ -31,33 +32,48 @@ export default function BudgetFriendlyPage({ onQuickView, onNavigate }) {
     return [...list].sort((a, b) => (a.price || 0) - (b.price || 0));
   }, [products]);
 
-  // Track smooth scroll rail position
+  // Track vertical page scroll on mobile to smoothly cycle through images/cards
   useEffect(() => {
-    const rail = scrollRailRef.current;
-    if (!rail) return;
+    if (!isMobile) return;
 
-    const onScroll = () => {
-      const cardWidth = rail.firstElementChild?.offsetWidth || rail.offsetWidth * 0.82;
-      const gap = 16;
-      const idx = Math.round(rail.scrollLeft / (cardWidth + gap));
-      setActiveCardIndex(Math.max(0, Math.min(idx, budgetProducts.length - 1)));
+    const handleScroll = () => {
+      const container = mobileContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const windowHeight = window.innerHeight || 800;
+      const totalScrollable = container.offsetHeight - windowHeight;
+
+      if (totalScrollable <= 0) return;
+
+      // Calculate progress from top of container hitting top of viewport
+      const currentScroll = -rect.top;
+      const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
+      const totalItems = budgetProducts.length;
+      const targetIndex = Math.min(
+        totalItems - 1,
+        Math.floor(progress * totalItems)
+      );
+
+      setActiveCardIndex(targetIndex);
     };
 
-    rail.addEventListener('scroll', onScroll, { passive: true });
-    return () => rail.removeEventListener('scroll', onScroll);
-  }, [budgetProducts.length]);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMobile, budgetProducts.length]);
 
-  const smoothScrollBy = (offset) => {
-    if (scrollRailRef.current) {
-      scrollRailRef.current.scrollBy({ left: offset, behavior: 'smooth' });
-    }
-  };
+  const scrollToMobileHamper = (index) => {
+    const container = mobileContainerRef.current;
+    if (!container) return;
 
-  const smoothScrollToIdx = (idx) => {
-    if (scrollRailRef.current) {
-      const cardWidth = scrollRailRef.current.firstElementChild?.offsetWidth || scrollRailRef.current.offsetWidth * 0.82;
-      scrollRailRef.current.scrollTo({ left: idx * (cardWidth + 16), behavior: 'smooth' });
-    }
+    const windowHeight = window.innerHeight || 800;
+    const totalScrollable = container.offsetHeight - windowHeight;
+    const scrollTarget = container.offsetTop + (index / budgetProducts.length) * totalScrollable + 50;
+
+    window.scrollTo({
+      top: scrollTarget,
+      behavior: 'smooth'
+    });
   };
 
   const handleWhatsAppOrder = (product, e) => {
@@ -147,116 +163,106 @@ export default function BudgetFriendlyPage({ onQuickView, onNavigate }) {
           </div>
         </ScrollReveal>
 
-        {/* ── MOBILE: Silky Smooth Touch-Enabled Carousel (Exclusively for Mobile) ── */}
+        {/* ── MOBILE: Scroll-Driven Pinned Image Carousel (Changes as user scrolls down) ── */}
         {/* ── DESKTOP (md+): Staggered Smooth Scroll-Animated 3-Card Grid ─── */}
         {isMobile ? (
-          <div className="relative mobile-carousel-container select-none">
-            {/* Top Carousel Navigation Header */}
-            <div className="flex items-center justify-between mb-4 px-1">
-              <div className="flex items-center gap-2">
-                <span className={`text-[11px] font-medium tracking-wider uppercase ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'}`}>
-                  Hamper {activeCardIndex + 1} of {budgetProducts.length}
-                </span>
+          <div 
+            ref={mobileContainerRef}
+            className="relative"
+            style={{ minHeight: `${budgetProducts.length * 90}vh` }}
+          >
+            {/* Sticky viewport frame that locks on screen while user scrolls */}
+            <div className="sticky top-20 z-20 pb-8 select-none">
+              
+              {/* Top Progress & Quick Jump Pill Navigation */}
+              <div className="flex items-center justify-between mb-4 px-1">
+                <div className="flex items-center gap-2">
+                  <span className={`text-[11px] font-semibold tracking-wider uppercase ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-500'}`}>
+                    Hamper {activeCardIndex + 1} of {budgetProducts.length}
+                  </span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                    isGlass ? 'bg-white/5 border-white/10 text-neutral-400' : 'bg-neutral-100 border-neutral-200 text-neutral-600'
+                  }`}>
+                    Scroll to advance ↓
+                  </span>
+                </div>
+
+                {/* Progress bar tracking downward scroll */}
+                <div className="flex items-center gap-1.5">
+                  {budgetProducts.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => scrollToMobileHamper(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-500 cursor-pointer ${
+                        activeCardIndex === idx
+                          ? isGlass
+                            ? 'w-6 bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] shadow-[0_0_8px_rgba(212,175,55,0.6)]'
+                            : 'w-6 bg-[#171717]'
+                          : isGlass
+                            ? 'w-2 bg-white/20 hover:bg-white/40'
+                            : 'w-2 bg-neutral-300'
+                      }`}
+                      aria-label={`Jump to hamper ${idx + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => smoothScrollToIdx(Math.max(0, activeCardIndex - 1))}
-                  disabled={activeCardIndex === 0}
-                  className={`p-2 rounded-full border transition-all duration-300 ${
-                    activeCardIndex === 0
-                      ? 'opacity-30 cursor-not-allowed border-transparent'
-                      : isGlass
-                        ? 'bg-white/10 hover:bg-white/20 border-white/15 text-white active:scale-90'
-                        : 'bg-white hover:bg-neutral-100 border-neutral-200 text-neutral-800 shadow-sm active:scale-90'
-                  }`}
-                  aria-label="Previous hamper"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
+              {/* Central Active Hamper Card with Silky Cross-Fade & Scale Transitions */}
+              <div className="relative w-full max-w-sm mx-auto">
+                {budgetProducts.map((product, idx) => {
+                  const isActive = activeCardIndex === idx;
+                  const isPopular = product.price === 150;
 
-                <button
-                  onClick={() => smoothScrollToIdx(Math.min(budgetProducts.length - 1, activeCardIndex + 1))}
-                  disabled={activeCardIndex === budgetProducts.length - 1}
-                  className={`p-2 rounded-full border transition-all duration-300 ${
-                    activeCardIndex === budgetProducts.length - 1
-                      ? 'opacity-30 cursor-not-allowed border-transparent'
-                      : isGlass
-                        ? 'bg-white/10 hover:bg-white/20 border-white/15 text-white active:scale-90'
-                        : 'bg-white hover:bg-neutral-100 border-neutral-200 text-neutral-800 shadow-sm active:scale-90'
-                  }`}
-                  aria-label="Next hamper"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Carousel Rail with Peeking Adjacent Cards & Snap Centering */}
-            <div
-              ref={scrollRailRef}
-              className="flex gap-4 overflow-x-auto pb-4 pt-1 px-[7vw] snap-x snap-mandatory scroll-smooth no-scrollbar"
-              style={{
-                WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-                scrollPadding: '0 7vw'
-              }}
-            >
-              {budgetProducts.map((product, idx) => {
-                const meta = getTierMeta(product.price);
-                const isPopular = product.price === 150;
-                const isActive = activeCardIndex === idx;
-
-                return (
-                  <div
-                    key={product.id}
-                    className="shrink-0 snap-center w-[84vw] max-w-[340px] transition-all duration-500 ease-out"
-                    style={{
-                      transform: isActive ? 'scale(1)' : 'scale(0.94)',
-                      opacity: isActive ? 1 : 0.68,
-                      filter: isActive ? 'none' : 'blur(0.2px)'
-                    }}
-                  >
+                  return (
                     <div
-                      onClick={(e) => handleCardClick(product, e)}
-                      className={`rounded-3xl p-5 sm:p-6 cursor-pointer flex flex-col justify-between group h-full relative transition-all duration-400 hamper-card-interactive shadow-xl ${
-                        clickedCardId === product.id ? 'hamper-click-animated' : ''
-                      } ${
-                        isGlass
-                          ? `glass-panel border-white/20 hover:border-[#D4AF37]/60 text-white ${isPopular ? 'ring-1 ring-[#D4AF37]/60 shadow-[0_0_25px_rgba(212,175,55,0.2)]' : ''}`
-                          : `bg-white border ${isPopular ? 'border-[#D4AF37]/70 shadow-[0_10px_30px_rgba(212,175,55,0.14)]' : 'border-neutral-200/80 shadow-md'}`
+                      key={product.id}
+                      className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        isActive 
+                          ? 'relative opacity-100 scale-100 pointer-events-auto z-10' 
+                          : 'absolute inset-0 opacity-0 scale-95 pointer-events-none -z-10'
                       }`}
                     >
-                      {/* Top banner */}
-                      <div className="flex items-center justify-between gap-2 mb-3 min-h-[24px]">
-                        <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
-                          isGlass ? 'bg-white/5 border-white/10 text-neutral-300' : 'bg-neutral-100 border-neutral-200 text-neutral-700'
-                        }`}>
-                          {idx === 0 ? 'Tier I' : idx === 1 ? 'Tier II' : 'Tier III'}
-                        </span>
-
-                        {isPopular && (
-                          <span className="text-[10px] font-semibold text-[#D4AF37] uppercase tracking-widest flex items-center gap-1 bg-[#D4AF37]/10 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
-                            <Star className="w-3 h-3 fill-current text-[#D4AF37]" />
-                            <span>Popular</span>
+                      <div
+                        onClick={(e) => handleCardClick(product, e)}
+                        className={`rounded-3xl p-5 cursor-pointer flex flex-col justify-between group h-full relative transition-all duration-400 hamper-card-interactive shadow-2xl ${
+                          clickedCardId === product.id ? 'hamper-click-animated' : ''
+                        } ${
+                          isGlass
+                            ? `glass-panel border-white/20 text-white ${isPopular ? 'ring-1 ring-[#D4AF37]/60 shadow-[0_0_30px_rgba(212,175,55,0.22)]' : ''}`
+                            : `bg-white border ${isPopular ? 'border-[#D4AF37]/70 shadow-[0_12px_36px_rgba(212,175,55,0.16)]' : 'border-neutral-200/80 shadow-lg'}`
+                        }`}
+                      >
+                        {/* Top banner */}
+                        <div className="flex items-center justify-between gap-2 mb-3 min-h-[24px]">
+                          <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                            isGlass ? 'bg-white/5 border-white/10 text-neutral-300' : 'bg-neutral-100 border-neutral-200 text-neutral-700'
+                          }`}>
+                            {idx === 0 ? 'Tier I · Keepsake' : idx === 1 ? 'Tier II · Romance' : 'Tier III · Luxury'}
                           </span>
-                        )}
-                      </div>
 
-                      <div>
-                        {/* Image Showcase */}
-                        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-neutral-900/20 shadow-inner">
+                          {isPopular && (
+                            <span className="text-[10px] font-semibold text-[#D4AF37] uppercase tracking-widest flex items-center gap-1 bg-[#D4AF37]/10 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                              <Star className="w-3 h-3 fill-current text-[#D4AF37]" />
+                              <span>Most Popular</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Image Showcase with Parallax-Like Smoothness */}
+                        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-neutral-900/30 shadow-inner">
                           <img
                             src={product.image}
                             alt={product.name}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                            className={`w-full h-full object-cover transition-transform duration-1000 ease-out ${
+                              isActive ? 'scale-100' : 'scale-105'
+                            }`}
                             loading="lazy"
                           />
                           <div className="absolute top-3 left-3">
                             <span className={`text-xs font-serif font-medium px-3.5 py-1 rounded-full shadow-md backdrop-blur-md ${
                               isGlass
-                                ? 'bg-black/75 text-[#F3E5AB] border border-[#D4AF37]/50'
+                                ? 'bg-black/80 text-[#F3E5AB] border border-[#D4AF37]/50'
                                 : 'bg-white/95 text-neutral-900 border border-neutral-200 font-semibold'
                             }`}>
                               {product.formattedPrice}
@@ -278,7 +284,7 @@ export default function BudgetFriendlyPage({ onQuickView, onNavigate }) {
                           </p>
                         </div>
 
-                        {/* Highlights list */}
+                        {/* Inclusions summary */}
                         {product.items && (
                           <div className="mt-3 pt-3 border-t border-white/10 space-y-1.5">
                             {product.items.slice(0, 2).map((item, i) => (
@@ -289,73 +295,91 @@ export default function BudgetFriendlyPage({ onQuickView, onNavigate }) {
                             ))}
                           </div>
                         )}
-                      </div>
 
-                      {/* Footer Actions */}
-                      <div className={`pt-4 mt-4 border-t flex items-center justify-between gap-2 ${
-                        isGlass ? 'border-white/10' : 'border-neutral-100'
-                      }`}>
-                        <div>
-                          <span className={`text-base font-medium ${
-                            isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'
-                          }`}>
-                            {product.formattedPrice}
-                          </span>
-                          {product.priceNote && (
-                            <span className={`block text-[10px] leading-tight ${
-                              isGlass ? 'text-amber-200/70' : 'text-neutral-500'
+                        {/* Footer Actions */}
+                        <div className={`pt-4 mt-4 border-t flex items-center justify-between gap-2 ${
+                          isGlass ? 'border-white/10' : 'border-neutral-100'
+                        }`}>
+                          <div>
+                            <span className={`text-base font-medium ${
+                              isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'
                             }`}>
-                              {product.priceNote}
+                              {product.formattedPrice}
                             </span>
-                          )}
-                        </div>
+                            {product.priceNote && (
+                              <span className={`block text-[10px] leading-tight ${
+                                isGlass ? 'text-amber-200/70' : 'text-neutral-500'
+                              }`}>
+                                {product.priceNote}
+                              </span>
+                            )}
+                          </div>
 
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
-                            className={`p-2 rounded-full transition-all ${
-                              isGlass
-                                ? 'text-neutral-300 hover:text-white hover:bg-white/10 active:scale-95'
-                                : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 active:scale-95'
-                            }`}
-                            aria-label={`Quick view ${product.name}`}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+                              className={`p-2 rounded-full transition-all ${
+                                isGlass
+                                  ? 'text-neutral-300 hover:text-white hover:bg-white/10 active:scale-95'
+                                  : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 active:scale-95'
+                              }`}
+                              aria-label={`Quick view ${product.name}`}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
 
-                          <button
-                            onClick={(e) => handleWhatsAppOrder(product, e)}
-                            className={`px-3.5 py-2 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 transition-all ${
-                              isGlass
-                                ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/40'
-                                : 'bg-[#25D366] text-white hover:brightness-105'
-                            }`}
-                          >
-                            <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" variant="white" />
-                            <span>Order</span>
-                          </button>
+                            <button
+                              onClick={(e) => handleWhatsAppOrder(product, e)}
+                              className={`px-3.5 py-2 rounded-full text-xs font-medium tracking-wider uppercase flex items-center gap-1.5 shadow-sm active:scale-95 transition-all ${
+                                isGlass
+                                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/40'
+                                  : 'bg-[#25D366] text-white hover:brightness-105'
+                              }`}
+                            >
+                              <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" variant="white" />
+                              <span>Order</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
 
-            {/* Smooth Indicator Dots with active pill expand animation */}
-            <div className="flex items-center justify-center gap-1.5 pt-3">
-              {budgetProducts.map((_, idx) => (
+              {/* Interactive Bottom Swipe/Click Navigation Indicator */}
+              <div className="flex items-center justify-center gap-3 pt-4 text-xs">
                 <button
-                  key={idx}
-                  onClick={() => smoothScrollToIdx(idx)}
-                  className={`rounded-full transition-all duration-300 cursor-pointer ${
-                    activeCardIndex === idx
-                      ? isGlass ? 'w-7 h-2 bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] shadow-[0_0_10px_rgba(212,175,55,0.5)]' : 'w-7 h-2 bg-[#171717]'
-                      : isGlass ? 'w-2 h-2 bg-white/20 hover:bg-white/40' : 'w-2 h-2 bg-neutral-300 hover:bg-neutral-400'
+                  onClick={() => scrollToMobileHamper(Math.max(0, activeCardIndex - 1))}
+                  disabled={activeCardIndex === 0}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-all text-[11px] ${
+                    activeCardIndex === 0 
+                      ? 'opacity-20 cursor-not-allowed border-transparent' 
+                      : isGlass ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white' : 'bg-white border-neutral-200 shadow-sm'
                   }`}
-                  aria-label={`Go to budget hamper ${idx + 1}`}
-                />
-              ))}
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Prev</span>
+                </button>
+
+                <span className={`text-[11px] font-mono tracking-wider ${isGlass ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                  {activeCardIndex + 1} / {budgetProducts.length}
+                </span>
+
+                <button
+                  onClick={() => scrollToMobileHamper(Math.min(budgetProducts.length - 1, activeCardIndex + 1))}
+                  disabled={activeCardIndex === budgetProducts.length - 1}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-all text-[11px] ${
+                    activeCardIndex === budgetProducts.length - 1 
+                      ? 'opacity-20 cursor-not-allowed border-transparent' 
+                      : isGlass ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white' : 'bg-white border-neutral-200 shadow-sm'
+                  }`}
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
             </div>
           </div>
         ) : (
