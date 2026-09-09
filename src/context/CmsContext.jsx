@@ -26,8 +26,8 @@ import {
   SUPABASE_SQL_SETUP_SCRIPT
 } from '../services/supabase';
 
-const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v9';
-const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v9';
+const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v11';
+const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v11';
 const ADMIN_AUTH_KEY = 'dazzling_hampers_admin_auth';
 const ADMIN_PIN_KEY = 'dazzling_hampers_admin_pin';
 const DEFAULT_PIN = '2026';
@@ -43,7 +43,31 @@ const defaultSiteSettings = {
   instagramHandle: '@dazzlinghampers',
   instagramUrl: 'https://instagram.com',
   email: 'concierge@dazzlinghampers.com',
-  locationText: 'Dubai, United Arab Emirates & Mumbai, India'
+  locationText: 'Dubai, United Arab Emirates & Mumbai, India',
+
+  // Budget-Friendly Page Copy
+  budgetBadge: 'Petite Milestone Collection',
+  budgetHeadline: 'Budget-Friendly Hampers',
+  budgetSubtitle: 'Handcrafted celebration stone bouquets pairing fresh gourmet celebration cakes, velvet roses, and fine chocolates — thoughtful gifting made accessible without compromise.',
+  budgetBridgeBadge: 'Explore The Full Storefront',
+  budgetBridgeHeadline: 'Looking for Signature Keepsakes, Newborn Sets & Deluxe Trunks?',
+  budgetBridgeSubtitle: 'Discover our complete collection featuring Gentleman\'s formal shirt trunks, Little Prince & Princess keepsakes, and custom photo chocolate blooms.',
+  budgetBridgeButtonText: 'Explore All Collections',
+
+  // Collections Page Copy
+  collectionsBadge: 'The Atelier Catalog',
+  collectionsHeadline: 'Curated Collections',
+  collectionsSubtitle: 'From heirloom newborn keepsakes to vintage celebration reserves, discover gift hampers crafted with uncompromising attention to detail.',
+
+  // The Reserve Page Copy
+  reserveBadge: 'Private Vault & Allocation',
+  reserveHeadline: 'The Reserve',
+  reserveSubtitle: 'Our highest expression of luxury gifting. Individually assembled with bespoke artisan detailing, authentic perfumery, illuminated acrylic cases, and white-glove dispatch.',
+
+  // Reviews & Accolades Page Copy
+  reviewsBadge: 'Client Words & Reveries',
+  reviewsHeadline: 'Loved by Givers & Receivers',
+  reviewsSubtitle: 'Unfiltered stories from patrons who have gifted Dazzling Hampers for newborn arrivals, private reserves, and milestone celebrations.'
 };
 
 const CmsContext = createContext(null);
@@ -222,7 +246,17 @@ export function CmsProvider({ children }) {
         fetchCloudSiteSettings()
       ])
         .then(([cp, cr, ct, cs]) => {
-          if (cp && cp.length > 0) setProducts(cp);
+          if (cp && cp.length > 0) {
+            try {
+              const deleted = JSON.parse(localStorage.getItem(DELETED_IDS_KEY) || '[]');
+              const deletedSet = new Set(deleted.map(String));
+              const existingIds = new Set(cp.map(p => String(p.id)));
+              const missingDefaults = defaultProducts.filter(p => !existingIds.has(String(p.id)) && !deletedSet.has(String(p.id)));
+              setProducts([...cp, ...missingDefaults].filter(p => !deletedSet.has(String(p.id))));
+            } catch (e) {
+              setProducts(cp);
+            }
+          }
           if (cr && cr.length > 0) setReserveProducts(cr);
           if (ct && ct.length > 0) setTestimonials(ct);
           if (cs && typeof cs === 'object') setSiteSettings(prev => ({ ...prev, ...cs }));

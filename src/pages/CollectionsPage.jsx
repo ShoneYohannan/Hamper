@@ -23,27 +23,32 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const displayCategories = useMemo(() => {
+    return categories.filter((cat) => cat.id !== 'budget-friendly');
+  }, [categories]);
+
   const filteredAndSortedProducts = useMemo(() => {
     let list = products.filter((p) => {
-      // Do not show 500 AED Reserve hamper in the general 'all' collections view to prevent duplication with Reserve page
-      if (selectedCategory === 'all' && (p.excludeFromAllCollections || p.id === 'grand-luxe-heart-acrylic-reserve')) {
+      // Exclude Reserve flagship hamper (shown on Reserve page)
+      if (p.excludeFromAllCollections || p.id === 'grand-luxe-heart-acrylic-reserve') {
+        return false;
+      }
+
+      // Exclude budget-friendly stone bouquets (featured on the dedicated Budget Friendly showcase page)
+      const isBudget = p.category === 'budget-friendly' || 
+                       p.badge?.toUpperCase().includes('BUDGET') || 
+                       p.id?.includes('stone-bouquet');
+      if (isBudget) {
         return false;
       }
 
       const matchesCategory =
-        (selectedCategory === 'all' && !p.excludeFromAllCollections) ||
+        selectedCategory === 'all' ||
         p.category === selectedCategory ||
         (Array.isArray(p.categories) && p.categories.includes(selectedCategory)) ||
         (selectedCategory === 'premium' && (
           p.category === 'premium' ||
-          p.id === 'grand-luxe-heart-acrylic-reserve' ||
-          p.price === 500
-        )) ||
-        (selectedCategory === 'budget-friendly' && (
-          p.category === 'budget-friendly' ||
-          p.isBudgetFriendly ||
-          p.id?.includes('stone-bouquet') ||
-          (p.price && p.price <= 150)
+          p.price >= 300
         )) ||
         (selectedCategory === 'bouquets' && (
           p.category === 'bouquets' ||
@@ -125,17 +130,17 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
             <span className={`text-[11px] font-medium tracking-[0.22em] uppercase ${
               isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'
             }`}>
-              The Atelier Catalog
+              {siteSettings?.collectionsBadge || 'The Atelier Catalog'}
             </span>
             <h2 className={`font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight ${
               isGlass ? 'text-white drop-shadow-md' : 'text-[#171717]'
             }`}>
-              Curated Collections
+              {siteSettings?.collectionsHeadline || 'Curated Collections'}
             </h2>
             <p className={`text-sm sm:text-base font-normal leading-relaxed ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              From heirloom newborn keepsakes to vintage celebration reserves, discover gift hampers crafted with uncompromising attention to detail.
+              {siteSettings?.collectionsSubtitle || 'From heirloom newborn keepsakes to vintage celebration reserves, discover gift hampers crafted with uncompromising attention to detail.'}
             </p>
           </div>
         </ScrollReveal>
@@ -143,7 +148,7 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
         {/* Category Pill Filter Bar - Mobile Swipeable & Laptop Flex-Wrap */}
         <ScrollReveal delay={80} distance={12}>
           <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center py-1 px-1 -mx-4 sm:mx-0 px-4 sm:px-0">
-            {categories.map((cat) => {
+            {displayCategories.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
                 <button
@@ -191,7 +196,7 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
             <div className={`flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto text-xs font-normal ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              <span>Showing {filteredAndSortedProducts.length} of {products.filter(p => !p.excludeFromAllCollections && p.id !== 'grand-luxe-heart-acrylic-reserve').length} hampers</span>
+              <span>Showing {filteredAndSortedProducts.length} of {products.filter(p => !p.excludeFromAllCollections && p.id !== 'grand-luxe-heart-acrylic-reserve' && p.category !== 'budget-friendly' && !p.badge?.toUpperCase().includes('BUDGET') && !p.id?.includes('stone-bouquet')).length} hampers</span>
 
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="w-3 h-3 text-neutral-400" />

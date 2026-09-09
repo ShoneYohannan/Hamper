@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Lock } from 'lucide-react';
 import WhatsAppIcon from './icons/WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
 import { useCms } from '../context/CmsContext';
@@ -17,7 +17,7 @@ export default function Header({
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isGlass } = useTheme();
-  const { siteSettings } = useCms();
+  const { siteSettings, openAdmin } = useCms();
 
   const handleCustomCuration = () => {
     if (onOpenCustomWhatsApp) {
@@ -33,6 +33,7 @@ export default function Header({
 
   const navItems = [
     { id: 'home', label: 'Home' },
+    { id: 'budget', label: 'Budget Friendly' },
     { id: 'collections', label: 'Collections' },
     { id: 'reserve', label: 'The Reserve' },
     { id: 'reviews', label: 'Reviews' }
@@ -190,6 +191,18 @@ export default function Header({
           >
             <WhatsAppIcon className="w-4 h-4 shrink-0 drop-shadow-sm" />
             <span>Customise on WhatsApp</span>
+          </button>
+
+          <button
+            onClick={() => { setMobileMenuOpen(false); openAdmin(); }}
+            className={`w-full text-center py-2.5 rounded-full font-medium text-[11px] tracking-widest uppercase mt-2 transition-colors flex items-center justify-center gap-1.5 ${
+              isGlass 
+                ? 'text-[#F3E5AB] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/15' 
+                : 'text-neutral-700 border border-neutral-300 hover:bg-neutral-100'
+            }`}
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>Atelier CMS Portal</span>
           </button>
         </div>
       )}

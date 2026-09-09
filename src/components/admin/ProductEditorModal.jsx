@@ -8,7 +8,8 @@ export default function ProductEditorModal({
   isOpen, 
   onClose, 
   productToEdit = null, 
-  isReserveMode = false 
+  isReserveMode = false,
+  isBudgetMode = false
 }) {
   const { 
     categories, 
@@ -31,13 +32,13 @@ export default function ProductEditorModal({
   // Form state
   const [formData, setFormData] = useState({
     name: '',
-    category: isReserveMode ? 'reserve' : 'bouquets',
-    price: 100,
+    category: isReserveMode ? 'reserve' : isBudgetMode ? 'budget-friendly' : 'bouquets',
+    price: isReserveMode ? 500 : isBudgetMode ? 100 : 100,
     currency: siteSettings.currencySymbol || 'AED',
-    formattedPrice: '100 AED',
+    formattedPrice: isReserveMode ? '500 AED' : isBudgetMode ? '100 AED' : '100 AED',
     priceNote: '(Delivery charges apply)',
-    badge: 'NEW ARRIVAL',
-    badgeType: 'gold',
+    badge: isReserveMode ? 'THE RESERVE · 500 AED' : isBudgetMode ? 'BUDGET FRIENDLY' : 'NEW ARRIVAL',
+    badgeType: isReserveMode ? 'gold' : isBudgetMode ? 'rose' : 'gold',
     image: '',
     description: '',
     longDescription: '',
@@ -53,13 +54,13 @@ export default function ProductEditorModal({
     if (productToEdit) {
       setFormData({
         name: productToEdit.name || '',
-        category: productToEdit.category || (isReserveMode ? 'reserve' : 'bouquets'),
+        category: productToEdit.category || (isReserveMode ? 'reserve' : isBudgetMode ? 'budget-friendly' : 'bouquets'),
         price: productToEdit.price || 0,
         currency: productToEdit.currency || siteSettings.currencySymbol || 'AED',
         formattedPrice: productToEdit.formattedPrice || `${productToEdit.price || 0} AED`,
         priceNote: productToEdit.priceNote || '(Delivery charges apply)',
-        badge: productToEdit.badge || 'EXCLUSIVE',
-        badgeType: productToEdit.badgeType || 'gold',
+        badge: productToEdit.badge || (isBudgetMode ? 'BUDGET FRIENDLY' : 'EXCLUSIVE'),
+        badgeType: productToEdit.badgeType || (isBudgetMode ? 'rose' : 'gold'),
         image: productToEdit.image || '',
         description: productToEdit.description || '',
         longDescription: productToEdit.longDescription || '',
@@ -70,22 +71,24 @@ export default function ProductEditorModal({
     } else {
       setFormData({
         name: '',
-        category: isReserveMode ? 'reserve' : (categories[1]?.id || 'bouquets'),
-        price: isReserveMode ? 500 : 120,
+        category: isReserveMode ? 'reserve' : isBudgetMode ? 'budget-friendly' : (categories[1]?.id || 'bouquets'),
+        price: isReserveMode ? 500 : isBudgetMode ? 100 : 120,
         currency: siteSettings.currencySymbol || 'AED',
-        formattedPrice: isReserveMode ? '500 AED' : '120 AED',
+        formattedPrice: isReserveMode ? '500 AED' : isBudgetMode ? '100 AED' : '120 AED',
         priceNote: '(Delivery charges apply)',
-        badge: isReserveMode ? 'THE RESERVE · 500 AED' : 'NEW ARRIVAL',
-        badgeType: isReserveMode ? 'gold' : 'rose',
+        badge: isReserveMode ? 'THE RESERVE · 500 AED' : isBudgetMode ? 'BUDGET FRIENDLY' : 'NEW ARRIVAL',
+        badgeType: isReserveMode ? 'gold' : isBudgetMode ? 'rose' : 'gold',
         image: '',
         description: '',
         longDescription: '',
-        items: ['Signature Gift Box & Keepsake Ribbon', 'Handcrafted Premium Treats & Confections'],
+        items: isBudgetMode 
+          ? ['Single Stem Rose & Silk Wrap', 'Cadbury Dairy Milk Chocolate', 'Handcrafted Celebration Cake']
+          : ['Signature Gift Box & Keepsake Ribbon', 'Handcrafted Premium Treats & Confections'],
         whatsappNumber: siteSettings.whatsappNumber || '971501487453',
         whatsappMessage: ''
       });
     }
-  }, [productToEdit, isReserveMode, isOpen, siteSettings]);
+  }, [productToEdit, isReserveMode, isBudgetMode, isOpen, siteSettings]);
 
   if (!isOpen) return null;
 
@@ -198,7 +201,9 @@ export default function ProductEditorModal({
             </div>
             <div>
               <h2 className="font-serif text-xl sm:text-2xl font-normal">
-                {productToEdit ? 'Edit Hamper Collection' : isReserveMode ? 'Add New Reserve Hamper' : 'Add New Hamper Collection'}
+                {productToEdit 
+                  ? (isReserveMode ? 'Edit Reserve Hamper' : isBudgetMode ? 'Edit Budget-Friendly Hamper' : 'Edit Hamper') 
+                  : (isReserveMode ? 'Add New Reserve Hamper' : isBudgetMode ? 'Add Budget-Friendly Hamper (100–150 AED)' : 'Add New Hamper Collection')}
               </h2>
               <p className={`text-xs ${isGlass ? 'text-neutral-400' : 'text-neutral-500'}`}>
                 Configure pricing, imagery, luxury inclusions, and WhatsApp messages

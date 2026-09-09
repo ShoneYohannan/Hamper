@@ -21,6 +21,13 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
     }
   };
 
+  const scrollToBudget = () => {
+    const elem = document.getElementById('budget');
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const scrollToCollections = () => {
     const elem = document.getElementById('collections');
     if (elem) {
@@ -107,6 +114,8 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
               ? 'text-neutral-400 border-white/10'
               : 'text-neutral-400 border-black/[0.04]'
           }`}>
+            <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToBudget}>Budget Friendly</span>
+            <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
             <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>Bouquets</span>
             <span className={`w-1 h-1 rounded-full ${isGlass ? 'bg-[#D4AF37]/50' : 'bg-neutral-300'}`} />
             <span className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1" onClick={scrollToCollections}>The Reserve</span>

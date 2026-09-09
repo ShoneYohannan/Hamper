@@ -133,17 +133,17 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
             <span className={`text-[11px] font-medium tracking-[0.25em] uppercase ${
               isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'
             }`}>
-              Private Vault & Allocation
+              {siteSettings?.reserveBadge || 'Private Vault & Allocation'}
             </span>
             <h2 className={`font-serif text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight leading-[1.08] ${
               isGlass ? 'text-white drop-shadow-md' : 'text-[#171717]'
             }`}>
-              The Reserve
+              {siteSettings?.reserveHeadline || 'The Reserve'}
             </h2>
             <p className={`text-base sm:text-lg font-normal leading-relaxed max-w-2xl mx-auto ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              Our highest expression of luxury gifting. Individually assembled with bespoke artisan detailing, authentic perfumery, illuminated acrylic cases, and white-glove dispatch.
+              {siteSettings?.reserveSubtitle || 'Our highest expression of luxury gifting. Individually assembled with bespoke artisan detailing, authentic perfumery, illuminated acrylic cases, and white-glove dispatch.'}
             </p>
           </div>
         </ScrollReveal>

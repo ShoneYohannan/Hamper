@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import CollectionsPage from './pages/CollectionsPage';
+import BudgetFriendlyPage from './pages/BudgetFriendlyPage';
 import ReservePage from './pages/ReservePage';
 import Features from './components/Features';
 import ReviewsPage from './pages/ReviewsPage';
@@ -28,7 +29,7 @@ export default function App() {
 
   // Scroll Spy: Tracks which section is currently in view and underlines it in the header
   useEffect(() => {
-    const sections = ['home', 'collections', 'reserve', 'reviews'];
+    const sections = ['home', 'budget', 'collections', 'reserve', 'reviews'];
     let isTicking = false;
 
     const onScroll = () => {
@@ -87,7 +88,7 @@ export default function App() {
       const hash = window.location.hash.replace('#', '').toLowerCase();
       if (hash === 'admin' || hash === 'cms') {
         openAdmin();
-      } else if (hash && ['collections', 'reserve', 'reviews'].includes(hash)) {
+      } else if (hash && ['budget', 'collections', 'reserve', 'reviews'].includes(hash)) {
         setTimeout(() => {
           const el = document.getElementById(hash);
           if (el) {
@@ -189,7 +190,13 @@ export default function App() {
               onOpenCustomWhatsApp={handleOpenCustomWhatsApp} 
             />
 
-            {/* Section 2: Collections Catalog with Pill Filters, Search & Sort */}
+            {/* Section 2: Budget-Friendly Hampers Dedicated Showcase */}
+            <BudgetFriendlyPage 
+              onQuickView={(prod) => setQuickViewProduct(prod)}
+              onNavigate={handleNavigate}
+            />
+
+            {/* Section 3: Collections Catalog with Pill Filters, Search & Sort */}
             <CollectionsPage 
               onAddToCart={handleAddToCart}
               onQuickView={(prod) => setQuickViewProduct(prod)}

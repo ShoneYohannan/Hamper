@@ -11,6 +11,15 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
     product.whatsappMessage || `Hello! I would like to order the ${product.name} for ${product.formattedPrice} ${product.priceNote || ''}.`
   )}`;
 
+  const isFullStars = 
+    product.category === 'budget-friendly' || 
+    product.category === 'reserve' ||
+    product.badge?.toUpperCase().includes('BUDGET') ||
+    product.badge?.toUpperCase().includes('RESERVE') ||
+    product.id?.includes('stone-bouquet') ||
+    product.id?.includes('reserve') ||
+    (Array.isArray(product.categories) && (product.categories.includes('budget-friendly') || product.categories.includes('reserve')));
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-12 flex items-center justify-center">
       {/* Backdrop */}
@@ -48,11 +57,17 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
         <div className="p-6 md:p-8 flex flex-col justify-between space-y-6 bg-white overflow-y-auto">
           <div className="space-y-4">
             <div className="flex items-center gap-1.5 text-xs text-neutral-500">
-              <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-[#171717] text-[#171717]" />
-                ))}
-              </div>
+              {isFullStars ? (
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-[#171717] text-[#171717]" />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center gap-0.5">
+                  <Star className="w-3.5 h-3.5 fill-[#171717] text-[#171717]" />
+                </div>
+              )}
               <span className="ml-1 text-neutral-400">({product.reviewCount} reviews)</span>
             </div>
 

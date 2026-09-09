@@ -7,7 +7,7 @@ import { useCms } from '../context/CmsContext';
 
 export default function ReviewsPage() {
   const { isGlass, isPremiumAnim } = useTheme();
-  const { testimonials, addTestimonial } = useCms();
+  const { testimonials, addTestimonial, siteSettings } = useCms();
   const [selectedOccasion, setSelectedOccasion] = useState('all');
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [newReview, setNewReview] = useState({ author: '', location: '', hamper: '', quote: '', rating: '5' });
@@ -15,13 +15,13 @@ export default function ReviewsPage() {
 
   const occasionFilters = [
     { id: 'all', label: 'All Verified Stories' },
-    { id: 'bouquets', label: 'Bouquets & Cakes' },
-    { id: 'reserve', label: 'Express Concierge' }
+    { id: 'budget-friendly', label: 'Budget Friendly' },
+    { id: 'reserve', label: 'The Reserve Concierge' }
   ];
 
   const filteredReviews = selectedOccasion === 'all'
     ? testimonials
-    : testimonials.filter(r => r.occasion === selectedOccasion);
+    : testimonials.filter(r => r.occasion === selectedOccasion || (selectedOccasion === 'budget-friendly' && r.occasion === 'bouquets'));
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
@@ -60,17 +60,17 @@ export default function ReviewsPage() {
             <span className={`text-[11px] font-medium tracking-[0.22em] uppercase ${
               isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'
             }`}>
-              Client Words & Reveries
+              {siteSettings?.reviewsBadge || 'Client Words & Reveries'}
             </span>
             <h2 className={`font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight ${
               isGlass ? 'text-white drop-shadow-md' : 'text-[#171717]'
             }`}>
-              Loved by Givers & Receivers
+              {siteSettings?.reviewsHeadline || 'Loved by Givers & Receivers'}
             </h2>
             <p className={`text-sm sm:text-base font-normal leading-relaxed ${
               isGlass ? 'text-neutral-300' : 'text-neutral-500'
             }`}>
-              Unfiltered stories from patrons who have gifted Dazzling Hampers for newborn arrivals, private reserves, and milestone celebrations.
+              {siteSettings?.reviewsSubtitle || 'Unfiltered stories from patrons who have gifted Dazzling Hampers for newborn arrivals, private reserves, and milestone celebrations.'}
             </p>
           </div>
         </ScrollReveal>

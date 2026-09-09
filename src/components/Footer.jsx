@@ -95,6 +95,7 @@ export default function Footer({ onSubscribe, onNavigate }) {
           {/* Clean Navigation Links & Atelier CMS Trigger */}
           <div className="flex flex-wrap items-center gap-6 text-[11px] uppercase tracking-wider text-neutral-400">
             <button onClick={(e) => handleNav('home', e)} className="hover:text-white transition-colors">Home</button>
+            <button onClick={(e) => handleNav('budget', e)} className="hover:text-white transition-colors">Budget Friendly</button>
             <button onClick={(e) => handleNav('collections', e)} className="hover:text-white transition-colors">Collections</button>
             <button onClick={(e) => handleNav('reserve', e)} className="hover:text-white transition-colors">The Reserve</button>
             <button onClick={(e) => handleNav('reviews', e)} className="hover:text-white transition-colors">Reviews</button>

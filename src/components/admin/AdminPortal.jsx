@@ -25,7 +25,8 @@ import {
   Zap,
   RefreshCw,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Tag
 } from 'lucide-react';
 
 import { useCms } from '../../context/CmsContext';
@@ -84,6 +85,9 @@ export default function AdminPortal() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isReserveMode, setIsReserveMode] = useState(false);
+  const [isBudgetMode, setIsBudgetMode] = useState(false);
+  const [pageCopyTab, setPageCopyTab] = useState('budget'); // 'budget', 'hero', 'collections', 'reserve', 'reviews', 'brand', 'security'
+  const [settingsSavedMessage, setSettingsSavedMessage] = useState(false);
 
   const [editingReview, setEditingReview] = useState(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -114,16 +118,39 @@ export default function AdminPortal() {
 
   if (!isAdminModalOpen) return null;
 
+  // Handlers for site settings change with live feedback
+  const handleSettingChange = (patch) => {
+    updateSiteSettings(patch);
+    setSettingsSavedMessage(true);
+    setTimeout(() => setSettingsSavedMessage(false), 2200);
+  };
+
   // Handlers for product editing
   const handleOpenAddProduct = (reserve = false) => {
     setEditingProduct(null);
     setIsReserveMode(reserve);
+    setIsBudgetMode(false);
     setIsProductModalOpen(true);
   };
 
   const handleOpenEditProduct = (prod, reserve = false) => {
     setEditingProduct(prod);
     setIsReserveMode(reserve);
+    setIsBudgetMode(false);
+    setIsProductModalOpen(true);
+  };
+
+  const handleOpenAddBudgetProduct = () => {
+    setEditingProduct(null);
+    setIsReserveMode(false);
+    setIsBudgetMode(true);
+    setIsProductModalOpen(true);
+  };
+
+  const handleOpenEditBudgetProduct = (prod) => {
+    setEditingProduct(prod);
+    setIsReserveMode(false);
+    setIsBudgetMode(true);
     setIsProductModalOpen(true);
   };
 
@@ -192,6 +219,14 @@ export default function AdminPortal() {
                           p.description?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCat && matchesSearch;
   });
+
+  // Dedicated Budget-friendly hampers list (100–150 AED)
+  const budgetProducts = products.filter(p => 
+    p.category === 'budget-friendly' || 
+    p.badge?.toUpperCase().includes('BUDGET') ||
+    p.id?.includes('stone-bouquet') ||
+    (Array.isArray(p.categories) && p.categories.includes('budget-friendly'))
+  ).sort((a, b) => (a.price || 0) - (b.price || 0));
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#0d0214] text-[#F8F6FA] animate-fade-in overflow-hidden">
@@ -265,6 +300,18 @@ export default function AdminPortal() {
             </button>
 
             <button
+              onClick={() => setActiveTab('budget')}
+              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold tracking-wider uppercase transition-all ${
+                activeTab === 'budget'
+                  ? 'bg-gradient-to-r from-[#D4AF37]/20 to-[#B78A45]/10 text-[#F3E5AB] border border-[#D4AF37]/40'
+                  : 'text-neutral-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <Tag className="w-4 h-4 shrink-0 text-[#D4AF37]" />
+              <span className="hidden sm:inline">Budget Friendly ({budgetProducts.length})</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('reserve')}
               className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold tracking-wider uppercase transition-all ${
                 activeTab === 'reserve'
@@ -321,7 +368,7 @@ export default function AdminPortal() {
               }`}
             >
               <Settings className="w-4 h-4 shrink-0 text-[#D4AF37]" />
-              <span className="hidden sm:inline">Banners & Text</span>
+              <span className="hidden sm:inline">All Pages Copy</span>
             </button>
 
             <button
@@ -496,7 +543,211 @@ export default function AdminPortal() {
             </div>
           )}
 
-          {/* TAB 2: THE RESERVE VAULT */}
+          {/* TAB: BUDGET-FRIENDLY HAMPERS SHOWCASE */}
+          {activeTab === 'budget' && (
+            <div className="space-y-6 max-w-6xl mx-auto">
+              {/* Header & Quick Action */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Tag className="w-5 h-5 text-[#D4AF37]" />
+                    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-white">
+                      Budget-Friendly Hampers Showcase (100–150 AED)
+                    </h2>
+                  </div>
+                  <p className="text-xs text-neutral-400 mt-1">
+                    Manage accessible celebration stone bouquets, pricing, images, and live section text
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => {
+                      setActiveTab('settings');
+                      setPageCopyTab('budget');
+                    }}
+                    className="px-4 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-white/10 hover:bg-white/15 text-white border border-white/10 flex items-center gap-1.5 transition-all shadow"
+                  >
+                    <Settings className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Edit Page Text</span>
+                  </button>
+
+                  <button
+                    onClick={handleOpenAddBudgetProduct}
+                    className="px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-[#D4AF37] to-[#B78A45] text-black hover:brightness-110 flex items-center gap-2 shadow-lg shrink-0 self-start sm:self-auto"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Budget Hamper</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Section Copy Editor Box */}
+              <div className="bg-[#180422] p-6 rounded-3xl border border-[#D4AF37]/30 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                    <h3 className="font-serif text-base text-white font-medium">
+                      Budget Page Header & Exploration Bridge Text
+                    </h3>
+                  </div>
+                  {settingsSavedMessage && (
+                    <span className="text-[11px] text-emerald-400 flex items-center gap-1 animate-fade-in font-medium">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Live updates saved!</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold uppercase text-neutral-300">
+                      Section Category Tag
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettings.budgetBadge || ''}
+                      onChange={(e) => handleSettingChange({ budgetBadge: e.target.value })}
+                      placeholder="e.g. Petite Milestone Collection"
+                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold uppercase text-neutral-300">
+                      Section Main Headline
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettings.budgetHeadline || ''}
+                      onChange={(e) => handleSettingChange({ budgetHeadline: e.target.value })}
+                      placeholder="e.g. Budget-Friendly Hampers"
+                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold uppercase text-neutral-300">
+                    Section Subtitle Narrative
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={siteSettings.budgetSubtitle || ''}
+                    onChange={(e) => handleSettingChange({ budgetSubtitle: e.target.value })}
+                    placeholder="Celebration stone bouquets pairing fresh gourmet cakes..."
+                    className="w-full px-3.5 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                  />
+                </div>
+
+                {/* Bridge Banner Copy */}
+                <div className="pt-2 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold uppercase text-neutral-300">
+                      Bottom Exploration Bridge Headline
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettings.budgetBridgeHeadline || ''}
+                      onChange={(e) => handleSettingChange({ budgetBridgeHeadline: e.target.value })}
+                      placeholder="Looking for Signature Keepsakes...?"
+                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold uppercase text-neutral-300">
+                      Bridge Button CTA
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettings.budgetBridgeButtonText || ''}
+                      onChange={(e) => handleSettingChange({ budgetBridgeButtonText: e.target.value })}
+                      placeholder="Explore All Collections"
+                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Budget Hampers Products Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {budgetProducts.map((p) => (
+                  <div
+                    key={p.id}
+                    className="bg-[#180422] rounded-3xl border border-white/10 overflow-hidden flex flex-col justify-between hover:border-[#D4AF37]/60 transition-all group shadow-xl"
+                  >
+                    <div>
+                      <div className="relative aspect-[4/3] bg-neutral-900 overflow-hidden">
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-black/75 backdrop-blur-md text-[#F3E5AB] border border-[#D4AF37]/50">
+                          {p.formattedPrice || `${p.price} AED`}
+                        </span>
+                        {p.price === 150 && (
+                          <span className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-[#D4AF37] text-black flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-current" />
+                            <span>Popular</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="p-6 space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="font-serif text-lg font-medium text-white leading-snug">
+                            {p.name}
+                          </h3>
+                        </div>
+
+                        <p className="text-xs text-neutral-300 leading-relaxed line-clamp-2">
+                          {p.description}
+                        </p>
+
+                        {p.items && p.items.length > 0 && (
+                          <div className="pt-2 border-t border-white/10 space-y-1">
+                            <span className="text-[10px] uppercase font-semibold text-[#D4AF37] tracking-wider block">
+                              Inclusions ({p.items.length}):
+                            </span>
+                            <ul className="text-[11px] text-neutral-400 space-y-0.5 list-disc list-inside">
+                              {p.items.slice(0, 3).map((item, i) => (
+                                <li key={i} className="truncate">{item}</li>
+                              ))}
+                              {p.items.length > 3 && (
+                                <li className="text-[#D4AF37]">+ {p.items.length - 3} more items</li>
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-black/40 border-t border-white/10 flex items-center justify-between gap-3">
+                      <button
+                        onClick={() => handleOpenEditBudgetProduct(p)}
+                        className="flex-1 py-2 px-4 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white flex items-center justify-center gap-1.5 transition-colors"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <span>Edit Hamper</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteProduct(p.id, p.name, false)}
+                        className="p-2 rounded-xl text-neutral-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        title="Delete hamper"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: THE RESERVE VAULT */}
           {activeTab === 'reserve' && (
             <div className="space-y-6 max-w-6xl mx-auto">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -847,178 +1098,566 @@ export default function AdminPortal() {
           )}
 
 
-          {/* TAB 6: SITE SETTINGS & BANNERS */}
+          {/* TAB 6: ALL PAGES COPY & BRAND SETTINGS */}
           {activeTab === 'settings' && (
             <div className="space-y-6 max-w-4xl mx-auto">
-              <div>
-                <h2 className="font-serif text-2xl sm:text-3xl font-normal text-white">
-                  Website Copy, Announcement & WhatsApp Concierge
-                </h2>
-                <p className="text-xs text-neutral-400 mt-1">
-                  Update live text, phone numbers, delivery locations, and banners
-                </p>
-              </div>
-
-              <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5">
-                {/* Announcement Bar */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-                    Top Header Announcement Bar
-                  </label>
-                  <input
-                    type="text"
-                    value={siteSettings.announcementText}
-                    onChange={(e) => updateSiteSettings({ announcementText: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                  />
-                  <p className="text-[11px] text-neutral-400">
-                    Displays at the very top of the website (e.g. Delivery destinations or promotion alerts).
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-normal text-white">
+                    Edit Website Pages & Brand Copy
+                  </h2>
+                  <p className="text-xs text-neutral-400 mt-1">
+                    Directly update headlines, badges, subtitles, and contact details for all pages
                   </p>
                 </div>
 
-                {/* Hero Headline */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-                    Hero Main Headline
-                  </label>
-                  <input
-                    type="text"
-                    value={siteSettings.heroHeadline}
-                    onChange={(e) => updateSiteSettings({ heroHeadline: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                  />
-                </div>
+                {settingsSavedMessage && (
+                  <span className="text-xs text-emerald-400 flex items-center gap-1.5 animate-fade-in font-semibold bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>Live Changes Saved & Synced!</span>
+                  </span>
+                )}
+              </div>
 
-                {/* Hero Subtitle */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-                    Hero Subtitle
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={siteSettings.heroSubtitle}
-                    onChange={(e) => updateSiteSettings({ heroSubtitle: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                  />
-                </div>
+              {/* Page Sub-Tabs */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                {[
+                  { id: 'budget', label: '🏷️ Budget Friendly' },
+                  { id: 'hero', label: '🏠 Hero & Announcement' },
+                  { id: 'collections', label: '🎁 Collections' },
+                  { id: 'reserve', label: '👑 The Reserve' },
+                  { id: 'reviews', label: '⭐ Reviews' },
+                  { id: 'brand', label: '📞 Concierge & Contact' },
+                  { id: 'security', label: '🔒 Security PIN' }
+                ].map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => setPageCopyTab(t.id)}
+                    className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all shrink-0 ${
+                      pageCopyTab === t.id
+                        ? 'bg-[#D4AF37] text-black shadow-md'
+                        : 'bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white border border-white/10'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
 
-                {/* Hero Floating Pill */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-                    Hero Floating Badge Text
-                  </label>
-                  <input
-                    type="text"
-                    value={siteSettings.heroBadge}
-                    onChange={(e) => updateSiteSettings({ heroBadge: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                  />
-                </div>
+              {/* SUB-TAB 1: BUDGET-FRIENDLY PAGE */}
+              {pageCopyTab === 'budget' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 className="font-serif text-lg text-white font-medium flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-[#D4AF37]" />
+                      <span>Budget-Friendly Hampers Page Copy</span>
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('budget')}
+                      className="text-xs text-[#D4AF37] font-semibold underline hover:text-[#F3E5AB]"
+                    >
+                      Manage Budget Hampers →
+                    </button>
+                  </div>
 
-                {/* WhatsApp Phone Number */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Section Category Tag
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.budgetBadge || ''}
+                        onChange={(e) => handleSettingChange({ budgetBadge: e.target.value })}
+                        placeholder="e.g. Petite Milestone Collection"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Section Main Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.budgetHeadline || ''}
+                        onChange={(e) => handleSettingChange({ budgetHeadline: e.target.value })}
+                        placeholder="e.g. Budget-Friendly Hampers"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
-                      <WhatsAppIcon className="w-4 h-4 shrink-0" />
-                      <span>WhatsApp Order Phone (International Format)</span>
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Section Subtitle Narrative
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={siteSettings.budgetSubtitle || ''}
+                      onChange={(e) => handleSettingChange({ budgetSubtitle: e.target.value })}
+                      placeholder="Celebration stone bouquets pairing fresh gourmet cakes..."
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Exploration Bridge */}
+                  <div className="pt-4 border-t border-white/10 space-y-4">
+                    <h4 className="text-xs font-semibold uppercase tracking-widest text-neutral-300">
+                      Bottom Exploration Bridge Card
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                          Bridge Tag
+                        </label>
+                        <input
+                          type="text"
+                          value={siteSettings.budgetBridgeBadge || ''}
+                          onChange={(e) => handleSettingChange({ budgetBridgeBadge: e.target.value })}
+                          placeholder="e.g. Explore The Full Storefront"
+                          className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                          Bridge Button CTA
+                        </label>
+                        <input
+                          type="text"
+                          value={siteSettings.budgetBridgeButtonText || ''}
+                          onChange={(e) => handleSettingChange({ budgetBridgeButtonText: e.target.value })}
+                          placeholder="e.g. Explore All Collections"
+                          className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Bridge Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.budgetBridgeHeadline || ''}
+                        onChange={(e) => handleSettingChange({ budgetBridgeHeadline: e.target.value })}
+                        placeholder="Looking for Signature Keepsakes...?"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Bridge Subtitle
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={siteSettings.budgetBridgeSubtitle || ''}
+                        onChange={(e) => handleSettingChange({ budgetBridgeSubtitle: e.target.value })}
+                        placeholder="Discover our complete collection..."
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-TAB 2: HERO & TOP ANNOUNCEMENT */}
+              {pageCopyTab === 'hero' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5 animate-fade-in">
+                  <h3 className="font-serif text-lg text-white font-medium border-b border-white/10 pb-3">
+                    Hero Section & Top Announcement Bar
+                  </h3>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Top Header Announcement Bar
                     </label>
                     <input
                       type="text"
-                      value={siteSettings.whatsappNumber}
-                      onChange={(e) => updateSiteSettings({ whatsappNumber: e.target.value })}
-                      placeholder="e.g. 971501487453 (no plus or spaces)"
+                      value={siteSettings.announcementText || ''}
+                      onChange={(e) => handleSettingChange({ announcementText: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                    <p className="text-[11px] text-neutral-400">
+                      Displays at the very top of the website (e.g. Delivery destinations or promotion alerts).
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Hero Main Headline
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettings.heroHeadline || ''}
+                      onChange={(e) => handleSettingChange({ heroHeadline: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-                      Default Currency Symbol
+                      Hero Subtitle
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={siteSettings.heroSubtitle || ''}
+                      onChange={(e) => handleSettingChange({ heroSubtitle: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Hero Floating Badge Text
                     </label>
                     <input
                       type="text"
-                      value={siteSettings.currencySymbol}
-                      onChange={(e) => updateSiteSettings({ currencySymbol: e.target.value })}
-                      placeholder="AED or ₹ or $"
+                      value={siteSettings.heroBadge || ''}
+                      onChange={(e) => handleSettingChange({ heroBadge: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Custom WhatsApp Inquiry Default Message
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={siteSettings.whatsappMessage || ''}
+                      onChange={(e) => handleSettingChange({ whatsappMessage: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
                     />
                   </div>
                 </div>
+              )}
 
-                {/* Locations and Contact */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
-                    Concierge Location & Email
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      value={siteSettings.locationText}
-                      onChange={(e) => updateSiteSettings({ locationText: e.target.value })}
-                      placeholder="Location description"
-                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                    />
-                    <input
-                      type="text"
-                      value={siteSettings.email}
-                      onChange={(e) => updateSiteSettings({ email: e.target.value })}
-                      placeholder="Concierge email"
+              {/* SUB-TAB 3: COLLECTIONS CATALOG */}
+              {pageCopyTab === 'collections' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 className="font-serif text-lg text-white font-medium">
+                      Curated Collections Catalog Header
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('products')}
+                      className="text-xs text-[#D4AF37] font-semibold underline hover:text-[#F3E5AB]"
+                    >
+                      Manage Collections Products →
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Category Tag
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.collectionsBadge || ''}
+                        onChange={(e) => handleSettingChange({ collectionsBadge: e.target.value })}
+                        placeholder="e.g. The Atelier Catalog"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Main Catalog Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.collectionsHeadline || ''}
+                        onChange={(e) => handleSettingChange({ collectionsHeadline: e.target.value })}
+                        placeholder="e.g. Curated Collections"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Catalog Subtitle Narrative
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={siteSettings.collectionsSubtitle || ''}
+                      onChange={(e) => handleSettingChange({ collectionsSubtitle: e.target.value })}
+                      placeholder="From heirloom newborn keepsakes to vintage celebration reserves..."
                       className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
                     />
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Security PIN Change */}
-              <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-4">
-                <div className="flex items-center gap-2">
-                  <KeyRound className="w-5 h-5 text-[#D4AF37]" />
-                  <h3 className="font-serif text-lg font-normal text-white">
-                    Change Security PIN
+              {/* SUB-TAB 4: THE RESERVE */}
+              {pageCopyTab === 'reserve' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 className="font-serif text-lg text-white font-medium flex items-center gap-2">
+                      <Crown className="w-4 h-4 text-[#D4AF37]" />
+                      <span>The Reserve Concierge Page Copy</span>
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('reserve')}
+                      className="text-xs text-[#D4AF37] font-semibold underline hover:text-[#F3E5AB]"
+                    >
+                      Manage Reserve Vault →
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Vault Category Tag
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.reserveBadge || ''}
+                        onChange={(e) => handleSettingChange({ reserveBadge: e.target.value })}
+                        placeholder="e.g. Private Vault & Allocation"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Reserve Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.reserveHeadline || ''}
+                        onChange={(e) => handleSettingChange({ reserveHeadline: e.target.value })}
+                        placeholder="e.g. The Reserve"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Reserve Subtitle Narrative
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={siteSettings.reserveSubtitle || ''}
+                      onChange={(e) => handleSettingChange({ reserveSubtitle: e.target.value })}
+                      placeholder="Our highest expression of luxury gifting..."
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-TAB 5: REVIEWS */}
+              {pageCopyTab === 'reviews' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 className="font-serif text-lg text-white font-medium flex items-center gap-2">
+                      <Star className="w-4 h-4 text-[#D4AF37]" />
+                      <span>Verified Client Stories & Reviews Copy</span>
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('reviews')}
+                      className="text-xs text-[#D4AF37] font-semibold underline hover:text-[#F3E5AB]"
+                    >
+                      Manage Reviews List →
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Accolades Tag
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.reviewsBadge || ''}
+                        onChange={(e) => handleSettingChange({ reviewsBadge: e.target.value })}
+                        placeholder="e.g. Client Words & Reveries"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Reviews Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.reviewsHeadline || ''}
+                        onChange={(e) => handleSettingChange({ reviewsHeadline: e.target.value })}
+                        placeholder="e.g. Loved by Givers & Receivers"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                      Reviews Subtitle Narrative
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={siteSettings.reviewsSubtitle || ''}
+                      onChange={(e) => handleSettingChange({ reviewsSubtitle: e.target.value })}
+                      placeholder="Unfiltered stories from patrons..."
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-TAB 6: CONCIERGE, BRAND & CONTACT */}
+              {pageCopyTab === 'brand' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-5 animate-fade-in">
+                  <h3 className="font-serif text-lg text-white font-medium border-b border-white/10 pb-3">
+                    Concierge Contact, WhatsApp & Location Details
                   </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
+                        <WhatsAppIcon className="w-4 h-4 shrink-0" />
+                        <span>WhatsApp Phone (International Format)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.whatsappNumber || ''}
+                        onChange={(e) => handleSettingChange({ whatsappNumber: e.target.value })}
+                        placeholder="e.g. 971501487453"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Currency Symbol
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.currencySymbol || ''}
+                        onChange={(e) => handleSettingChange({ currencySymbol: e.target.value })}
+                        placeholder="AED or ₹ or $"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Concierge Location Details
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.locationText || ''}
+                        onChange={(e) => handleSettingChange({ locationText: e.target.value })}
+                        placeholder="e.g. Dubai, United Arab Emirates & Mumbai, India"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Concierge Email
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.email || ''}
+                        onChange={(e) => handleSettingChange({ email: e.target.value })}
+                        placeholder="concierge@dazzlinghampers.com"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Instagram Handle
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.instagramHandle || ''}
+                        onChange={(e) => handleSettingChange({ instagramHandle: e.target.value })}
+                        placeholder="@dazzlinghampers"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                        Instagram Profile URL
+                      </label>
+                      <input
+                        type="text"
+                        value={siteSettings.instagramUrl || ''}
+                        onChange={(e) => handleSettingChange({ instagramUrl: e.target.value })}
+                        placeholder="https://instagram.com/dazzlinghampers"
+                        className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
                 </div>
+              )}
 
-                <form onSubmit={handlePinUpdate} className="flex flex-col sm:flex-row gap-3 items-end">
-                  <div className="space-y-1 flex-1 w-full">
-                    <label className="text-xs font-semibold uppercase text-neutral-400">
-                      Current PIN
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={oldPin}
-                      onChange={(e) => setOldPin(e.target.value)}
-                      placeholder="Current PIN"
-                      className="w-full px-4 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                    />
+              {/* SUB-TAB 7: SECURITY PIN */}
+              {pageCopyTab === 'security' && (
+                <div className="bg-[#180422] p-6 rounded-3xl border border-white/10 space-y-4 animate-fade-in">
+                  <div className="flex items-center gap-2">
+                    <KeyRound className="w-5 h-5 text-[#D4AF37]" />
+                    <h3 className="font-serif text-lg font-normal text-white">
+                      Change Security PIN
+                    </h3>
                   </div>
-                  <div className="space-y-1 flex-1 w-full">
-                    <label className="text-xs font-semibold uppercase text-neutral-400">
-                      New PIN (4+ digits)
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={newPin}
-                      onChange={(e) => setNewPin(e.target.value)}
-                      placeholder="New PIN"
-                      className="w-full px-4 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0"
-                  >
-                    Update PIN
-                  </button>
-                </form>
 
-                {pinMessage && (
-                  <p className={`text-xs ${pinMessage.type === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {pinMessage.text}
-                  </p>
-                )}
-              </div>
+                  <form onSubmit={handlePinUpdate} className="flex flex-col sm:flex-row gap-3 items-end">
+                    <div className="space-y-1 flex-1 w-full">
+                      <label className="text-xs font-semibold uppercase text-neutral-400">
+                        Current PIN
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={oldPin}
+                        onChange={(e) => setOldPin(e.target.value)}
+                        placeholder="Current PIN"
+                        className="w-full px-4 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                    <div className="space-y-1 flex-1 w-full">
+                      <label className="text-xs font-semibold uppercase text-neutral-400">
+                        New PIN (4+ digits)
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={newPin}
+                        onChange={(e) => setNewPin(e.target.value)}
+                        placeholder="New PIN"
+                        className="w-full px-4 py-2 rounded-xl text-xs bg-white/5 border border-white/10 focus:border-[#D4AF37] text-white focus:outline-none"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0"
+                    >
+                      Update PIN
+                    </button>
+                  </form>
+
+                  {pinMessage && (
+                    <p className={`text-xs ${pinMessage.type === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {pinMessage.text}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -1368,12 +2007,17 @@ export default function AdminPortal() {
         </main>
       </div>
 
-      {/* Product & Reserve Editor Modal */}
+      {/* Product, Reserve & Budget Editor Modal */}
       <ProductEditorModal
         isOpen={isProductModalOpen}
-        onClose={() => setIsProductModalOpen(false)}
+        onClose={() => {
+          setIsProductModalOpen(false);
+          setEditingProduct(null);
+          setIsBudgetMode(false);
+        }}
         productToEdit={editingProduct}
         isReserveMode={isReserveMode}
+        isBudgetMode={isBudgetMode}
       />
 
       {/* Review Editor Modal */}
