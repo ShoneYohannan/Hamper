@@ -347,6 +347,69 @@ export function CmsProvider({ children }) {
     }
   };
 
+  // Restore deleted hampers or specific default hampers
+  const restoreDefaultHamper = (id) => {
+    const stringId = String(id);
+    try {
+      const deleted = JSON.parse(localStorage.getItem(DELETED_IDS_KEY) || '[]');
+      const updatedDeleted = deleted.filter(dId => String(dId) !== stringId);
+      localStorage.setItem(DELETED_IDS_KEY, JSON.stringify(updatedDeleted));
+    } catch (e) {}
+
+    // Check if it's in defaultProducts or defaultReserveProducts
+    const defaultProd = defaultProducts.find(p => String(p.id) === stringId);
+    if (defaultProd) {
+      setProducts(prev => {
+        if (prev.some(p => String(p.id) === stringId)) return prev;
+        return [defaultProd, ...prev];
+      });
+      if (isSupabaseConnected()) {
+        upsertCloudProduct(defaultProd);
+      }
+      return defaultProd;
+    }
+
+    const defaultRes = defaultReserveProducts.find(p => String(p.id) === stringId);
+    if (defaultRes) {
+      setReserveProducts(prev => {
+        if (prev.some(p => String(p.id) === stringId)) return prev;
+        return [defaultRes, ...prev];
+      });
+      if (isSupabaseConnected()) {
+        upsertCloudReserve(defaultRes);
+      }
+      return defaultRes;
+    }
+    return null;
+  };
+
+  const restoreAllHampers = () => {
+    try {
+      localStorage.removeItem(DELETED_IDS_KEY);
+    } catch (e) {}
+
+    // Combine missing defaults
+    setProducts(prev => {
+      const existingIds = new Set(prev.map(p => String(p.id)));
+      const missing = defaultProducts.filter(p => !existingIds.has(String(p.id)));
+      const combined = [...prev, ...missing];
+      if (isSupabaseConnected()) {
+        missing.forEach(p => upsertCloudProduct(p));
+      }
+      return combined;
+    });
+
+    setReserveProducts(prev => {
+      const existingIds = new Set(prev.map(p => String(p.id)));
+      const missing = defaultReserveProducts.filter(p => !existingIds.has(String(p.id)));
+      const combined = [...prev, ...missing];
+      if (isSupabaseConnected()) {
+        missing.forEach(p => upsertCloudReserve(p));
+      }
+      return combined;
+    });
+  };
+
   // The Reserve CRUD (Local + Cloud)
   const addReserveProduct = (newReserve) => {
     const item = {
@@ -644,7 +707,9 @@ export function CmsProvider({ children }) {
         // Backup & Restore
         exportData,
         importData,
-        resetToDefaults
+        resetToDefaults,
+        restoreDefaultHamper,
+        restoreAllHampers
       }}
     >
       {children}
