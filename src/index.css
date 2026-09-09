@@ -396,19 +396,4 @@ html.theme-glass ::-webkit-scrollbar-thumb:hover {
   animation: budgetShimmer 4s infinite linear;
 }
 
-/* Mobile Carousel Ultra-Smooth Styles */
-.mobile-carousel-container {
-  touch-action: pan-y pinch-zoom;
-}
-
-.carousel-slide-active {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.carousel-slide-inactive {
-  transform: scale(0.95);
-  opacity: 0.65;
-}
-
 
