@@ -371,28 +371,20 @@ export const steps = [
 
 export const testimonials = [
   {
-    id: 1,
+    id: 'review-1',
     rating: '5 / 5',
     stars: 5,
     quote: '“The quality and arrangements of the bouquet, gift box and cake ..... awesome 🔥 Especially the prank... 👌 🫶😍 Thank u sooo much! Yesterday aa oru excitement il onnum parayaan pateela....”',
-    author: 'Verified Patron',
-    location: 'Kerala · UAE Delivery',
     occasion: 'budget-friendly',
-    occasionLabel: 'Budget-Friendly Bouquet & Surprise',
-    hamper: 'Ferrero Bouquet, Celebration Cake & Keepsake Gift Trunk',
-    date: 'Verified WhatsApp Order'
+    occasionLabel: 'Budget-Friendly Surprise'
   },
   {
-    id: 2,
+    id: 'review-2',
     rating: '5 / 5',
     stars: 5,
     quote: '“Thanks a lot tto 😊 you were very responsive even though I had contacted in the last moment. Really appreciate the prompt delivery and quick help!”',
-    author: 'Verified Client',
-    location: 'Dubai · Express Concierge',
     occasion: 'reserve',
-    occasionLabel: 'Express Concierge Order',
-    hamper: 'Last-Minute Bespoke Luxury Curation',
-    date: 'Verified WhatsApp Order'
+    occasionLabel: 'Express Concierge Order'
   }
 ];
 

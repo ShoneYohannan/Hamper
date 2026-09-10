@@ -280,7 +280,14 @@ export async function fetchCloudTestimonials() {
   if (!isSupabaseConnected()) return null;
   try {
     const data = await supabaseFetch('testimonials?select=*&order=created_at.desc');
-    return Array.isArray(data) ? data : null;
+    if (!data || !Array.isArray(data)) return null;
+    return data.map(item => ({
+      ...item,
+      id: String(item.id),
+      stars: Number(item.stars) || 5,
+      rating: item.rating || `${item.stars || 5} / 5`,
+      occasionLabel: item.occasionLabel || item.occasion_label || 'Verified Patron'
+    }));
   } catch (err) {
     console.warn('Supabase fetchCloudTestimonials error:', err);
     return null;
@@ -295,9 +302,9 @@ export async function upsertCloudTestimonial(t) {
       author: t.author,
       location: t.location || '',
       occasion: t.occasion || 'reserve',
-      occasion_label: t.occasionLabel || 'Verified Patron',
+      occasion_label: t.occasionLabel || t.occasion_label || 'Verified Patron',
       hamper: t.hamper || '',
-      stars: t.stars || 5,
+      stars: Number(t.stars) || 5,
       rating: t.rating || `${t.stars || 5} / 5`,
       quote: t.quote,
       date: t.date || new Date().toISOString()

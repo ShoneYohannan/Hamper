@@ -1,8 +1,11 @@
 import React from 'react';
-import { testimonials } from '../data/products';
+import { testimonials as defaultTestimonials } from '../data/products';
+import { useCms } from '../context/CmsContext';
 import { Star } from 'lucide-react';
 
 export default function Testimonials() {
+  const { testimonials: cmsTestimonials } = useCms();
+  const testimonials = cmsTestimonials && cmsTestimonials.length > 0 ? cmsTestimonials : defaultTestimonials;
   return (
     <section id="testimonials" className="py-20 lg:py-28 bg-[#FAF8F5] border-t border-black/[0.04]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-16">
@@ -35,30 +38,15 @@ export default function Testimonials() {
                       <Star key={i} className="w-3.5 h-3.5 fill-[#171717] text-[#171717]" />
                     ))}
                   </div>
-                  {item.occasionLabel && (
-                    <span className="text-[10px] tracking-wider uppercase font-medium px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600">
-                      {item.occasionLabel}
-                    </span>
-                  )}
+                  <span className="text-[10px] tracking-wider uppercase font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    WhatsApp Verified
+                  </span>
                 </div>
 
                 {/* Quote Text */}
                 <p className="font-serif text-base sm:text-lg text-[#171717] font-normal leading-relaxed">
                   {item.quote}
                 </p>
-              </div>
-
-              {/* Author & Location Footer */}
-              <div className="pt-4 border-t border-neutral-100 space-y-1 text-xs">
-                <div className="flex items-center justify-between font-medium text-neutral-800">
-                  <span className="font-semibold text-neutral-900">{item.author}</span>
-                  <span className="tracking-wider uppercase text-[11px] text-neutral-500 font-medium">{item.location}</span>
-                </div>
-                {item.hamper && (
-                  <p className="text-[11px] text-neutral-500 font-normal">
-                    {item.hamper}
-                  </p>
-                )}
               </div>
             </div>
           ))}
