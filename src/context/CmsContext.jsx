@@ -29,8 +29,8 @@ import {
 const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v15';
 const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v15';
 const ADMIN_AUTH_KEY = 'dazzling_hampers_admin_auth';
-const ADMIN_PIN_KEY = 'dazzling_hampers_admin_pin';
-const DEFAULT_PIN = '2026';
+const ADMIN_PIN_KEY = 'dazzling_hampers_admin_pin_v2';
+const DEFAULT_PIN = '1993';
 
 const defaultSiteSettings = {
   announcementText: 'Handcrafted Luxury Gifting · Dispatching across India · UAE · Qatar',
@@ -273,7 +273,7 @@ export function CmsProvider({ children }) {
 
   // Auth functions
   const login = (inputPin) => {
-    if (inputPin === adminPin || inputPin === '2026' || inputPin === 'masteradmin2026') {
+    if (inputPin === adminPin || inputPin === '1993' || inputPin === 'masteradmin1993') {
       setIsAdminLoggedIn(true);
       sessionStorage.setItem(ADMIN_AUTH_KEY, 'true');
       setIsLoginModalOpen(false);
@@ -290,7 +290,7 @@ export function CmsProvider({ children }) {
   };
 
   const updateAdminPin = (oldPin, newPin) => {
-    if (oldPin !== adminPin && oldPin !== 'masteradmin2026') {
+    if (oldPin !== adminPin && oldPin !== 'masteradmin1993') {
       return { success: false, error: 'Current PIN does not match.' };
     }
     if (!newPin || newPin.length < 4) {

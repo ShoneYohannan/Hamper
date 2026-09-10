@@ -180,9 +180,7 @@ export default function AdminLoginModal() {
             <span>{isSubmitting ? 'Verifying...' : 'Unlock CMS Atelier'}</span>
           </button>
 
-          <p className="text-[11px] text-center text-neutral-400">
-            Default security PIN: <code className="bg-black/20 px-1.5 py-0.5 rounded text-[#D4AF37]">2026</code>
-          </p>
+
         </form>
       </div>
     </div>
