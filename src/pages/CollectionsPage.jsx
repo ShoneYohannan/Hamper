@@ -6,7 +6,7 @@ import TiltCard from '../components/TiltCard';
 import { useTheme } from '../context/ThemeContext';
 import { useCms } from '../context/CmsContext';
 
-export default function CollectionsPage({ onAddToCart, onQuickView }) {
+export default function CollectionsPage({ onAddToCart, onQuickView, onNavigate }) {
   const { isGlass, isPremiumAnim } = useTheme();
   const { products, categories, siteSettings } = useCms();
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -150,10 +150,25 @@ export default function CollectionsPage({ onAddToCart, onQuickView }) {
           <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center py-1 px-1 -mx-4 sm:mx-0 px-4 sm:px-0">
             {displayCategories.map((cat) => {
               const isActive = selectedCategory === cat.id;
+              const isPremium = cat.id === 'premium';
               return (
                 <button
                   key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => {
+                    if (isPremium) {
+                      if (onNavigate) {
+                        onNavigate('reserve');
+                      } else {
+                        const el = document.getElementById('reserve');
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth' });
+                          window.history.replaceState(null, null, '#reserve');
+                        }
+                      }
+                      return;
+                    }
+                    setSelectedCategory(cat.id);
+                  }}
                   className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-smooth interactive-btn whitespace-nowrap shrink-0 sm:shrink ${
                     isGlass
                       ? isActive

@@ -200,6 +200,7 @@ export default function App() {
             <CollectionsPage 
               onAddToCart={handleAddToCart}
               onQuickView={(prod) => setQuickViewProduct(prod)}
+              onNavigate={handleNavigate}
             />
 
             {/* Section 3: The Reserve Vault & VIP Concierge Inquiry */}
