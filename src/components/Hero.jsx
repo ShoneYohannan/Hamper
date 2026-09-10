@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDown, Sparkles } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import WhatsAppIcon from './icons/WhatsAppIcon';
 import ScrollReveal from './ScrollReveal';
 import { useTheme } from '../context/ThemeContext';
@@ -45,14 +45,13 @@ export default function Hero({ onOpenCustomWhatsApp, onOpenBuilder }) {
         
         {/* Floating Interactive Badge */}
         <ScrollReveal delay={0} distance={12}>
-          <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-medium tracking-[0.18em] sm:tracking-[0.2em] uppercase transition-all duration-300 ${
+          <div className={`inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-medium tracking-[0.18em] sm:tracking-[0.2em] uppercase transition-all duration-300 ${
             isPremiumAnim ? 'animate-float-subtle' : ''
           } ${
             isGlass
               ? 'glass-pill border-[#D4AF37]/30 text-[#F3E5AB] shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:border-[#D4AF37]'
               : 'bg-white border border-neutral-200/80 text-neutral-500 shadow-[0_1px_3px_rgba(0,0,0,0.02)]'
           }`}>
-            <Sparkles className={`w-3.5 h-3.5 ${isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'} ${isPremiumAnim ? 'animate-pulse' : ''}`} />
             <span>{siteSettings.heroBadge || 'Delivering Across India · UAE · Qatar'}</span>
           </div>
         </ScrollReveal>

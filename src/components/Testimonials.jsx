@@ -23,8 +23,8 @@ export default function Testimonials() {
           </p>
         </div>
 
-        {/* Testimonials 2 Grid */}
-        <div className={`grid grid-cols-1 ${testimonials.length <= 2 ? 'md:grid-cols-2 max-w-5xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
+        {/* Testimonials Grid */}
+        <div className={`grid grid-cols-1 ${testimonials.length <= 4 ? 'md:grid-cols-2 max-w-6xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
           {testimonials.map((item) => (
             <div 
               key={item.id}

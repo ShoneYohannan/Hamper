@@ -26,8 +26,8 @@ import {
   SUPABASE_SQL_SETUP_SCRIPT
 } from '../services/supabase';
 
-const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v13';
-const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v13';
+const CMS_STORAGE_KEY = 'dazzling_hampers_cms_data_v15';
+const DELETED_IDS_KEY = 'dazzling_hampers_deleted_ids_v15';
 const ADMIN_AUTH_KEY = 'dazzling_hampers_admin_auth';
 const ADMIN_PIN_KEY = 'dazzling_hampers_admin_pin';
 const DEFAULT_PIN = '2026';
@@ -151,9 +151,7 @@ export function CmsProvider({ children }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.testimonials && Array.isArray(parsed.testimonials)) {
-          const dummyAuthors = ['Pooja K.', 'Vikram S.', 'Ananya R.', 'Rajiv M.', 'Meera & Dev', 'Sunita P.'];
-          const cleaned = parsed.testimonials.filter(t => !dummyAuthors.includes(t.author));
-          if (cleaned.length > 0) return cleaned;
+          if (parsed.testimonials.length > 0) return parsed.testimonials;
         }
       }
     } catch (e) {
@@ -259,9 +257,7 @@ export function CmsProvider({ children }) {
           }
           if (cr && cr.length > 0) setReserveProducts(cr);
           if (ct && ct.length > 0) {
-            const dummyAuthors = ['Pooja K.', 'Vikram S.', 'Ananya R.', 'Rajiv M.', 'Meera & Dev', 'Sunita P.'];
-            const cleaned = ct.filter(t => !dummyAuthors.includes(t.author));
-            setTestimonials(cleaned.length > 0 ? cleaned : defaultTestimonials);
+            setTestimonials(ct);
           }
           if (cs && typeof cs === 'object') setSiteSettings(prev => ({ ...prev, ...cs }));
           setIsCloudEnabled(true);
@@ -585,9 +581,7 @@ export function CmsProvider({ children }) {
       if (cp && cp.length > 0) setProducts(cp);
       if (cr && cr.length > 0) setReserveProducts(cr);
       if (ct && ct.length > 0) {
-        const dummyAuthors = ['Pooja K.', 'Vikram S.', 'Ananya R.', 'Rajiv M.', 'Meera & Dev', 'Sunita P.'];
-        const cleaned = ct.filter(t => !dummyAuthors.includes(t.author));
-        setTestimonials(cleaned.length > 0 ? cleaned : defaultTestimonials);
+        setTestimonials(ct);
       }
       if (cs) setSiteSettings(prev => ({ ...prev, ...cs }));
     } finally {

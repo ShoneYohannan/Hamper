@@ -218,10 +218,7 @@ export default function App() {
           </main>
 
           {/* Footer with onNavigate */}
-          <Footer 
-            onNavigate={handleNavigate}
-            onSubscribe={(email) => showToast('Subscribed', `Privilege code dispatched to ${email}`, 'newsletter')}
-          />
+          <Footer onNavigate={handleNavigate} />
         </>
       )}
 

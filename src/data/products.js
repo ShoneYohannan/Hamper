@@ -385,6 +385,22 @@ export const testimonials = [
     quote: '“Thanks a lot tto 😊 you were very responsive even though I had contacted in the last moment. Really appreciate the prompt delivery and quick help!”',
     occasion: 'reserve',
     occasionLabel: 'Express Concierge Order'
+  },
+  {
+    id: 'review-3',
+    rating: '5 / 5',
+    stars: 5,
+    quote: '“Ithu 💋💋❤️❤️😘 no words to explain... Turned out beautifully ❤️😘”',
+    occasion: 'collections',
+    occasionLabel: 'Keepsake Photo Hamper'
+  },
+  {
+    id: 'review-4',
+    rating: '5 / 5',
+    stars: 5,
+    quote: '“ചേച്ചീ... 🥹❤️ ചേച്ചി എനിക്ക് ചെയ്തു തന്നത് ഒരു സാധാരണ gift hamper അല്ലെന്ന് അറിയാം 🥺. ഞാൻ മനസ്സിൽ ആഗ്രഹിച്ച സന്തോഷത്തെ ഇത്രയും സ്നേഹത്തോടെ ഒരു വലിയ happiness ആക്കി മാറ്റി തന്നു! 🥺🎁❤️”',
+    occasion: 'reserve',
+    occasionLabel: 'Long Distance Milestone Curation'
   }
 ];
 

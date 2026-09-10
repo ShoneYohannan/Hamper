@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { Check, ShieldCheck, CheckCircle2, Sparkles, Send, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, ShieldCheck, CheckCircle2, Sparkles, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
@@ -12,8 +12,6 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
   // Always start with first Reserve hamper (index 0)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [addedIds, setAddedIds] = useState({});
-  const [inquirySent, setInquirySent] = useState(false);
-  const [inquiryData, setInquiryData] = useState({ name: '', email: '', company: '', message: '' });
 
   // Touch swipe handling
   const touchStartX = useRef(null);
@@ -85,14 +83,6 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
   };
 
 
-  const handleInquirySubmit = (e) => {
-    e.preventDefault();
-    setInquirySent(true);
-    setTimeout(() => {
-      setInquirySent(false);
-      setInquiryData({ name: '', email: '', company: '', message: '' });
-    }, 4000);
-  };
 
   const reserveCraftsmanship = [
     {
@@ -438,102 +428,91 @@ export default function ReservePage({ onAddToCart, onQuickView }) {
           </div>
         </div>
 
-        {/* VIP & Bespoke Concierge Section */}
+        {/* VIP WhatsApp Concierge & Custom Curation Showcase */}
         <ScrollReveal distance={20}>
-          <div className={`rounded-3xl p-8 sm:p-12 lg:p-16 border grid grid-cols-1 lg:grid-cols-12 gap-12 items-center ${
+          <div className={`relative overflow-hidden rounded-3xl p-8 sm:p-12 lg:p-16 border ${
             isGlass
               ? 'glass-panel border-white/20 text-white'
-              : 'bg-[#141716] text-white border-neutral-800'
+              : 'bg-gradient-to-br from-[#180422] via-[#141716] to-[#0D100F] text-white border-white/10 shadow-2xl'
           }`}>
-            <div className="lg:col-span-6 space-y-4">
-              <span className={`text-[11px] uppercase tracking-[0.22em] font-medium ${
-                isGlass ? 'text-[#D4AF37]' : 'text-neutral-400'
-              }`}>
-                Private Concierge
-              </span>
-              <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-white leading-tight">
-                Bespoke Reserve Inquiries & Custom Allocations
-              </h3>
-              <p className="text-sm text-neutral-300 leading-relaxed font-normal">
-                Planning gifting for milestone celebrations, VIP anniversaries, executive boards, or luxury weddings across India, UAE, and Qatar? Our private gifting atelier will formulate custom curations.
-              </p>
-            </div>
+            {/* Background Ambient Glows */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
-            <div className="lg:col-span-6">
-              <form onSubmit={handleInquirySubmit} className={`space-y-4 p-6 sm:p-8 rounded-2xl border ${
-                isGlass
-                  ? 'bg-black/30 backdrop-blur-md border-white/10'
-                  : 'bg-neutral-900/90 border-neutral-800'
-              }`}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[11px] uppercase tracking-wider text-neutral-400 mb-1">Your Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={inquiryData.name}
-                      onChange={(e) => setInquiryData({ ...inquiryData, name: e.target.value })}
-                      placeholder="E.g. Shone Yohannan"
-                      className="w-full bg-black/40 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#D4AF37]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] uppercase tracking-wider text-neutral-400 mb-1">Email Address</label>
-                    <input
-                      type="email"
-                      required
-                      value={inquiryData.email}
-                      onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
-                      placeholder="name@email.com"
-                      className="w-full bg-black/40 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#D4AF37]"
-                    />
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+              {/* Left Column: Brand Story & Perks */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-[0.22em] uppercase bg-gradient-to-r from-[#D4AF37]/20 to-transparent border border-[#D4AF37]/30 text-[#F3E5AB]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Private Concierge & Custom Orders</span>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-white leading-tight tracking-tight">
+                    Have a Unique Celebration Vision in Mind?
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-300 leading-relaxed font-normal max-w-xl">
+                    Whether it’s a romantic car boot surprise, bespoke anniversary trunk, luxury wedding allocation, or custom perfume pairings — connect directly with our private gifting atelier on WhatsApp for instant assistance.
+                  </p>
+                </div>
+
+                {/* Micro-Perks Badges */}
+                {/* Location Badge */}
+                <div className="pt-2">
+                  <div className="inline-flex items-center gap-2 text-xs text-neutral-300 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                    <span>India · UAE · Qatar</span>
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-neutral-400 mb-1">Occasion / Location (India · UAE · Qatar)</label>
-                  <input
-                    type="text"
-                    value={inquiryData.company}
-                    onChange={(e) => setInquiryData({ ...inquiryData, company: e.target.value })}
-                    placeholder="E.g. Anniversary Celebration in Dubai"
-                    className="w-full bg-black/40 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#D4AF37]"
-                  />
+              {/* Right Column: Aesthetic WhatsApp Action Card */}
+              <div className="lg:col-span-5">
+                <div className="relative rounded-2xl p-6 sm:p-8 bg-black/40 backdrop-blur-xl border border-white/15 shadow-2xl space-y-6">
+                  {/* Status row with pulsing green indicator */}
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div className="flex items-center gap-2.5">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-xs font-medium text-emerald-400 tracking-wide uppercase">
+                        Concierge Online Now
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-neutral-400 tracking-wider">
+                      Quick reply
+                    </span>
+                  </div>
+
+                  {/* Pre-composed message preview card */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-xs text-neutral-300 space-y-1.5">
+                    <span className="text-[10px] uppercase tracking-wider font-semibold text-[#D4AF37]">
+                      Pre-filled WhatsApp Request
+                    </span>
+                    <p className="italic text-neutral-200 leading-relaxed font-serif text-sm">
+                      “Hello Dazzling Hampers! I would like to discuss a custom luxury hamper curation for my special occasion.”
+                    </p>
+                  </div>
+
+                  {/* Direct WhatsApp Button */}
+                  <button
+                    onClick={() => {
+                      const phone = siteSettings.whatsappNumber || '971501487453';
+                      const msg = encodeURIComponent(
+                        siteSettings.whatsappMessage ||
+                        'Hello Dazzling Hampers! I would like to discuss a custom luxury hamper curation for my special occasion.'
+                      );
+                      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="interactive-btn w-full py-4 px-6 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-[0.14em] flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white hover:brightness-110 shadow-[0_4px_25px_rgba(16,185,129,0.35)] transition-all group cursor-pointer"
+                  >
+                    <WhatsAppIcon className="w-5 h-5 fill-white shrink-0" />
+                    <span>Chat on WhatsApp</span>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </button>
                 </div>
-
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-neutral-400 mb-1">Inquiry Details</label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={inquiryData.message}
-                    onChange={(e) => setInquiryData({ ...inquiryData, message: e.target.value })}
-                    placeholder="Describe your desired date, custom perfume or treats, and destination..."
-                    className="w-full bg-black/40 border border-neutral-700 rounded-xl p-3 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#D4AF37]"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className={`interactive-btn w-full py-3 rounded-full text-xs font-medium uppercase tracking-[0.14em] flex items-center justify-center gap-2 ${
-                    isGlass
-                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#B78A45] hover:brightness-110 text-[#0A0D0C] font-semibold shadow-[0_4px_20px_rgba(212,175,55,0.3)]'
-                      : 'bg-white hover:bg-neutral-200 text-[#141716]'
-                  }`}
-                >
-                  {inquirySent ? (
-                    <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                      <span>Inquiry Transmitted to Concierge</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-3.5 h-3.5" />
-                      <span>Connect with Private Concierge</span>
-                    </>
-                  )}
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </ScrollReveal>

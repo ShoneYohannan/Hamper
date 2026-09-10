@@ -9,8 +9,7 @@ export default function ReviewsPage() {
   const { isGlass, isPremiumAnim } = useTheme();
   const { testimonials, siteSettings } = useCms();
 
-  const dummyAuthors = ['Pooja K.', 'Vikram S.', 'Ananya R.', 'Rajiv M.', 'Meera & Dev', 'Sunita P.'];
-  const activeReviews = (testimonials || []).filter(r => !dummyAuthors.includes(r.author));
+  const activeReviews = testimonials || [];
 
   return (
     <div id="reviews" className={`py-20 lg:py-28 scroll-mt-20 transition-colors duration-400 ${
@@ -26,7 +25,7 @@ export default function ReviewsPage() {
             }`}>
               {siteSettings?.reviewsBadge || 'Client Words & Reveries'}
             </span>
-            <h2 className={`font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight ${
+            <h2 className={`font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight ${
               isGlass ? 'text-white drop-shadow-md' : 'text-[#171717]'
             }`}>
               {siteSettings?.reviewsHeadline || 'Loved by Givers & Receivers'}
@@ -39,32 +38,81 @@ export default function ReviewsPage() {
           </div>
         </ScrollReveal>
 
-        {/* Rating Metrics Scoreboard with Interactive 3D Tilt */}
+        {/* Rating Metrics Scoreboard with Clean Luxury Typography */}
         <ScrollReveal delay={100} distance={16}>
           <TiltCard maxTilt={isPremiumAnim ? 3 : 0} className="max-w-4xl mx-auto">
-            <div className={`rounded-3xl p-8 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center divide-y sm:divide-y-0 sm:divide-x transition-smooth ${
-              isGlass
-                ? 'glass-panel border-white/15 divide-white/10 text-white hover:border-[#D4AF37]/30'
-                : 'bg-white border border-neutral-200/70 shadow-[0_2px_12px_rgba(0,0,0,0.02)] divide-neutral-100 hover:shadow-[0_8px_25px_rgba(0,0,0,0.04)]'
-            }`}>
-              <div className="space-y-1 pt-2 sm:pt-0">
-                <div className={`font-serif text-4xl font-normal ${isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'}`}>5.0 ★</div>
-                <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-300' : 'text-neutral-400'}`}>Average Patron Rating</p>
-              </div>
-              <div className="space-y-1 pt-4 sm:pt-0">
-                <div className={`font-serif text-4xl font-normal ${isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'}`}>100%</div>
-                <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-300' : 'text-neutral-400'}`}>Mint Condition Arrival</p>
-              </div>
-              <div className="space-y-1 pt-4 sm:pt-0">
-                <div className={`font-serif text-4xl font-normal ${isGlass ? 'text-[#F3E5AB]' : 'text-neutral-900'}`}>2,400+</div>
-                <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-300' : 'text-neutral-400'}`}>Delivered across India, UAE & Qatar</p>
+            <div className="relative group">
+              {/* Subtle ambient backdrop aura */}
+              <div className={`absolute -inset-1 rounded-3xl blur-xl opacity-60 transition-opacity pointer-events-none -z-10 ${
+                isGlass 
+                  ? 'bg-gradient-to-r from-[#D4AF37]/20 via-purple-900/30 to-emerald-500/20' 
+                  : 'bg-gradient-to-r from-[#D4AF37]/15 via-amber-100/40 to-[#D4AF37]/15'
+              }`} />
+
+              <div className={`relative rounded-3xl p-7 sm:p-9 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 text-center divide-y sm:divide-y-0 sm:divide-x transition-smooth backdrop-blur-xl ${
+                isGlass
+                  ? 'glass-panel border border-[#D4AF37]/30 divide-white/10 text-white shadow-[0_8px_32px_rgba(0,0,0,0.3)]'
+                  : 'bg-white border border-[#D4AF37]/25 shadow-[0_4px_25px_rgba(212,175,55,0.08)] divide-neutral-100 text-neutral-900'
+              }`}>
+                
+                {/* Metric 1: Rating */}
+                <div className="space-y-2 pt-2 sm:pt-0 sm:px-4 flex flex-col justify-center">
+                  <div className={`font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight ${
+                    isGlass ? 'bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#F3E5AB] bg-clip-text text-transparent' : 'text-neutral-900'
+                  }`}>
+                    5.0 ★
+                  </div>
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-200' : 'text-neutral-700'}`}>
+                      Average Patron Rating
+                    </p>
+                    <span className={`text-[10px] tracking-wide block mt-0.5 ${isGlass ? 'text-[#D4AF37]/80' : 'text-neutral-400'}`}>
+                      Verified WhatsApp Stories
+                    </span>
+                  </div>
+                </div>
+
+                {/* Metric 2: Condition */}
+                <div className="space-y-2 pt-5 sm:pt-0 sm:px-4 flex flex-col justify-center">
+                  <div className={`font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight ${
+                    isGlass ? 'bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#F3E5AB] bg-clip-text text-transparent' : 'text-neutral-900'
+                  }`}>
+                    100%
+                  </div>
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-200' : 'text-neutral-700'}`}>
+                      Mint Condition Arrival
+                    </p>
+                    <span className={`text-[10px] tracking-wide block mt-0.5 ${isGlass ? 'text-[#D4AF37]/80' : 'text-neutral-400'}`}>
+                      White-Glove Silk Packaging
+                    </span>
+                  </div>
+                </div>
+
+                {/* Metric 3: 1,000 Celebrations */}
+                <div className="space-y-2 pt-5 sm:pt-0 sm:px-4 flex flex-col justify-center">
+                  <div className={`font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight ${
+                    isGlass ? 'bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#F3E5AB] bg-clip-text text-transparent' : 'text-neutral-900'
+                  }`}>
+                    1,000
+                  </div>
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-medium ${isGlass ? 'text-neutral-200' : 'text-neutral-700'}`}>
+                      Celebrations Unboxed
+                    </p>
+                    <span className={`text-[10px] tracking-wide block mt-0.5 ${isGlass ? 'text-[#D4AF37]/80' : 'text-neutral-400'}`}>
+                      Across India · UAE · Qatar
+                    </span>
+                  </div>
+                </div>
+
               </div>
             </div>
           </TiltCard>
         </ScrollReveal>
 
         {/* Reviews Multi-Column Grid with 3D TiltCards */}
-        <div className={`grid grid-cols-1 ${activeReviews.length <= 2 ? 'md:grid-cols-2 max-w-5xl mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'} gap-8`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {activeReviews.map((item, index) => (
             <ScrollReveal key={item.id} delay={(index % 3) * 80} distance={18} className="h-full">
               <TiltCard maxTilt={isPremiumAnim ? 6 : 0} className="h-full">
